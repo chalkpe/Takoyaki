@@ -1,0 +1,23 @@
+{
+  "target": {
+    "name": "::: MCPE Korea :::",
+    "url": "http://cafe.naver.com/minecraftpe",
+    "clubId": 23683173
+  },
+
+  "interval": 2500,
+  "timeout": 1000,
+
+  "filters": [
+    {
+      "name": "article",
+      "options": []
+    }, {
+      "name": "visitation",
+      "options": []
+    }, {
+      "name": "commentary",
+      "options": []
+    }
+  ]
+}
