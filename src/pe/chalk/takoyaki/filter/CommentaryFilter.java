@@ -20,8 +20,7 @@ import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import pe.chalk.takoyaki.data.Article;
-import pe.chalk.takoyaki.data.Data;
+import pe.chalk.takoyaki.data.SimpleArticle;
 
 import java.util.ArrayList;
 
@@ -29,7 +28,7 @@ import java.util.ArrayList;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class CommentaryFilter extends Filter {
+public class CommentaryFilter extends Filter<SimpleArticle> {
     public static final String NAME = "commentary";
 
     public CommentaryFilter(JSONArray options){
@@ -37,9 +36,9 @@ public class CommentaryFilter extends Filter {
     }
 
     @Override
-    public ArrayList<Data> filter(Document document){
+    public ArrayList<SimpleArticle> filter(Document document){
         Elements elements = document.select("#recent-reply .ellipsis.tcol-c");
-        ArrayList<Data> list = new ArrayList<>(10);
+        ArrayList<SimpleArticle> list = new ArrayList<>(10);
 
         for(Element element : elements){
             String articleIdAttr = element.parent().attr("href");
@@ -47,7 +46,7 @@ public class CommentaryFilter extends Filter {
             int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
             String title = element.text();
 
-            list.add(new Article(id, title));
+            list.add(new SimpleArticle(id, title));
         }
 
         return list;

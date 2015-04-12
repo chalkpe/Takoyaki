@@ -19,14 +19,15 @@ package pe.chalk.takoyaki;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import pe.chalk.takoyaki.data.Article;
+import pe.chalk.takoyaki.data.Member;
+import pe.chalk.takoyaki.data.SimpleArticle;
 import pe.chalk.takoyaki.filter.ArticleFilter;
 import pe.chalk.takoyaki.filter.CommentaryFilter;
-import pe.chalk.takoyaki.filter.Filter;
 import pe.chalk.takoyaki.filter.VisitationFilter;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,31 +58,36 @@ public class Takoyaki {
     }
 
     public void init() throws JSONException, MalformedURLException {
-        URL target = new URL(properties.getString("url"));
         this.interval = properties.getLong("interval");
         this.timeout = properties.getInt("timeout");
 
         JSONArray filtersArray = properties.getJSONArray("filters");
-        ArrayList<Filter> filters = new ArrayList<>(filtersArray.length());
+        ArrayList<Collector> collectors = new ArrayList<>(filtersArray.length());
 
         for(int i = 0; i < filtersArray.length(); i++){
             JSONObject filterObject = filtersArray.getJSONObject(i);
             JSONArray filterOptions = filterObject.getJSONArray("options");
 
+            Collector collector;
+
             switch(filterObject.getString("name").toLowerCase()){
                 case ArticleFilter.NAME:
-                    filters.add(new ArticleFilter(filterOptions));
+                    collector = new Collector<>(Article.class, new ArticleFilter(filterOptions), Collector.Subscription.ARTICLE);
                     break;
                 case VisitationFilter.NAME:
-                    filters.add(new VisitationFilter(filterOptions));
+                    collector = new Collector<>(Member.class, new VisitationFilter(filterOptions), Collector.Subscription.WIDGET);
                     break;
                 case CommentaryFilter.NAME:
-                    filters.add(new CommentaryFilter(filterOptions));
+                    collector = new Collector<>(SimpleArticle.class, new CommentaryFilter(filterOptions), Collector.Subscription.WIDGET);
                     break;
+
+                default:
+                    throw new IllegalArgumentException();
             }
+            collectors.add(collector);
         }
 
-        this.monitor = new Monitor(target, filters);
+        this.monitor = new Monitor(properties.getJSONObject("target"), collectors);
         this.isAlive = true;
     }
 

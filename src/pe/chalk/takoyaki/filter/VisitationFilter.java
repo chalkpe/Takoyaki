@@ -20,7 +20,6 @@ import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Member;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ import java.util.regex.Pattern;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class VisitationFilter extends Filter {
+public class VisitationFilter extends Filter<Member> {
     public static final String NAME = "visitation";
 
     public static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z_]+)'");
@@ -41,9 +40,9 @@ public class VisitationFilter extends Filter {
     }
 
     @Override
-    public ArrayList<Data> filter(Document document){
+    public ArrayList<Member> filter(Document document){
         Elements elements = document.select("#first-visit-page [href=#]");
-        ArrayList<Data> list = new ArrayList<>(5);
+        ArrayList<Member> list = new ArrayList<>(5);
 
         for(Element element : elements){
             String id = null;

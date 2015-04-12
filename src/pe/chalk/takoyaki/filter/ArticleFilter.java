@@ -21,7 +21,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import pe.chalk.takoyaki.data.Article;
-import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Member;
 
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import java.util.regex.Pattern;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class ArticleFilter extends Filter {
+public class ArticleFilter extends Filter<Article> {
     public static final String NAME = "article";
 
     public static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9_]+)',");
@@ -43,8 +42,8 @@ public class ArticleFilter extends Filter {
     }
 
     @Override
-    public ArrayList<Data> filter(Document document){
-        ArrayList<Data> list = new ArrayList<>(15);
+    public ArrayList<Article> filter(Document document){
+        ArrayList<Article> list = new ArrayList<>(15);
         Elements elements = document.select("form[name=ArticleList] tr[align=center]");
 
         for(Element element : elements){
@@ -52,7 +51,7 @@ public class ArticleFilter extends Filter {
             int viewCount = Integer.parseInt(element.select(".view-count.m-tcol-c._rosReadcount").first().text());
 
             Elements countElements = element.select(".view-count.m-tcol-c");
-            String uploadDate = countElements.get(0).text();
+            String uploadDate = countElements.get(0).text().trim();
 
             int recommendedCount = Integer.parseInt(countElements.get(1).text());
 

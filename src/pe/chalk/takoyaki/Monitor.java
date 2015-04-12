@@ -1,32 +1,46 @@
 package pe.chalk.takoyaki;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.data.Data;
-import pe.chalk.takoyaki.filter.Filter;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
 public class Monitor {
-    private URL target;
-    private ArrayList<Filter> filters;
+    public static final String URL_WIDGET = "http://cafe.naver.com/%s";
+    public static final String URL_ARTICLE = "http://cafe.naver.com/ArticleList.nhn?search.clubid=%d&search.boardtype=L";
 
-    public Monitor(URL target, ArrayList<Filter> filters){
-        this.target = target;
-        this.filters = filters;
+    private URL widgetTarget, articleTarget;
+    private List<Collector> collectors;
+
+    public Monitor(JSONObject targetObject, List<Collector> collectors) throws JSONException, MalformedURLException{
+        this.widgetTarget = new URL(String.format(URL_WIDGET, targetObject.getString("address")));
+        this.articleTarget = new URL(String.format(URL_ARTICLE, targetObject.getInt("clubId")));
+
+        this.collectors = collectors;
     }
 
     public void monitor() throws IOException {
-        Document document = Jsoup.parse(this.target, Takoyaki.getInstance().getTimeout());
-        for(Filter filter : this.filters){
-            ArrayList<Data> list = filter.filter(document);
-            //TODO: Implements data handling
+        Document widgetDocument = Jsoup.parse(this.widgetTarget, Takoyaki.getInstance().getTimeout());
+        Document articleDocument = Jsoup.parse(this.articleTarget, Takoyaki.getInstance().getTimeout());
+
+        for(Collector collector : this.collectors){
+            switch(collector.getSubscription()){
+                case WIDGET:
+                    collector.collect(widgetDocument);
+                    break;
+                case ARTICLE:
+                    collector.collect(articleDocument);
+                    break;
+            }
         }
     }
 }

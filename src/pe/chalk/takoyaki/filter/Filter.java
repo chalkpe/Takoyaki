@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public abstract class Filter {
+public abstract class Filter<T extends Data> {
     private JSONArray options;
 
     public Filter(JSONArray options){
@@ -37,5 +37,5 @@ public abstract class Filter {
         return this.options;
     }
 
-    public abstract ArrayList<Data> filter(Document document);
+    public abstract ArrayList<T> filter(Document document);
 }
