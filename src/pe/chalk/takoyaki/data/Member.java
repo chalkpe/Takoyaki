@@ -20,8 +20,8 @@ package pe.chalk.takoyaki.data;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class Member implements Data {
-    public static final String DEFAULT_ID = "********";
+public class Member extends Data {
+    public static final String DEFAULT_DISPLAY_ID = "********";
 
     private String id;
     private String name;
@@ -41,7 +41,7 @@ public class Member implements Data {
 
     @Override
     public String toString(){
-        return this.getName() + " (" + (this.getId().length() > 0 ? this.getId() : DEFAULT_ID) + ")";
+        return this.getName() + " (" + (this.getId().length() > 0 ? this.getId() : DEFAULT_DISPLAY_ID) + ")";
     }
 
     @Override

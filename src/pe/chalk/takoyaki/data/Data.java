@@ -20,5 +20,14 @@ package pe.chalk.takoyaki.data;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public interface Data {
+public abstract class Data {
+    private final long creationTime;
+
+    public Data(){
+        this.creationTime = System.currentTimeMillis();
+    }
+
+    public long getCreationTime(){
+        return this.creationTime;
+    }
 }

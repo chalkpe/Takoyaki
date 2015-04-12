@@ -20,9 +20,7 @@ package pe.chalk.takoyaki.data;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class Article implements Data, Comparable<Article> {
-    private int id;
-    private String title;
+public class Article extends SimpleArticle {
     private Member writer;
 
     private String head;
@@ -35,13 +33,9 @@ public class Article implements Data, Comparable<Article> {
 
     private boolean isQuestion;
 
-    public Article(int id, String title){
-        this(id, title, null, "", "", -1, 0, 0, 0, false);
-    }
-
     public Article(int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
-        this.id = id;
-        this.title = title;
+        super(id, title);
+
         this.writer = writer;
 
         this.head = head;
@@ -53,14 +47,6 @@ public class Article implements Data, Comparable<Article> {
         this.recommendedCount = recommendedCount;
 
         this.isQuestion = isQuestion;
-    }
-
-    public int getId(){
-        return this.id;
-    }
-
-    public String getTitle(){
-        return title;
     }
 
     public Member getWriter(){
@@ -105,10 +91,5 @@ public class Article implements Data, Comparable<Article> {
                 + this.getWriter().toString()
                 + " at "
                 + this.getUploadDate();
-    }
-
-    @Override
-    public int compareTo(Article another){
-        return this.getId() - another.getId();
     }
 }
