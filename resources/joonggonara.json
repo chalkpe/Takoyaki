@@ -1,0 +1,25 @@
+{
+  "target": {
+    "name": "중고나라",
+    "address": "joonggonara",
+    "clubId": 10050146
+  },
+
+  "interval": 1000,
+  "timeout": 500,
+
+  "filters": [
+    {
+      "name": "article",
+      "options": []
+    }, {
+      "name": "visitation",
+      "options": []
+    }, {
+      "name": "commentary",
+      "options": []
+    }
+  ]
+}
+
+
