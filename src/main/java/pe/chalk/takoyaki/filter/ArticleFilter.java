@@ -64,6 +64,9 @@ public class ArticleFilter extends Filter<Article> {
             }
 
             String head = element.select(".head").text().trim();
+            if(head.startsWith("[") && head.endsWith("]")){
+                head = head.substring(1, head.length() - 1);
+            }
             String title = element.select(".aaa a").first().text();
 
             Element nicknameElement = element.select(".p-nick a[href=#]").first();

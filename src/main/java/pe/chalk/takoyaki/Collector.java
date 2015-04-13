@@ -4,6 +4,7 @@ import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.data.Article;
 import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Member;
+import pe.chalk.takoyaki.data.SimpleArticle;
 import pe.chalk.takoyaki.filter.Filter;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class Collector<T extends Data> {
         this.subscription = subscription;
     }
 
-    public Class<T> getType(){
+    public Class<? extends Data> getType(){
         return this.type;
     }
 
@@ -64,12 +65,18 @@ public class Collector<T extends Data> {
 
         for(int i = 0; i < data.size() && i < this.lastData.size(); i++){
             T item = data.get(i);
-
-            if(this.getType().equals(Member.class) && item.equals(lastItem)){
-                return i;
+            if(this.getType().equals(Member.class) || this.getType().equals(SimpleArticle.class)){
+                if(item.getCreationTime() <= lastItem.getCreationTime()){
+                    return i;
+                }
             }
-            if(this.getType().equals(Article.class) && ((Article) item).getId() <= ((Article) lastItem).getId()){
-                return i;
+            if(this.getType().equals(Article.class)){
+                Article lastArticle = (Article) lastItem;
+                Article article = (Article) item;
+
+                if(article.getId() <= lastArticle.getId()){
+                    return i;
+                }
             }
         }
         return 0;
