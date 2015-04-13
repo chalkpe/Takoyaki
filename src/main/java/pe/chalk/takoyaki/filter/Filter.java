@@ -53,15 +53,15 @@ public abstract class Filter<T extends Data> {
 
         for(int i = 0; i < data.size(); i++){
             T item = data.get(i);
-            if(item instanceof Member || item instanceof SimpleArticle){
-                if(item.equals(lastItem)){
-                    return i;
-                }
-            }else if(item instanceof Article){
+            if(item instanceof Article){
                 Article lastArticle = (Article) lastItem;
                 Article article = (Article) item;
 
                 if(article.getId() <= lastArticle.getId()){
+                    return i;
+                }
+            }else if(item instanceof SimpleArticle || item instanceof Member){
+                if(item.equals(lastItem)){
                     return i;
                 }
             }

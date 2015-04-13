@@ -27,6 +27,11 @@ public class SimpleArticle extends Data implements Comparable<Article> {
     }
 
     @Override
+    public boolean equals(Object another){
+        return another instanceof SimpleArticle && this.getId() == ((SimpleArticle) another).getId();
+    }
+
+    @Override
     public String toString(){
         return "[" + this.getId() + "] " + this.getTitle();
     }
