@@ -47,7 +47,7 @@ public class CommentaryFilter extends Filter<SimpleArticle> {
             int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
             String title = element.text();
 
-            list.add((SimpleArticle) Data.getUniqueInstance(new SimpleArticle(id, title)));
+            list.add(new SimpleArticle(id, title));
         }
 
         return list;

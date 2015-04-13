@@ -54,7 +54,7 @@ public class VisitationFilter extends Filter<Member> {
                 id = idMatcher.group(1);
             }
 
-            list.add((Member) Data.getUniqueInstance(new Member(id, name)));
+            list.add(new Member(id, name));
         }
 
         return list;
