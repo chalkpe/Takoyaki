@@ -1,24 +1,39 @@
 {
+  "interval": 5000,
+  "timeout": 2000,
   "target": {
     "name": "우리들의 마인크래프트 공간 (대피소)",
     "address": "ourmcspace",
     "clubId": 27370614
   },
-
-  "interval": 5000,
-  "timeout": 2000,
-
-  "filters": [
+  "collectors": [
     {
-      "name": "article",
-      "options": []
-    }, {
-      "name": "visitation",
-      "options": []
-    }, {
-      "name": "commentary",
-      "options": []
+      "subscription": "article",
+      "filters": [
+        {
+          "type": "article",
+          "options": {
+            "prefix": "새글알림"
+          }
+        }
+      ]
+    },
+    {
+      "subscription": "widget",
+      "filters": [
+        {
+          "type": "commentary",
+          "options": {
+            "prefix": "덧글알림"
+          }
+        },
+        {
+          "type": "visitation",
+          "options": {
+            "prefix": "방문알림"
+          }
+        }
+      ]
     }
   ]
 }
-
