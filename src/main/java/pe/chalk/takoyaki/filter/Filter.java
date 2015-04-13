@@ -16,26 +16,71 @@
 
 package pe.chalk.takoyaki.filter;
 
-import org.json.JSONArray;
+import org.json.JSONObject;
 import org.jsoup.nodes.Document;
+import pe.chalk.takoyaki.data.Article;
 import pe.chalk.takoyaki.data.Data;
+import pe.chalk.takoyaki.data.Member;
+import pe.chalk.takoyaki.data.SimpleArticle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
 public abstract class Filter<T extends Data> {
-    private JSONArray options;
+    private JSONObject options;
 
-    public Filter(JSONArray options){
+    private ArrayList<T> lastData;
+
+    public Filter(JSONObject options){
         this.options = options;
     }
 
-    public JSONArray getOptions(){
+    public JSONObject getOptions(){
         return this.options;
     }
 
     public abstract ArrayList<T> filter(Document document);
+
+    private int getFreshItemCount(ArrayList<T> data){
+        if(this.lastData == null || this.lastData.size() <= 0){
+            return 0;
+        }
+        T lastItem = this.lastData.get(0);
+
+        for(int i = 0; i < data.size(); i++){
+            T item = data.get(i);
+            if(item instanceof Member || item instanceof SimpleArticle){
+                if(item.getCreationTime() <= lastItem.getCreationTime()){
+                    return i;
+                }
+            }
+            if(item instanceof Article){
+                Article lastArticle = (Article) lastItem;
+                Article article = (Article) item;
+
+                if(article.getId() <= lastArticle.getId()){
+                    return i;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public ArrayList<T> getFreshData(Document document){
+        ArrayList<T> rawData = this.filter(document);
+        ArrayList<T> freshData = new ArrayList<>();
+
+        int count = this.getFreshItemCount(rawData);
+        if(count > 0){
+            freshData.addAll(rawData.subList(0, count));
+            Collections.reverse(freshData);
+        }
+
+        this.lastData = rawData;
+        return freshData;
+    }
 }

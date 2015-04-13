@@ -1,42 +1,30 @@
 package pe.chalk.takoyaki;
 
 import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.data.Article;
 import pe.chalk.takoyaki.data.Data;
-import pe.chalk.takoyaki.data.Member;
-import pe.chalk.takoyaki.data.SimpleArticle;
 import pe.chalk.takoyaki.filter.Filter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-12
  */
-public class Collector<T extends Data> {
+public class Collector {
     public static enum Subscription {
         WIDGET, ARTICLE
     }
 
-    private final Class<T> type;
-    private Filter<T> filter;
+    private ArrayList<Filter<? extends Data>> filters;
     private Collector.Subscription subscription;
 
-    private ArrayList<T> lastData;
-
-    public Collector(Class<T> type, Filter<T> filter, Collector.Subscription subscription){
-        this.type = type;
-        this.filter = filter;
+    public Collector(Collector.Subscription subscription, ArrayList<Filter<? extends Data>> filters){
         this.subscription = subscription;
+        this.filters = filters;
     }
 
-    public Class<? extends Data> getType(){
-        return this.type;
-    }
-
-    public Filter<T> getFilter(){
-        return this.filter;
+    public ArrayList<Filter<? extends Data>> getFilters(){
+        return this.filters;
     }
 
     public Collector.Subscription getSubscription(){
@@ -45,48 +33,14 @@ public class Collector<T extends Data> {
 
     public void collect(Document document){
         try{
-            ArrayList<T> rawData = this.getFilter().filter(document);
-            if(rawData.size() > 0){
-                ArrayList<T> freshData = this.getFreshData(rawData);
+            this.getFilters().forEach(filter -> {
+                ArrayList<? extends Data> freshData = filter.getFreshData(document);
                 if(freshData.size() > 0){
-                    freshData.forEach(System.out::println);
+                    freshData.forEach(data -> System.out.printf("[%s] %s%n", filter.getOptions().getString("prefix"), data));
                 }
-            }
+            });
         }catch(Exception e){
             e.printStackTrace();
         }
-    }
-
-    private int getFreshItemCount(ArrayList<T> data){
-        if(this.lastData == null){
-            return 0;
-        }
-        T lastItem = this.lastData.get(0);
-
-        for(int i = 0; i < data.size() && i < this.lastData.size(); i++){
-            T item = data.get(i);
-            if(this.getType().equals(Member.class) || this.getType().equals(SimpleArticle.class)){
-                if(item.getCreationTime() <= lastItem.getCreationTime()){
-                    return i;
-                }
-            }
-            if(this.getType().equals(Article.class)){
-                Article lastArticle = (Article) lastItem;
-                Article article = (Article) item;
-
-                if(article.getId() <= lastArticle.getId()){
-                    return i;
-                }
-            }
-        }
-        return 0;
-    }
-
-    public ArrayList<T> getFreshData(ArrayList<T> data){
-        ArrayList<T> freshData = new ArrayList<>(data.subList(0, this.getFreshItemCount(data)));
-        Collections.reverse(freshData);
-
-        this.lastData = data;
-        return freshData;
     }
 }

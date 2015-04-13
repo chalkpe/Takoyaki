@@ -1,23 +1,39 @@
 {
+  "interval": 2500,
+  "timeout": 1000,
   "target": {
     "name": "::: MCPE Korea :::",
     "address": "minecraftpe",
     "clubId": 23683173
   },
-
-  "interval": 2500,
-  "timeout": 1000,
-
-  "filters": [
+  "collectors": [
     {
-      "name": "article",
-      "options": []
-    }, {
-      "name": "visitation",
-      "options": []
-    }, {
-      "name": "commentary",
-      "options": []
+      "subscription": "article",
+      "filters": [
+        {
+          "type": "article",
+          "options": {
+            "prefix": "새글알림"
+          }
+        }
+      ]
+    },
+    {
+      "subscription": "widget",
+      "filters": [
+        {
+          "type": "commentary",
+          "options": {
+            "prefix": "덧글알림"
+          }
+        },
+        {
+          "type": "visitation",
+          "options": {
+            "prefix": "방문알림"
+          }
+        }
+      ]
     }
   ]
 }

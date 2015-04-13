@@ -16,10 +16,11 @@
 
 package pe.chalk.takoyaki.filter;
 
-import org.json.JSONArray;
+import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.SimpleArticle;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 public class CommentaryFilter extends Filter<SimpleArticle> {
     public static final String NAME = "commentary";
 
-    public CommentaryFilter(JSONArray options){
+    public CommentaryFilter(JSONObject options){
         super(options);
     }
 
@@ -46,7 +47,7 @@ public class CommentaryFilter extends Filter<SimpleArticle> {
             int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
             String title = element.text();
 
-            list.add(new SimpleArticle(id, title));
+            list.add((SimpleArticle) Data.getUniqueInstance(new SimpleArticle(id, title)));
         }
 
         return list;

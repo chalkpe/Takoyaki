@@ -16,15 +16,29 @@
 
 package pe.chalk.takoyaki.data;
 
+import java.util.ArrayList;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
 public abstract class Data {
+    private static ArrayList<Data> instances = new ArrayList<>();
+
     private final long creationTime;
 
     public Data(){
         this.creationTime = System.currentTimeMillis();
+    }
+
+    public static Data getUniqueInstance(Data newInstance){
+        int index = Data.instances.indexOf(newInstance);
+        if(index == -1){
+            Data.instances.add(0, newInstance);
+            return newInstance;
+        }else{
+            return Data.instances.get(index);
+        }
     }
 
     public long getCreationTime(){

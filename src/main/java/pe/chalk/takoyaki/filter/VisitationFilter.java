@@ -16,10 +16,11 @@
 
 package pe.chalk.takoyaki.filter;
 
-import org.json.JSONArray;
+import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Member;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class VisitationFilter extends Filter<Member> {
 
     public static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z_]+)'");
 
-    public VisitationFilter(JSONArray options){
+    public VisitationFilter(JSONObject options){
         super(options);
     }
 
@@ -53,7 +54,7 @@ public class VisitationFilter extends Filter<Member> {
                 id = idMatcher.group(1);
             }
 
-            list.add(new Member(id, name));
+            list.add((Member) Data.getUniqueInstance(new Member(id, name)));
         }
 
         return list;

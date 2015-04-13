@@ -19,11 +19,10 @@ package pe.chalk.takoyaki;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pe.chalk.takoyaki.data.Article;
-import pe.chalk.takoyaki.data.Member;
-import pe.chalk.takoyaki.data.SimpleArticle;
+import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.filter.ArticleFilter;
 import pe.chalk.takoyaki.filter.CommentaryFilter;
+import pe.chalk.takoyaki.filter.Filter;
 import pe.chalk.takoyaki.filter.VisitationFilter;
 
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class Takoyaki {
     private static Takoyaki instance = null;
 
     private JSONObject properties;
-    private Monitor monitor;
+    private Provider provider;
 
     public static Takoyaki getInstance(){
         return instance;
@@ -61,24 +60,42 @@ public class Takoyaki {
         this.interval = properties.getLong("interval");
         this.timeout = properties.getInt("timeout");
 
-        JSONArray filtersArray = properties.getJSONArray("filters");
-        ArrayList<Collector> collectors = new ArrayList<>(filtersArray.length());
+        JSONArray collectorsArray = properties.getJSONArray("collectors");
+        ArrayList<Collector> collectors = new ArrayList<>(collectorsArray.length());
 
-        for(int i = 0; i < filtersArray.length(); i++){
-            JSONObject filterObject = filtersArray.getJSONObject(i);
-            JSONArray filterOptions = filterObject.getJSONArray("options");
-
+        for(int ci = 0; ci < collectorsArray.length(); ci++){
+            JSONObject collectorObject = collectorsArray.getJSONObject(ci);
             Collector collector;
 
-            switch(filterObject.getString("name").toLowerCase()){
-                case ArticleFilter.NAME:
-                    collector = new Collector<>(Article.class, new ArticleFilter(filterOptions), Collector.Subscription.ARTICLE);
+            JSONArray filtersArray = collectorObject.getJSONArray("filters");
+            ArrayList<Filter<? extends Data>> filters = new ArrayList<>(filtersArray.length());
+            for(int fi = 0; fi < filtersArray.length(); fi++){
+                JSONObject filterObject = filtersArray.getJSONObject(fi);
+                JSONObject filterOptions = filterObject.getJSONObject("options");
+
+                switch(filterObject.getString("type").toLowerCase()){
+                    case VisitationFilter.NAME:
+                        filters.add(new VisitationFilter(filterOptions));
+                        break;
+                    case CommentaryFilter.NAME:
+                        filters.add(new CommentaryFilter(filterOptions));
+                        break;
+                    case ArticleFilter.NAME:
+                        filters.add(new ArticleFilter(filterOptions));
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException();
+                }
+            }
+
+            switch(collectorObject.getString("subscription").toLowerCase()){
+                case "article":
+                    collector = new Collector(Collector.Subscription.ARTICLE, filters);
                     break;
-                case VisitationFilter.NAME:
-                    collector = new Collector<>(Member.class, new VisitationFilter(filterOptions), Collector.Subscription.WIDGET);
-                    break;
-                case CommentaryFilter.NAME:
-                    collector = new Collector<>(SimpleArticle.class, new CommentaryFilter(filterOptions), Collector.Subscription.WIDGET);
+
+                case "widget":
+                    collector = new Collector(Collector.Subscription.WIDGET, filters);
                     break;
 
                 default:
@@ -87,7 +104,7 @@ public class Takoyaki {
             collectors.add(collector);
         }
 
-        this.monitor = new Monitor(properties.getJSONObject("target"), collectors);
+        this.provider = new Provider(properties.getJSONObject("target"), collectors);
         this.isAlive = true;
     }
 
@@ -104,7 +121,7 @@ public class Takoyaki {
     }
 
     public void tick() throws Exception {
-        this.monitor.monitor();
+        this.provider.monitor();
     }
 
     public static void main(String[] args){
