@@ -4,7 +4,7 @@ package pe.chalk.takoyaki.data;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-12
  */
-public class SimpleArticle extends Data implements Comparable<Article> {
+public class SimpleArticle extends Data {
     private int id;
     private String title;
 
@@ -19,11 +19,6 @@ public class SimpleArticle extends Data implements Comparable<Article> {
 
     public String getTitle(){
         return this.title;
-    }
-
-    @Override
-    public int compareTo(Article another){
-        return this.getId() - another.getId();
     }
 
     @Override

@@ -21,7 +21,7 @@ package pe.chalk.takoyaki.data;
  * @since 2015-04-07
  */
 public class Article extends SimpleArticle {
-    private Member writer;
+    private final Member writer;
 
     private String head;
     private String uploadDate;
@@ -31,7 +31,7 @@ public class Article extends SimpleArticle {
     private int commentCount;
     private int recommendedCount;
 
-    private boolean isQuestion;
+    private final boolean isQuestion;
 
     public Article(int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
         super(id, title);

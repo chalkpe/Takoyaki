@@ -43,7 +43,7 @@ public abstract class Filter<T extends Data> {
         return this.options;
     }
 
-    public abstract ArrayList<T> filter(Document document);
+    protected abstract ArrayList<T> filter(Document document);
 
     private int getFreshItemCount(ArrayList<T> data){
         if(this.lastData == null || this.lastData.size() <= 0){

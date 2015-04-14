@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Member;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ import java.util.regex.Pattern;
 public class VisitationFilter extends Filter<Member> {
     public static final String NAME = "visitation";
 
-    public static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z_]+)'");
+    private static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z_]+)'");
 
     public VisitationFilter(JSONObject options){
         super(options);

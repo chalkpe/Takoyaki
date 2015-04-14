@@ -34,8 +34,8 @@ import java.util.regex.Pattern;
 public class ArticleFilter extends Filter<Article> {
     public static final String NAME = "article";
 
-    public static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9_]+)',");
-    public static final Pattern MENU_ID_PATTERN = Pattern.compile("'(\\d+)'\\);");
+    private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9_]+)',");
+    private static final Pattern MENU_ID_PATTERN = Pattern.compile("'(\\d+)'\\);");
 
     public ArticleFilter(JSONObject options){
         super(options);

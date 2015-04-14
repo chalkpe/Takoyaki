@@ -21,7 +21,7 @@ package pe.chalk.takoyaki.data;
  * @since 2015-04-07
  */
 public class Member extends Data {
-    public static final String DEFAULT_DISPLAY_ID = "********";
+    private static final String DEFAULT_DISPLAY_ID = "********";
 
     private String id;
     private String name;

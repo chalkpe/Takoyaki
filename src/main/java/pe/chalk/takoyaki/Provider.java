@@ -15,8 +15,8 @@ import java.util.List;
  * @since 2015-04-07
  */
 public class Provider {
-    public static final String URL_WIDGET = "http://cafe.naver.com/%s";
-    public static final String URL_ARTICLE = "http://cafe.naver.com/ArticleList.nhn?search.clubid=%d&search.boardtype=L";
+    private static final String URL_WIDGET = "http://cafe.naver.com/%s";
+    private static final String URL_ARTICLE = "http://cafe.naver.com/ArticleList.nhn?search.clubid=%d&search.boardtype=L";
 
     private URL widgetTarget, articleTarget;
     private List<Collector> collectors;

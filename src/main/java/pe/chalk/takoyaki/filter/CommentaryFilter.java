@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.SimpleArticle;
 
 import java.util.ArrayList;
