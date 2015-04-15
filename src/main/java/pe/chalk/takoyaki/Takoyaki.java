@@ -24,6 +24,8 @@ import pe.chalk.takoyaki.filter.ArticleFilter;
 import pe.chalk.takoyaki.filter.CommentaryFilter;
 import pe.chalk.takoyaki.filter.Filter;
 import pe.chalk.takoyaki.filter.VisitationFilter;
+import pe.chalk.takoyaki.logger.ConsoleLogger;
+import pe.chalk.takoyaki.logger.Logger;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -41,7 +43,10 @@ public class Takoyaki {
     private static Takoyaki instance = null;
 
     private JSONObject properties;
+
     private Provider provider;
+
+    private Logger logger;
 
     public static Takoyaki getInstance(){
         return instance;
@@ -104,6 +109,7 @@ public class Takoyaki {
             collectors.add(collector);
         }
 
+        this.logger = new ConsoleLogger();
         this.provider = new Provider(properties.getJSONObject("target"), collectors);
         this.isAlive = true;
     }
@@ -120,8 +126,12 @@ public class Takoyaki {
         return this.isAlive;
     }
 
+    public Logger getLogger(){
+        return logger;
+    }
+
     public void tick() throws Exception {
-        this.provider.monitor();
+        this.provider.provide();
     }
 
     public static void main(String[] args){

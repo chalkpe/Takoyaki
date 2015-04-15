@@ -28,7 +28,7 @@ public class Provider {
         this.collectors = collectors;
     }
 
-    public void monitor() throws IOException {
+    public void provide() throws IOException {
         Document widgetDocument = Jsoup.parse(this.widgetTarget, Takoyaki.getInstance().getTimeout());
         Document articleDocument = Jsoup.parse(this.articleTarget, Takoyaki.getInstance().getTimeout());
 

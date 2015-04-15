@@ -33,12 +33,10 @@ public class Collector {
 
     public void collect(Document document){
         try{
-            this.getFilters().forEach(filter -> {
-                ArrayList<? extends Data> freshData = filter.getFreshData(document);
-                if(freshData.size() > 0){
-                    freshData.forEach(data -> System.out.printf("[%s] %s%n", filter.getOptions().getString("prefix"), data));
-                }
-            });
+            this.getFilters().forEach(filter ->
+                    filter.getFreshData(document).forEach(data ->
+                            Takoyaki.getInstance().getLogger().info(
+                                    filter, data.toString())));
         }catch(Exception e){
             e.printStackTrace();
         }

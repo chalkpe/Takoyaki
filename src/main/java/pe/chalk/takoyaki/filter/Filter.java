@@ -18,10 +18,7 @@ package pe.chalk.takoyaki.filter;
 
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.data.Article;
-import pe.chalk.takoyaki.data.Data;
-import pe.chalk.takoyaki.data.Member;
-import pe.chalk.takoyaki.data.SimpleArticle;
+import pe.chalk.takoyaki.data.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,17 +27,23 @@ import java.util.Collections;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public abstract class Filter<T extends Data> {
+public abstract class Filter<T extends Data> implements Prefix {
     private JSONObject options;
+    private String prefix;
 
     private ArrayList<T> lastData;
 
     public Filter(JSONObject options){
         this.options = options;
+        this.prefix = options.getString("prefix");
     }
 
     public JSONObject getOptions(){
         return this.options;
+    }
+
+    public String getPrefix(){
+        return this.prefix;
     }
 
     protected abstract ArrayList<T> filter(Document document);
