@@ -16,6 +16,8 @@
 
 package pe.chalk.takoyaki.data;
 
+import pe.chalk.takoyaki.logger.ChatColor;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
@@ -83,13 +85,10 @@ public class Article extends SimpleArticle {
 
     @Override
     public String toString(){
-        return "[" + this.getId() + "] "
-                + (this.isQuestion() ? "Q. " : "")
-                + (this.getHead() != null && this.getHead().length() > 0 ? "[" + this.getHead() + "] " : "")
+        return ChatColor.GREEN + "[" + this.getId() + "] " + ChatColor.RESET
+                + (this.isQuestion() ? ChatColor.RED + "Q. " + ChatColor.RESET : "")
+                + (this.getHead() != null && this.getHead().length() > 0 ? ChatColor.DARK_GREEN + "[" + this.getHead() + "] " + ChatColor.RESET : "")
                 + this.getTitle()
-                + " by "
-                + this.getWriter().toString()
-                + " at "
-                + this.getUploadDate();
+                + ChatColor.DARK_AQUA + " by " + this.getWriter().toString() + ChatColor.DARK_YELLOW + " at " + this.getUploadDate() + ChatColor.RESET;
     }
 }

@@ -7,23 +7,23 @@ package pe.chalk.takoyaki.logger;
 public enum ChatColor {
     RESET('r', "0"),
 
-    BLACK('0', "0;30"),
-    DARK_BLUE('1', "0;34"),
-    DARK_GREEN('2', "0;32"),
-    DARK_AQUA('3', "0;36"),
-    DARK_RED('4', "0;31"),
-    DARK_PURPLE('5', "0;35"),
-    DARK_YELLOW('6', "0;33"),
-    GRAY('7', "0;37"),
+    BLACK('0', "30"),
+    DARK_BLUE('1', "34"),
+    DARK_GREEN('2', "32"),
+    DARK_AQUA('3', "36"),
+    DARK_RED('4', "31"),
+    DARK_PURPLE('5', "35"),
+    DARK_YELLOW('6', "33"),
+    GRAY('7', "37"),
 
-    DARK_GRAY('8', "1;30"),
-    BLUE('9', "1;34"),
-    GREEN('a', "1;32"),
-    AQUA('b', "1;36"),
-    RED('c', "1;31"),
-    LIGHT_PURPLE('d', "1;35"),
-    YELLOW('e', "1;33"),
-    WHITE('f', "1;37");
+    DARK_GRAY('8', "90"),
+    BLUE('9', "94"),
+    GREEN('a', "92"),
+    AQUA('b', "96"),
+    RED('c', "91"),
+    LIGHT_PURPLE('d', "95"),
+    YELLOW('e', "93"),
+    WHITE('f', "97");
 
     public static final char MINECRAFT_BEGIN = '§';
     public static final String ANSI_ESCAPE = "\u001B[%sm";

@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.data.Data;
+import pe.chalk.takoyaki.data.Prefix;
 import pe.chalk.takoyaki.filter.ArticleFilter;
 import pe.chalk.takoyaki.filter.CommentaryFilter;
 import pe.chalk.takoyaki.filter.Filter;
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class Takoyaki {
+public class Takoyaki implements Prefix {
     private static Takoyaki instance = null;
 
     private JSONObject properties;
@@ -130,8 +131,17 @@ public class Takoyaki {
         return logger;
     }
 
-    public void tick() throws Exception {
-        this.provider.provide();
+    @Override
+    public String getPrefix(){
+        return "타코야키";
+    }
+
+    public void tick(){
+        try{
+            this.provider.provide();
+        }catch(IOException e){
+            this.logger.error(this, e.toString());
+        }
     }
 
     public static void main(String[] args){
