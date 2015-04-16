@@ -18,12 +18,10 @@ package pe.chalk.takoyaki.filter;
 
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import pe.chalk.takoyaki.data.SimpleArticle;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -38,18 +36,15 @@ public class CommentaryFilter extends Filter<SimpleArticle> {
 
     @Override
     public List<SimpleArticle> filter(Document document){
-        Elements elements = document.select("#recent-reply .ellipsis.tcol-c");
-        List<SimpleArticle> list = new ArrayList<>(10);
+        return document.select("#recent-reply .ellipsis.tcol-c").stream()
+                .map(element -> {
+                    String articleIdAttr = element.parent().attr("href");
 
-        for(Element element : elements){
-            String articleIdAttr = element.parent().attr("href");
+                    int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
+                    String title = element.text();
 
-            int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
-            String title = element.text();
-
-            list.add(new SimpleArticle(id, title));
-        }
-
-        return list;
+                    return new SimpleArticle(id, title);
+                })
+                .collect(Collectors.toList());
     }
 }

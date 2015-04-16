@@ -23,10 +23,10 @@ import org.jsoup.select.Elements;
 import pe.chalk.takoyaki.data.Article;
 import pe.chalk.takoyaki.data.Member;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -44,54 +44,50 @@ public class ArticleFilter extends Filter<Article> {
 
     @Override
     public List<Article> filter(Document document){
-        List<Article> list = new ArrayList<>(15);
-        Elements elements = document.select("form[name=ArticleList] tr[align=center]");
+        return document.select("form[name=ArticleList] tr[align=center]").stream()
+                .map(element -> {
+                    int articleId = Integer.parseInt(element.select(".m-tcol-c.list-count").first().text());
+                    int viewCount = Integer.parseInt(element.select(".view-count.m-tcol-c._rosReadcount").first().text());
 
-        for(Element element : elements){
-            int articleId = Integer.parseInt(element.select(".m-tcol-c.list-count").first().text());
-            int viewCount = Integer.parseInt(element.select(".view-count.m-tcol-c._rosReadcount").first().text());
+                    Elements countElements = element.select(".view-count.m-tcol-c");
+                    String uploadDate = countElements.get(0).text().trim();
 
-            Elements countElements = element.select(".view-count.m-tcol-c");
-            String uploadDate = countElements.get(0).text().trim();
+                    int recommendedCount = Integer.parseInt(countElements.get(1).text());
 
-            int recommendedCount = Integer.parseInt(countElements.get(1).text());
+                    boolean isQuestion = !element.select(".ico-q.m-tcol-p").isEmpty();
 
-            boolean isQuestion = !element.select(".ico-q.m-tcol-p").isEmpty();
+                    int commentCount = 0;
+                    Elements commentElem = element.select(".aaa a[href=#] strong");
+                    if(!commentElem.isEmpty()){
+                        commentCount = Integer.parseInt(commentElem.first().text());
+                    }
 
-            int commentCount = 0;
-            Elements commentElem = element.select(".aaa a[href=#] strong");
-            if(!commentElem.isEmpty()){
-                commentCount = Integer.parseInt(commentElem.first().text());
-            }
+                    String head = element.select(".head").text().trim();
+                    if(head.startsWith("[") && head.endsWith("]")){
+                        head = head.substring(1, head.length() - 1);
+                    }
+                    String title = element.select(".aaa a").first().text();
 
-            String head = element.select(".head").text().trim();
-            if(head.startsWith("[") && head.endsWith("]")){
-                head = head.substring(1, head.length() - 1);
-            }
-            String title = element.select(".aaa a").first().text();
+                    Element nicknameElement = element.select(".p-nick a[href=#]").first();
+                    String memberName = nicknameElement.child(0).text();
 
-            Element nicknameElement = element.select(".p-nick a[href=#]").first();
-            String memberName = nicknameElement.child(0).text();
+                    Element memberLevelElement = nicknameElement.select("img.mem-level").first();
+                    //TODO: url to valid member level value (0, 1, staff, manager etc)
 
-            Element memberLevelElement = nicknameElement.select("img.mem-level").first();
-            //TODO: url to valid member level value (0, 1, staff, manager etc)
+                    String memberId = null;
+                    Matcher memberIdMatcher = ArticleFilter.MEMBER_ID_PATTERN.matcher(nicknameElement.attr("onclick"));
+                    if(memberIdMatcher.find()){
+                        memberId = memberIdMatcher.group(1);
+                    }
 
-            String memberId = null;
-            Matcher memberIdMatcher = ArticleFilter.MEMBER_ID_PATTERN.matcher(nicknameElement.attr("onclick"));
-            if(memberIdMatcher.find()){
-                memberId = memberIdMatcher.group(1);
-            }
+                    int menuId = -1;
+                    Matcher menuIdMatcher = ArticleFilter.MENU_ID_PATTERN.matcher(nicknameElement.attr("onclick"));
+                    if(menuIdMatcher.find()){
+                        menuId = Integer.parseInt(menuIdMatcher.group(1));
+                    }
 
-            int menuId = -1;
-            Matcher menuIdMatcher = ArticleFilter.MENU_ID_PATTERN.matcher(nicknameElement.attr("onclick"));
-            if(menuIdMatcher.find()){
-                menuId = Integer.parseInt(menuIdMatcher.group(1));
-            }
-
-            Member writer = new Member(memberId, memberName);
-            list.add(new Article(articleId, title, writer, head, uploadDate, menuId, viewCount, commentCount, recommendedCount, isQuestion));
-        }
-
-        return list;
+                    Member writer = new Member(memberId, memberName);
+                    return new Article(articleId, title, writer, head, uploadDate, menuId, viewCount, commentCount, recommendedCount, isQuestion);
+                }).collect(Collectors.toList());
     }
 }

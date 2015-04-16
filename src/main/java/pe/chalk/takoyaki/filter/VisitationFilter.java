@@ -18,14 +18,12 @@ package pe.chalk.takoyaki.filter;
 
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import pe.chalk.takoyaki.data.Member;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -42,21 +40,17 @@ public class VisitationFilter extends Filter<Member> {
 
     @Override
     public List<Member> filter(Document document){
-        Elements elements = document.select("#first-visit-page [href=#]");
-        List<Member> list = new ArrayList<>(5);
+        return document.select("#first-visit-page [href=#]").stream()
+                .map(element -> {
+                    String id = null;
+                    String name = element.child(0).child(0).text();
 
-        for(Element element : elements){
-            String id = null;
-            String name = element.child(0).child(0).text();
+                    Matcher idMatcher = VisitationFilter.ID_PATTERN.matcher(element.attr("onclick"));
+                    if(idMatcher.find()){
+                        id = idMatcher.group(1);
+                    }
 
-            Matcher idMatcher = VisitationFilter.ID_PATTERN.matcher(element.attr("onclick"));
-            if(idMatcher.find()){
-                id = idMatcher.group(1);
-            }
-
-            list.add(new Member(id, name));
-        }
-
-        return list;
+                    return new Member(id, name);
+                }).collect(Collectors.toList());
     }
 }
