@@ -38,12 +38,14 @@ public class CommentaryFilter extends ContentFilter<SimpleArticle> {
     public List<SimpleArticle> filter(Document document){
         return document.select("#recent-reply .ellipsis.tcol-c").stream()
                 .map(element -> {
+                    String commentCountAttr = element.parent().attr("title");
                     String articleIdAttr = element.parent().attr("href");
 
+                    int commentCount = Integer.parseInt(commentCountAttr.substring(commentCountAttr.lastIndexOf("/") + 2));
                     int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
                     String title = element.text();
 
-                    return new SimpleArticle(id, title);
+                    return new SimpleArticle(id, title, commentCount);
                 })
                 .collect(Collectors.toList());
     }

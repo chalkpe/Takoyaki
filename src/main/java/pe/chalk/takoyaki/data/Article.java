@@ -30,13 +30,12 @@ public class Article extends SimpleArticle {
     private int menuId;
 
     private int viewCount;
-    private int commentCount;
     private int recommendedCount;
 
     private final boolean isQuestion;
 
     public Article(int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
-        super(id, title);
+        super(id, title, commentCount);
 
         this.writer = writer;
 
@@ -45,7 +44,6 @@ public class Article extends SimpleArticle {
         this.menuId = menuId;
 
         this.viewCount = viewCount;
-        this.commentCount = commentCount;
         this.recommendedCount = recommendedCount;
 
         this.isQuestion = isQuestion;
@@ -69,10 +67,6 @@ public class Article extends SimpleArticle {
 
     public int getViewCount(){
         return viewCount;
-    }
-
-    public int getCommentCount(){
-        return commentCount;
     }
 
     public int getRecommendedCount(){

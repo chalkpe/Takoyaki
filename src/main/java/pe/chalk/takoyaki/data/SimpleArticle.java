@@ -9,10 +9,12 @@ import pe.chalk.takoyaki.logger.ChatColor;
 public class SimpleArticle extends Data {
     private int id;
     private String title;
+    private int commentCount;
 
-    public SimpleArticle(int id, String title){
+    public SimpleArticle(int id, String title, int commentCount){
         this.id = id;
         this.title = title;
+        this.commentCount = commentCount;
     }
 
     public int getId(){
@@ -23,6 +25,10 @@ public class SimpleArticle extends Data {
         return this.title;
     }
 
+    public int getCommentCount(){
+        return this.commentCount;
+    }
+
     @Override
     public boolean equals(Object another){
         return another instanceof SimpleArticle && this.getId() == ((SimpleArticle) another).getId();
@@ -30,6 +36,6 @@ public class SimpleArticle extends Data {
 
     @Override
     public String toString(){
-        return ChatColor.GREEN + "[" + this.getId() + "] " + ChatColor.RESET + this.getTitle();
+        return ChatColor.GREEN + "[" + this.getId() + "] " + ChatColor.RESET + this.getTitle() + ChatColor.DARK_YELLOW + " [" + this.getCommentCount() + "]" + ChatColor.RESET;
     }
 }
