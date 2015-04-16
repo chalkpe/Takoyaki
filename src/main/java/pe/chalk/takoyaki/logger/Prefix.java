@@ -1,4 +1,4 @@
-package pe.chalk.takoyaki.data;
+package pe.chalk.takoyaki.logger;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>

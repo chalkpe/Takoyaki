@@ -1,7 +1,5 @@
 package pe.chalk.takoyaki.logger;
 
-import pe.chalk.takoyaki.data.Prefix;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

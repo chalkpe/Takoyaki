@@ -25,4 +25,9 @@ public class Menu extends Data {
     public String toString(){
         return "[" + this.getName() + "]";
     }
+
+    @Override
+    public boolean equals(Object another){
+        return another instanceof Menu && this.getId() == ((Menu) another).getId();
+    }
 }
