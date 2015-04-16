@@ -37,7 +37,7 @@ public abstract class Filter<T extends Data> implements Prefix {
 
     public Filter(JSONObject options){
         this.options = options;
-        this.prefix = options.getString("prefix");
+        this.prefix = options == null ? "" : options.getString("prefix");
     }
 
     public JSONObject getOptions(){
@@ -50,8 +50,18 @@ public abstract class Filter<T extends Data> implements Prefix {
 
     protected abstract List<T> filter(Document document);
 
-    public static String getName(){
-        return "filter";
+    public List<T> getFreshData(Document document){
+        List<T> rawData = this.filter(document);
+        List<T> freshData = new ArrayList<>();
+
+        int count = this.getFreshItemCount(rawData);
+        if(count > 0){
+            freshData.addAll(rawData.subList(0, count));
+            Collections.reverse(freshData);
+        }
+
+        this.lastData = rawData;
+        return freshData;
     }
 
     private int getFreshItemCount(List<T> data){
@@ -76,19 +86,5 @@ public abstract class Filter<T extends Data> implements Prefix {
             }
         }
         return 0;
-    }
-
-    public List<T> getFreshData(Document document){
-        List<T> rawData = this.filter(document);
-        List<T> freshData = new ArrayList<>();
-
-        int count = this.getFreshItemCount(rawData);
-        if(count > 0){
-            freshData.addAll(rawData.subList(0, count));
-            Collections.reverse(freshData);
-        }
-
-        this.lastData = rawData;
-        return freshData;
     }
 }

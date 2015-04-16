@@ -20,39 +20,39 @@ public abstract class Logger {
         print(ChatColor.DARK_GRAY, new Date(), "DEBUG", message);
     }
     public void debug(String prefix, String message){
-        debug(String.format("[%s] %s", prefix, message));
+        debug(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
     }
     public void debug(Prefix prefix, String message){
-        debug(prefix.getPrefix(), message);
+        debug(prefix == null ? message : prefix.getPrefix(), message);
     }
 
     public void info(String message){
         print(ChatColor.RESET, new Date(), "INFO", message);
     }
     public void info(String prefix, String message){
-        info(String.format("[%s] %s", prefix, message));
+        info(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
     }
     public void info(Prefix prefix, String message){
-        info(prefix.getPrefix(), message);
+        info(prefix == null ? message : prefix.getPrefix(), message);
     }
 
     public void warning(String message){
         print(ChatColor.YELLOW, new Date(), "WARNING", message);
     }
     public void warning(String prefix, String message){
-        warning(String.format("[%s] %s", prefix, message));
+        warning(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
     }
     public void warning(Prefix prefix, String message){
-        warning(prefix.getPrefix(), message);
+        warning(prefix == null ? message : prefix.getPrefix(), message);
     }
 
     public void error(String message){
         print(ChatColor.RED, new Date(), "ERROR", message);
     }
     public void error(String prefix, String message){
-        error(String.format("[%s] %s", prefix, message));
+        error(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
     }
     public void error(Prefix prefix, String message){
-        error(prefix.getPrefix(), message);
+        error(prefix == null ? message : prefix.getPrefix(), message);
     }
 }

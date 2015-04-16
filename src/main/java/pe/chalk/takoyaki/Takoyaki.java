@@ -23,9 +23,8 @@ import pe.chalk.takoyaki.logger.ConsoleLogger;
 import pe.chalk.takoyaki.logger.Logger;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
@@ -33,31 +32,45 @@ import java.util.stream.Collectors;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class Takoyaki extends Thread implements Prefix {
+public class Takoyaki implements Prefix {
     private static Takoyaki instance = null;
 
     private Target target;
     private Logger logger;
 
+    private boolean isAlive;
+
     public static Takoyaki getInstance(){
         return instance;
     }
 
-    public Takoyaki(JSONObject properties) throws JSONException, MalformedURLException {
-         this.init(properties);
+    public Takoyaki(JSONObject properties) throws JSONException, IOException {
+        this.logger = new ConsoleLogger();
+        this.target = new Target(this, properties.getJSONObject("target"));
+
+        this.isAlive = false;
     }
 
-    private void init(JSONObject properties) throws JSONException, MalformedURLException {
-        this.logger = new ConsoleLogger();
+    public Target getTarget(){
+        return this.target;
     }
 
     public Logger getLogger(){
         return this.logger;
     }
 
+    public boolean isAlive(){
+        return this.isAlive;
+    }
+
     @Override
     public String getPrefix(){
         return "타코야키";
+    }
+
+    public void start(){
+        this.isAlive = true;
+        this.getTarget().start();
     }
 
     public static void main(String[] args){
@@ -67,13 +80,11 @@ public class Takoyaki extends Thread implements Prefix {
         }
 
         try{
-            Path path = Paths.get(args[0]);
-            String raw = Files.lines(path).collect(Collectors.joining());
-            JSONObject properties = new JSONObject(raw);
+            String json = Files.lines(Paths.get(args[0]), Charset.forName("UTF-8")).collect(Collectors.joining());
 
-            Takoyaki.instance = new Takoyaki(properties);
+            Takoyaki.instance = new Takoyaki(new JSONObject(json));
             Takoyaki.instance.start();
-        }catch(IOException | JSONException e){
+        }catch(JSONException | IOException e){
             e.printStackTrace();
             System.exit(1);
         }

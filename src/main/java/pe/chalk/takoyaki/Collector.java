@@ -5,20 +5,20 @@ import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.filter.ContentFilter;
 import pe.chalk.takoyaki.filter.Filter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-12
  */
 public class Collector {
-    private ArrayList<Filter<? extends Data>> filters;
+    private List<Filter<? extends Data>> filters;
 
-    public Collector(ArrayList<Filter<? extends Data>> filters){
+    public Collector(List<Filter<? extends Data>> filters){
         this.filters = filters;
     }
 
-    public ArrayList<Filter<? extends Data>> getFilters(){
+    public List<Filter<? extends Data>> getFilters(){
         return this.filters;
     }
 
