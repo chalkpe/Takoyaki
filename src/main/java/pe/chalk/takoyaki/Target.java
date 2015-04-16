@@ -118,6 +118,15 @@ public class Target extends Thread implements Prefix {
         return this.menus;
     }
 
+    public Menu getMenu(int menuId){
+        for(Menu menu : this.getMenus()){
+            if(menu.getId() == menuId){
+                return menu;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String getPrefix(){
         return this.getName();
