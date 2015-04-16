@@ -16,12 +16,9 @@
 
 package pe.chalk.takoyaki;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pe.chalk.takoyaki.data.Data;
-import pe.chalk.takoyaki.data.Prefix;
-import pe.chalk.takoyaki.filter.*;
+import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.ConsoleLogger;
 import pe.chalk.takoyaki.logger.Logger;
 
@@ -30,117 +27,37 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class Takoyaki implements Prefix {
+public class Takoyaki extends Thread implements Prefix {
     private static Takoyaki instance = null;
 
-    private JSONObject properties;
-
-    private Provider provider;
-
+    private Target target;
     private Logger logger;
 
     public static Takoyaki getInstance(){
         return instance;
     }
 
-    private long interval;
-    private int timeout;
-
-    private boolean isAlive;
-
-    public Takoyaki(JSONObject properties){
-        this.properties = properties;
+    public Takoyaki(JSONObject properties) throws JSONException, MalformedURLException {
+         this.init(properties);
     }
 
-    public void init() throws JSONException, MalformedURLException {
-        this.interval = properties.getLong("interval");
-        this.timeout = properties.getInt("timeout");
-
-        JSONArray collectorsArray = properties.getJSONArray("collectors");
-        ArrayList<Collector> collectors = new ArrayList<>(collectorsArray.length());
-
-        for(int ci = 0; ci < collectorsArray.length(); ci++){
-            JSONObject collectorObject = collectorsArray.getJSONObject(ci);
-            Collector collector;
-
-            JSONArray filtersArray = collectorObject.getJSONArray("filters");
-            ArrayList<Filter<? extends Data>> filters = new ArrayList<>(filtersArray.length());
-            for(int fi = 0; fi < filtersArray.length(); fi++){
-                JSONObject filterObject = filtersArray.getJSONObject(fi);
-                JSONObject filterOptions = filterObject.getJSONObject("options");
-
-                switch(filterObject.getString("type").toLowerCase()){
-                    case VisitationFilter.NAME:
-                        filters.add(new VisitationFilter(filterOptions));
-                        break;
-                    case CommentaryFilter.NAME:
-                        filters.add(new CommentaryFilter(filterOptions));
-                        break;
-                    case ArticleFilter.NAME:
-                        filters.add(new ArticleFilter(filterOptions));
-                        break;
-                    case MenuFilter.NAME:
-                        filters.add(new MenuFilter(filterOptions));
-                        break;
-                    default:
-                        throw new IllegalArgumentException();
-                }
-            }
-
-            switch(collectorObject.getString("subscription").toLowerCase()){
-                case "article":
-                    collector = new Collector(Collector.Subscription.ARTICLE, filters);
-                    break;
-
-                case "widget":
-                    collector = new Collector(Collector.Subscription.WIDGET, filters);
-                    break;
-
-                default:
-                    throw new IllegalArgumentException();
-            }
-            collectors.add(collector);
-        }
-
+    private void init(JSONObject properties) throws JSONException, MalformedURLException {
         this.logger = new ConsoleLogger();
-        this.provider = new Provider(properties.getJSONObject("target"), collectors);
-        this.isAlive = true;
-    }
-
-    public long getInterval(){
-        return interval;
-    }
-
-    public int getTimeout(){
-        return timeout;
-    }
-
-    public boolean isAlive(){
-        return this.isAlive;
     }
 
     public Logger getLogger(){
-        return logger;
+        return this.logger;
     }
 
     @Override
     public String getPrefix(){
         return "타코야키";
-    }
-
-    public void tick(){
-        try{
-            this.provider.provide();
-        }catch(IOException e){
-            this.logger.error(this, e.toString());
-        }
     }
 
     public static void main(String[] args){
@@ -155,24 +72,10 @@ public class Takoyaki implements Prefix {
             JSONObject properties = new JSONObject(raw);
 
             Takoyaki.instance = new Takoyaki(properties);
-            Takoyaki.instance.init();
+            Takoyaki.instance.start();
         }catch(IOException | JSONException e){
             e.printStackTrace();
             System.exit(1);
         }
-
-        new Thread(){
-            @Override
-            public void run(){
-                while(Takoyaki.instance.isAlive()){
-                    try{
-                        Takoyaki.instance.tick();
-                        Thread.sleep(Takoyaki.instance.getInterval());
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
     }
 }

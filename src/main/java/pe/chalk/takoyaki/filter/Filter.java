@@ -19,6 +19,7 @@ package pe.chalk.takoyaki.filter;
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.data.*;
+import pe.chalk.takoyaki.logger.Prefix;
 
 import java.util.ArrayList;
 import java.util.Collections;

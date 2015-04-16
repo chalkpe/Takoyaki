@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-16
  */
-public class MenuFilter extends Filter<Menu> {
+public class MenuFilter extends ContentFilter<Menu> {
     public static final String NAME = "menu";
 
     public MenuFilter(JSONObject options){

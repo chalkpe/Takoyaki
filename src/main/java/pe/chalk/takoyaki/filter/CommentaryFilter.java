@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class CommentaryFilter extends Filter<SimpleArticle> {
+public class CommentaryFilter extends ContentFilter<SimpleArticle> {
     public static final String NAME = "commentary";
 
     public CommentaryFilter(JSONObject options){

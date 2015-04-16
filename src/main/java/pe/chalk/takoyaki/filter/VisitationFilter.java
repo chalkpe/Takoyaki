@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class VisitationFilter extends Filter<Member> {
+public class VisitationFilter extends ContentFilter<Member> {
     public static final String NAME = "visitation";
 
     private static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z_]+)'");
