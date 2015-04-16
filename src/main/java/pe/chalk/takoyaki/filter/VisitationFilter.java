@@ -23,6 +23,7 @@ import org.jsoup.select.Elements;
 import pe.chalk.takoyaki.data.Member;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,9 +41,9 @@ public class VisitationFilter extends Filter<Member> {
     }
 
     @Override
-    public ArrayList<Member> filter(Document document){
+    public List<Member> filter(Document document){
         Elements elements = document.select("#first-visit-page [href=#]");
-        ArrayList<Member> list = new ArrayList<>(5);
+        List<Member> list = new ArrayList<>(5);
 
         for(Element element : elements){
             String id = null;

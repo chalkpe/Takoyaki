@@ -22,6 +22,7 @@ import pe.chalk.takoyaki.data.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -31,7 +32,7 @@ public abstract class Filter<T extends Data> implements Prefix {
     private JSONObject options;
     private String prefix;
 
-    private ArrayList<T> lastData;
+    private List<T> lastData;
 
     public Filter(JSONObject options){
         this.options = options;
@@ -46,9 +47,13 @@ public abstract class Filter<T extends Data> implements Prefix {
         return this.prefix;
     }
 
-    protected abstract ArrayList<T> filter(Document document);
+    protected abstract List<T> filter(Document document);
 
-    private int getFreshItemCount(ArrayList<T> data){
+    public static String getName(){
+        return "filter";
+    }
+
+    private int getFreshItemCount(List<T> data){
         if(this.lastData == null || this.lastData.size() <= 0){
             return 0;
         }
@@ -72,9 +77,9 @@ public abstract class Filter<T extends Data> implements Prefix {
         return 0;
     }
 
-    public ArrayList<T> getFreshData(Document document){
-        ArrayList<T> rawData = this.filter(document);
-        ArrayList<T> freshData = new ArrayList<>();
+    public List<T> getFreshData(Document document){
+        List<T> rawData = this.filter(document);
+        List<T> freshData = new ArrayList<>();
 
         int count = this.getFreshItemCount(rawData);
         if(count > 0){

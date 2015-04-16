@@ -24,6 +24,7 @@ import pe.chalk.takoyaki.data.Article;
 import pe.chalk.takoyaki.data.Member;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,8 +43,8 @@ public class ArticleFilter extends Filter<Article> {
     }
 
     @Override
-    public ArrayList<Article> filter(Document document){
-        ArrayList<Article> list = new ArrayList<>(15);
+    public List<Article> filter(Document document){
+        List<Article> list = new ArrayList<>(15);
         Elements elements = document.select("form[name=ArticleList] tr[align=center]");
 
         for(Element element : elements){
@@ -71,6 +72,9 @@ public class ArticleFilter extends Filter<Article> {
 
             Element nicknameElement = element.select(".p-nick a[href=#]").first();
             String memberName = nicknameElement.child(0).text();
+
+            Element memberLevelElement = nicknameElement.select("img.mem-level").first();
+            //TODO: url to valid member level value (0, 1, staff, manager etc)
 
             String memberId = null;
             Matcher memberIdMatcher = ArticleFilter.MEMBER_ID_PATTERN.matcher(nicknameElement.attr("onclick"));

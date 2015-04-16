@@ -21,10 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Prefix;
-import pe.chalk.takoyaki.filter.ArticleFilter;
-import pe.chalk.takoyaki.filter.CommentaryFilter;
-import pe.chalk.takoyaki.filter.Filter;
-import pe.chalk.takoyaki.filter.VisitationFilter;
+import pe.chalk.takoyaki.filter.*;
 import pe.chalk.takoyaki.logger.ConsoleLogger;
 import pe.chalk.takoyaki.logger.Logger;
 
@@ -89,7 +86,9 @@ public class Takoyaki implements Prefix {
                     case ArticleFilter.NAME:
                         filters.add(new ArticleFilter(filterOptions));
                         break;
-
+                    case MenuFilter.NAME:
+                        filters.add(new MenuFilter(filterOptions));
+                        break;
                     default:
                         throw new IllegalArgumentException();
                 }

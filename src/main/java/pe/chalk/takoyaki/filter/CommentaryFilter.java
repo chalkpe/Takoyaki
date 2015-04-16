@@ -23,6 +23,7 @@ import org.jsoup.select.Elements;
 import pe.chalk.takoyaki.data.SimpleArticle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -36,9 +37,9 @@ public class CommentaryFilter extends Filter<SimpleArticle> {
     }
 
     @Override
-    public ArrayList<SimpleArticle> filter(Document document){
+    public List<SimpleArticle> filter(Document document){
         Elements elements = document.select("#recent-reply .ellipsis.tcol-c");
-        ArrayList<SimpleArticle> list = new ArrayList<>(10);
+        List<SimpleArticle> list = new ArrayList<>(10);
 
         for(Element element : elements){
             String articleIdAttr = element.parent().attr("href");
