@@ -25,7 +25,7 @@ public abstract class Logger implements Loggable {
         put(Level.INFO,     ChatColor.RESET.toString() + ChatColor.WHITE);
         put(Level.WARNING,  ChatColor.RESET.toString() + ChatColor.YELLOW);
         put(Level.CRITICAL, ChatColor.RESET.toString() + ChatColor.LIGHT_PURPLE);
-        put(Level.ERROR,    ChatColor.RESET.toString() + ChatColor.RED + ChatColor.UNDERLINE);
+        put(Level.ERROR,    ChatColor.RESET.toString() + ChatColor.RED);
     }};
 
     protected abstract void log(String message);

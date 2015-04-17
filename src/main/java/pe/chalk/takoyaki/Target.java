@@ -148,7 +148,9 @@ public class Target extends Thread implements Prefix {
                 Document articleDocument = Jsoup.parse(this.articleUrl, this.getTimeout());
 
                 this.collector.collect(contentDocument, articleDocument);
-            }catch(IOException | InterruptedException e){
+            }catch(IOException e){
+                this.getLogger().error(e.getMessage());
+            }catch(InterruptedException e){
                 e.printStackTrace();
             }
         }
