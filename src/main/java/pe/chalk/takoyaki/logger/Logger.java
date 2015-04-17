@@ -1,7 +1,10 @@
 package pe.chalk.takoyaki.logger;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -12,12 +15,12 @@ public abstract class Logger {
 
     protected abstract void log(String message);
 
-    protected void print(ChatColor mainColor, Date date, String prefix, String message){
-        log(String.format("%s[%s] [%s] %s", mainColor.toString(), Logger.SIMPLE_DATE_FORMAT.format(date), prefix, message));
+    protected void print(List<ChatColor> colors, Date date, String prefix, String message){
+        log(String.format("%s[%s] [%s] %s", String.join("", colors.stream().map(ChatColor::toString).collect(Collectors.toList())), Logger.SIMPLE_DATE_FORMAT.format(date), prefix, message));
     }
 
     public void debug(String message){
-        print(ChatColor.DARK_GRAY, new Date(), "DEBUG", message);
+        print(Arrays.asList(ChatColor.RESET, ChatColor.DARK_GRAY, ChatColor.ITALIC), new Date(), "DEBUG", message);
     }
     public void debug(String prefix, String message){
         debug(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
@@ -27,7 +30,7 @@ public abstract class Logger {
     }
 
     public void info(String message){
-        print(ChatColor.RESET, new Date(), "INFO", message);
+        print(Arrays.asList(ChatColor.RESET, ChatColor.WHITE), new Date(), "INFO", message);
     }
     public void info(String prefix, String message){
         info(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
@@ -37,7 +40,7 @@ public abstract class Logger {
     }
 
     public void warning(String message){
-        print(ChatColor.YELLOW, new Date(), "WARNING", message);
+        print(Arrays.asList(ChatColor.RESET, ChatColor.YELLOW), new Date(), "WARNING", message);
     }
     public void warning(String prefix, String message){
         warning(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
@@ -47,7 +50,7 @@ public abstract class Logger {
     }
 
     public void error(String message){
-        print(ChatColor.RED, new Date(), "ERROR", message);
+        print(Arrays.asList(ChatColor.RESET, ChatColor.RED, ChatColor.UNDERLINE), new Date(), "ERROR", message);
     }
     public void error(String prefix, String message){
         error(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));

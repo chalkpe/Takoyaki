@@ -7,6 +7,6 @@ package pe.chalk.takoyaki.logger;
 public class ConsoleLogger extends Logger {
     @Override
     protected void log(String message){
-        System.out.println(ChatColor.replaceToAnsi(message));
+        System.out.println(ChatColor.replaceTo(ChatColor.ReplaceType.ANSI, message));
     }
 }

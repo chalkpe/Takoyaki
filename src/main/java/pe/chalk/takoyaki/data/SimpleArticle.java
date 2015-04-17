@@ -36,6 +36,6 @@ public class SimpleArticle extends Data {
 
     @Override
     public String toString(){
-        return ChatColor.GREEN + "[" + this.getId() + "] " + ChatColor.RESET + this.getTitle() + ChatColor.DARK_YELLOW + " [" + this.getCommentCount() + "]" + ChatColor.RESET;
+        return ChatColor.GREEN + "[" + this.getId() + "] " + ChatColor.RESET + this.getTitle() + ChatColor.GOLD + " [" + this.getCommentCount() + "]" + ChatColor.RESET;
     }
 }

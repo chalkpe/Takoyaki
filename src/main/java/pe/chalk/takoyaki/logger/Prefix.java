@@ -5,5 +5,5 @@ package pe.chalk.takoyaki.logger;
  * @since 2015-04-15
  */
 public interface Prefix {
-    public String getPrefix();
+    String getPrefix();
 }
