@@ -1,61 +1,65 @@
 package pe.chalk.takoyaki.logger;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-14
  */
-public abstract class Logger {
+public abstract class Logger implements Loggable {
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+
+    public static Map<Level, String> prefixMap = new HashMap<Level, String>(){{
+        put(Level.DEBUG,    "DEBUG");
+        put(Level.INFO,     "INFO");
+        put(Level.WARNING,  "WARNING");
+        put(Level.CRITICAL, "CRITICAL");
+        put(Level.ERROR,    "ERROR");
+    }};
+
+    public static Map<Level, String> colorMap = new HashMap<Level, String>(){{
+        put(Level.DEBUG,    ChatColor.RESET.toString() + ChatColor.DARK_GRAY + ChatColor.ITALIC);
+        put(Level.INFO,     ChatColor.RESET.toString() + ChatColor.WHITE);
+        put(Level.WARNING,  ChatColor.RESET.toString() + ChatColor.YELLOW);
+        put(Level.CRITICAL, ChatColor.RESET.toString() + ChatColor.LIGHT_PURPLE);
+        put(Level.ERROR,    ChatColor.RESET.toString() + ChatColor.RED + ChatColor.UNDERLINE);
+    }};
 
     protected abstract void log(String message);
 
-    protected void print(List<ChatColor> colors, Date date, String prefix, String message){
-        log(String.format("%s[%s] [%s] %s", String.join("", colors.stream().map(ChatColor::toString).collect(Collectors.toList())), Logger.SIMPLE_DATE_FORMAT.format(date), prefix, message));
+    protected void print(Level level, String message, Date date){
+        log(String.format("%s[%s] [%s] %s", colorMap.get(level), Logger.SIMPLE_DATE_FORMAT.format(date == null ? new Date() : date), prefixMap.get(level), message));
     }
 
+    @Override
     public void debug(String message){
-        print(Arrays.asList(ChatColor.RESET, ChatColor.DARK_GRAY, ChatColor.ITALIC), new Date(), "DEBUG", message);
-    }
-    public void debug(String prefix, String message){
-        debug(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
-    }
-    public void debug(Prefix prefix, String message){
-        debug(prefix == null ? message : prefix.getPrefix(), message);
+        print(Level.DEBUG, message, null);
     }
 
+    @Override
     public void info(String message){
-        print(Arrays.asList(ChatColor.RESET, ChatColor.WHITE), new Date(), "INFO", message);
-    }
-    public void info(String prefix, String message){
-        info(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
-    }
-    public void info(Prefix prefix, String message){
-        info(prefix == null ? message : prefix.getPrefix(), message);
+        print(Level.INFO, message, null);
     }
 
+    @Override
     public void warning(String message){
-        print(Arrays.asList(ChatColor.RESET, ChatColor.YELLOW), new Date(), "WARNING", message);
-    }
-    public void warning(String prefix, String message){
-        warning(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
-    }
-    public void warning(Prefix prefix, String message){
-        warning(prefix == null ? message : prefix.getPrefix(), message);
+        print(Level.WARNING, message, null);
     }
 
+    @Override
+    public void critical(String message){
+        print(Level.CRITICAL, message, null);
+    }
+
+    @Override
     public void error(String message){
-        print(Arrays.asList(ChatColor.RESET, ChatColor.RED, ChatColor.UNDERLINE), new Date(), "ERROR", message);
+        print(Level.ERROR, message, null);
     }
-    public void error(String prefix, String message){
-        error(prefix == null || prefix.length() == 0 ? message : String.format("[%s] %s", prefix, message));
-    }
-    public void error(Prefix prefix, String message){
-        error(prefix == null ? message : prefix.getPrefix(), message);
+
+    public PrefixedLogger getPrefixed(Prefix prefix){
+        return new PrefixedLogger(this, prefix);
     }
 }

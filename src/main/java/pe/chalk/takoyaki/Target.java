@@ -9,6 +9,7 @@ import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Menu;
 import pe.chalk.takoyaki.filter.*;
 import pe.chalk.takoyaki.logger.Prefix;
+import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,6 +33,7 @@ public class Target extends Thread implements Prefix {
     private URL articleUrl;
 
     private Takoyaki takoyaki;
+    private PrefixedLogger logger;
 
     private long interval;
     private int timeout;
@@ -44,7 +46,7 @@ public class Target extends Thread implements Prefix {
 
     public Target(Takoyaki takoyaki, JSONObject jsonObject) throws JSONException, IOException {
         this.takoyaki = takoyaki;
-        this.address = jsonObject.getString("address");
+        this.logger = this.getTakoyaki().getLogger().getPrefixed(this);
 
         this.interval = jsonObject.getLong("interval");
         this.timeout = jsonObject.getInt("timeout");
@@ -59,13 +61,13 @@ public class Target extends Thread implements Prefix {
             Filter<? extends Data> filter;
             switch(filterObject.getString("type")){
                 case ArticleFilter.NAME:
-                    filter = new ArticleFilter(filterOptions);
+                    filter = new ArticleFilter(filterOptions, this.getLogger());
                     break;
                 case CommentaryFilter.NAME:
-                    filter = new CommentaryFilter(filterOptions);
+                    filter = new CommentaryFilter(filterOptions, this.getLogger());
                     break;
                 case VisitationFilter.NAME:
-                    filter = new VisitationFilter(filterOptions);
+                    filter = new VisitationFilter(filterOptions, this.getLogger());
                     break;
                 default:
                     continue;
@@ -74,28 +76,32 @@ public class Target extends Thread implements Prefix {
         }
         this.collector = new Collector(filters);
 
+        this.address = jsonObject.getString("address");
         this.contentUrl = new URL(String.format(STRING_CONTENT, this.getAddress()));
 
         Document contentDocument = Jsoup.parse(this.contentUrl, this.getTimeout());
-
         this.setName(contentDocument.select("h1.d-none").text());
-        this.menus = contentDocument.select("a[id^=menuLink]").stream()
-                .map(element -> new Menu(Integer.parseInt(element.id().substring(8)), element.text()))
-                .collect(Collectors.toList());
-
         Matcher clubIdMatcher = Target.PATTERN_CLUB_ID.matcher(contentDocument.head().getElementsByTag("script").first().html());
         if(!clubIdMatcher.find()){
             throw new JSONException("Cannot find menuId of " + this.getName());
         }
         this.clubId = Integer.parseInt(clubIdMatcher.group(1));
+        this.menus = contentDocument.select("a[id^=menuLink]").stream()
+                .map(element -> new Menu(Integer.parseInt(element.id().substring(8)), element.text()))
+                .collect(Collectors.toList());
+
         this.articleUrl = new URL(String.format(STRING_ARTICLE, this.getClubId()));
 
-        this.getTakoyaki().getLogger().debug(this, "ID: " + this.getClubId());
-        this.getTakoyaki().getLogger().debug(this, "게시판 수: " + this.getMenus().size() + "개\n");
+        this.getLogger().debug("ID: " + this.getClubId());
+        this.getLogger().debug("게시판 수: " + this.getMenus().size() + "개\n");
     }
 
     public Takoyaki getTakoyaki(){
         return this.takoyaki;
+    }
+
+    public PrefixedLogger getLogger(){
+        return this.logger;
     }
 
     public long getInterval(){

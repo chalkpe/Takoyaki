@@ -19,6 +19,7 @@ package pe.chalk.takoyaki.filter;
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.data.SimpleArticle;
+import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,8 +31,8 @@ import java.util.stream.Collectors;
 public class CommentaryFilter extends ContentFilter<SimpleArticle> {
     public static final String NAME = "commentary";
 
-    public CommentaryFilter(JSONObject options){
-        super(options);
+    public CommentaryFilter(JSONObject options, PrefixedLogger logger){
+        super(options, logger);
     }
 
     @Override

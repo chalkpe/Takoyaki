@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.data.*;
 import pe.chalk.takoyaki.logger.Prefix;
+import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,11 +34,14 @@ public abstract class Filter<T extends Data> implements Prefix {
     private JSONObject options;
     private String prefix;
 
+    private PrefixedLogger logger;
+
     private List<T> lastData;
 
-    public Filter(JSONObject options){
+    public Filter(JSONObject options, PrefixedLogger logger){
         this.options = options;
         this.prefix = options == null ? "" : options.getString("prefix");
+        this.logger = logger.sub(this);
     }
 
     public JSONObject getOptions(){
@@ -46,6 +50,10 @@ public abstract class Filter<T extends Data> implements Prefix {
 
     public String getPrefix(){
         return this.prefix;
+    }
+
+    public PrefixedLogger getLogger(){
+        return this.logger;
     }
 
     protected abstract List<T> filter(Document document);

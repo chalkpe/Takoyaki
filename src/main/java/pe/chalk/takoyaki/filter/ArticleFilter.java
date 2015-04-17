@@ -22,6 +22,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import pe.chalk.takoyaki.data.Article;
 import pe.chalk.takoyaki.data.Member;
+import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,8 +39,8 @@ public class ArticleFilter extends Filter<Article> {
     private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9_]+)',");
     private static final Pattern MENU_ID_PATTERN = Pattern.compile("'(\\d+)'\\);");
 
-    public ArticleFilter(JSONObject options){
-        super(options);
+    public ArticleFilter(JSONObject options, PrefixedLogger logger){
+        super(options, logger);
     }
 
     @Override

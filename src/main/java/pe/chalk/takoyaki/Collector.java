@@ -26,7 +26,7 @@ public class Collector {
         try{
             this.getFilters().forEach(filter -> {
                 Document document = filter instanceof ContentFilter ? contentDocument : articleDocument;
-                filter.getFreshData(document).forEach(data -> Takoyaki.getInstance().getLogger().info(filter, data.toString()));
+                filter.getFreshData(document).forEach(data -> filter.getLogger().info(data.toString()));
             });
         }catch(Exception e){
             e.printStackTrace();
