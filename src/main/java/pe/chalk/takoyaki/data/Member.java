@@ -16,6 +16,8 @@
 
 package pe.chalk.takoyaki.data;
 
+import pe.chalk.takoyaki.Target;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
@@ -26,7 +28,9 @@ public class Member extends Data {
     private String id;
     private String name;
 
-    public Member(String id, String name){
+    public Member(Target target, String id, String name){
+        super(target);
+
         this.id = id == null ? "" : id;
         this.name = name;
     }

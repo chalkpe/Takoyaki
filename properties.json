@@ -1,0 +1,44 @@
+{
+  "targets": [
+    {
+      "address": "minecraftpe",
+      "prefix": "M.K",
+      "interval": 2500,
+      "timeout": 1000,
+      "filters": [
+        {
+          "type": "article",
+          "prefix": "새글"
+        },
+        {
+          "type": "commentary",
+          "prefix": "덧글"
+        },
+        {
+          "type": "visitation",
+          "prefix": "방문"
+        }
+      ]
+    },
+    {
+      "address": "ourmcspace",
+      "prefix": "OMS",
+      "interval": 5000,
+      "timeout": 2000,
+      "filters": [
+        {
+          "type": "article",
+          "prefix": "새글"
+        },
+        {
+          "type": "commentary",
+          "prefix": "덧글"
+        },
+        {
+          "type": "visitation",
+          "prefix": "방문"
+        }
+      ]
+    }
+  ]
+}

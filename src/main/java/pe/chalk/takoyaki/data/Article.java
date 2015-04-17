@@ -17,6 +17,7 @@
 package pe.chalk.takoyaki.data;
 
 import pe.chalk.takoyaki.Takoyaki;
+import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.logger.ChatColor;
 
 /**
@@ -35,8 +36,8 @@ public class Article extends SimpleArticle {
 
     private final boolean isQuestion;
 
-    public Article(int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
-        super(id, title, commentCount);
+    public Article(Target target, int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
+        super(target, id, title, commentCount);
 
         this.writer = writer;
 
@@ -81,7 +82,7 @@ public class Article extends SimpleArticle {
     @Override
     public String toString(){
         return ChatColor.GREEN + "[" + this.getId() + "] " + ChatColor.RESET
-                + ChatColor.LIGHT_PURPLE + "[" + Takoyaki.getInstance().getTarget().getMenu(this.getMenuId()).getName() + "] " + ChatColor.RESET
+                + ChatColor.LIGHT_PURPLE + "[" + this.getTarget().getMenu(this.getMenuId()).getName() + "] " + ChatColor.RESET
                 + (this.isQuestion() ? ChatColor.LIGHT_PURPLE + "Q. " + ChatColor.RESET : "")
                 + (this.getHead() != null && this.getHead().length() > 0 ? ChatColor.LIGHT_PURPLE + "[" + this.getHead() + "] " + ChatColor.RESET : "")
                 + this.getTitle()

@@ -16,17 +16,24 @@
 
 package pe.chalk.takoyaki.data;
 
+import pe.chalk.takoyaki.Target;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
 public abstract class Data {
+    private final Target target;
     private final long creationTime;
 
-    public Data(){
+    public Data(Target target){
+        this.target = target;
         this.creationTime = System.currentTimeMillis();
     }
 
+    public Target getTarget(){
+        return this.target;
+    }
     public long getCreationTime(){
         return this.creationTime;
     }

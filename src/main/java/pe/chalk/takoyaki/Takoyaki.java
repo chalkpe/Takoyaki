@@ -16,6 +16,7 @@
 
 package pe.chalk.takoyaki;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.logger.Prefix;
@@ -26,6 +27,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +38,7 @@ import java.util.stream.Collectors;
 public class Takoyaki implements Prefix {
     private static Takoyaki instance = null;
 
-    private Target target;
+    private List<Target> targets;
     private Logger logger;
 
     private boolean isAlive;
@@ -46,13 +49,27 @@ public class Takoyaki implements Prefix {
 
     public Takoyaki(JSONObject properties) throws JSONException, IOException {
         this.logger = new ConsoleLogger();
-        this.target = new Target(this, properties.getJSONObject("target"));
+
+        JSONArray targetsArray = properties.getJSONArray("targets");
+        this.targets = new ArrayList<>(targetsArray.length());
+        for(int i = 0; i < targetsArray.length(); i++){
+            this.targets.add(new Target(this, targetsArray.getJSONObject(i)));
+        }
 
         this.isAlive = false;
     }
 
-    public Target getTarget(){
-        return this.target;
+    public List<Target> getTargets(){
+        return this.targets;
+    }
+
+    public Target getTarget(int clubId){
+        for(Target target : this.getTargets()){
+            if(target.getClubId() == clubId){
+                return target;
+            }
+        }
+        return null;
     }
 
     public Logger getLogger(){
@@ -70,7 +87,7 @@ public class Takoyaki implements Prefix {
 
     public void start(){
         this.isAlive = true;
-        this.getTarget().start();
+        this.getTargets().forEach(Target::start);
     }
 
     public static void main(String[] args){

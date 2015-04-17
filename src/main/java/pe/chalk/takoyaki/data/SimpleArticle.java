@@ -1,5 +1,6 @@
 package pe.chalk.takoyaki.data;
 
+import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.logger.ChatColor;
 
 /**
@@ -11,7 +12,9 @@ public class SimpleArticle extends Data {
     private String title;
     private int commentCount;
 
-    public SimpleArticle(int id, String title, int commentCount){
+    public SimpleArticle(Target target, int id, String title, int commentCount){
+        super(target);
+
         this.id = id;
         this.title = title;
         this.commentCount = commentCount;

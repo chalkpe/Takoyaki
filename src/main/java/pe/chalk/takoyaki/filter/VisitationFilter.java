@@ -18,8 +18,8 @@ package pe.chalk.takoyaki.filter;
 
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
+import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.data.Member;
-import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -35,8 +35,8 @@ public class VisitationFilter extends ContentFilter<Member> {
 
     private static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z_]+)'");
 
-    public VisitationFilter(JSONObject options, PrefixedLogger logger){
-        super(options, logger);
+    public VisitationFilter(Target target, JSONObject jsonObject){
+        super(target, jsonObject);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class VisitationFilter extends ContentFilter<Member> {
                         id = idMatcher.group(1);
                     }
 
-                    return new Member(id, name);
+                    return new Member(this.getTarget(), id, name);
                 }).collect(Collectors.toList());
     }
 }

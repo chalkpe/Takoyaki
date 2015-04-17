@@ -18,6 +18,7 @@ package pe.chalk.takoyaki.filter;
 
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
+import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.data.*;
 import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
@@ -31,21 +32,20 @@ import java.util.List;
  * @since 2015-04-07
  */
 public abstract class Filter<T extends Data> implements Prefix {
-    private JSONObject options;
+    private Target target;
     private String prefix;
-
     private PrefixedLogger logger;
 
     private List<T> lastData;
 
-    public Filter(JSONObject options, PrefixedLogger logger){
-        this.options = options;
-        this.prefix = options == null ? "" : options.getString("prefix");
-        this.logger = logger.sub(this);
+    public Filter(Target target, JSONObject jsonObject){
+        this.target = target;
+        this.prefix = jsonObject == null ? "" : jsonObject.getString("prefix");
+        this.logger = target.getLogger().sub(this);
     }
 
-    public JSONObject getOptions(){
-        return this.options;
+    public Target getTarget(){
+        return this.target;
     }
 
     public String getPrefix(){

@@ -20,9 +20,9 @@ import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.data.Article;
 import pe.chalk.takoyaki.data.Member;
-import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,8 +39,8 @@ public class ArticleFilter extends Filter<Article> {
     private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9_]+)',");
     private static final Pattern MENU_ID_PATTERN = Pattern.compile("'(\\d+)'\\);");
 
-    public ArticleFilter(JSONObject options, PrefixedLogger logger){
-        super(options, logger);
+    public ArticleFilter(Target target, JSONObject jsonObject){
+        super(target, jsonObject);
     }
 
     @Override
@@ -87,8 +87,8 @@ public class ArticleFilter extends Filter<Article> {
                         menuId = Integer.parseInt(menuIdMatcher.group(1));
                     }
 
-                    Member writer = new Member(memberId, memberName);
-                    return new Article(articleId, title, writer, head, uploadDate, menuId, viewCount, commentCount, recommendedCount, isQuestion);
+                    Member writer = new Member(this.getTarget(), memberId, memberName);
+                    return new Article(this.getTarget(), articleId, title, writer, head, uploadDate, menuId, viewCount, commentCount, recommendedCount, isQuestion);
                 }).collect(Collectors.toList());
     }
 }

@@ -33,6 +33,7 @@ public class Target extends Thread implements Prefix {
     private URL articleUrl;
 
     private Takoyaki takoyaki;
+    private String prefix;
     private PrefixedLogger logger;
 
     private long interval;
@@ -46,6 +47,7 @@ public class Target extends Thread implements Prefix {
 
     public Target(Takoyaki takoyaki, JSONObject jsonObject) throws JSONException, IOException {
         this.takoyaki = takoyaki;
+        this.prefix = jsonObject.getString("prefix");
         this.logger = this.getTakoyaki().getLogger().getPrefixed(this);
 
         this.interval = jsonObject.getLong("interval");
@@ -56,18 +58,17 @@ public class Target extends Thread implements Prefix {
 
         for(int i = 0; i < filtersArray.length(); i++){
             JSONObject filterObject = filtersArray.getJSONObject(i);
-            JSONObject filterOptions = filterObject.getJSONObject("options");
 
             Filter<? extends Data> filter;
             switch(filterObject.getString("type")){
                 case ArticleFilter.NAME:
-                    filter = new ArticleFilter(filterOptions, this.getLogger());
+                    filter = new ArticleFilter(this, filterObject);
                     break;
                 case CommentaryFilter.NAME:
-                    filter = new CommentaryFilter(filterOptions, this.getLogger());
+                    filter = new CommentaryFilter(this, filterObject);
                     break;
                 case VisitationFilter.NAME:
-                    filter = new VisitationFilter(filterOptions, this.getLogger());
+                    filter = new VisitationFilter(this, filterObject);
                     break;
                 default:
                     continue;
@@ -87,12 +88,12 @@ public class Target extends Thread implements Prefix {
         }
         this.clubId = Integer.parseInt(clubIdMatcher.group(1));
         this.menus = contentDocument.select("a[id^=menuLink]").stream()
-                .map(element -> new Menu(Integer.parseInt(element.id().substring(8)), element.text()))
+                .map(element -> new Menu(this, Integer.parseInt(element.id().substring(8)), element.text()))
                 .collect(Collectors.toList());
 
         this.articleUrl = new URL(String.format(STRING_ARTICLE, this.getClubId()));
 
-        this.getLogger().debug("ID: " + this.getClubId());
+        this.getLogger().debug("카페명: " + this.getName() + " (ID: " + this.getClubId() + ")");
         this.getLogger().debug("게시판 수: " + this.getMenus().size() + "개\n");
     }
 
@@ -135,7 +136,7 @@ public class Target extends Thread implements Prefix {
 
     @Override
     public String getPrefix(){
-        return this.getName();
+        return this.prefix;
     }
 
     @Override

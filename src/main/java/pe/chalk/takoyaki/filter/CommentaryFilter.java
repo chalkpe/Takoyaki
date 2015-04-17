@@ -18,8 +18,8 @@ package pe.chalk.takoyaki.filter;
 
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
+import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.data.SimpleArticle;
-import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 public class CommentaryFilter extends ContentFilter<SimpleArticle> {
     public static final String NAME = "commentary";
 
-    public CommentaryFilter(JSONObject options, PrefixedLogger logger){
-        super(options, logger);
+    public CommentaryFilter(Target target, JSONObject jsonObject){
+        super(target, jsonObject);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class CommentaryFilter extends ContentFilter<SimpleArticle> {
                     int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
                     String title = element.text();
 
-                    return new SimpleArticle(id, title, commentCount);
+                    return new SimpleArticle(this.getTarget(), id, title, commentCount);
                 })
                 .collect(Collectors.toList());
     }
