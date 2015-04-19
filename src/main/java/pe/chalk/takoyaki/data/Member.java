@@ -18,6 +18,9 @@ package pe.chalk.takoyaki.data;
 
 import pe.chalk.takoyaki.Target;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
@@ -41,6 +44,15 @@ public class Member extends Data {
 
     public String getName(){
         return this.name;
+    }
+
+    public InternetAddress getInternetAddress(){
+        try{
+            return new InternetAddress(this.getId() + "@naver.com");
+        }catch(AddressException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

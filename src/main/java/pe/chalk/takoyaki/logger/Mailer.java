@@ -1,8 +1,10 @@
 package pe.chalk.takoyaki.logger;
 
 import pe.chalk.takoyaki.Takoyaki;
+import pe.chalk.takoyaki.data.Member;
 
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -15,7 +17,7 @@ import java.util.Properties;
  * @since 2015-04-19
  */
 public class Mailer {
-    public static void send(String username, String password, String subject, String body, List<InternetAddress> recipients){
+    public static void send(String username, String password, String subject, String body, List<Member> recipients){
         new Thread(() -> {
             //properties 설정
             Properties props = new Properties();
@@ -38,8 +40,8 @@ public class Mailer {
 
                 recipients.forEach(recipient -> {
                     try{
-                        msg.addRecipient(Message.RecipientType.TO, recipient);
-                    }catch(Exception e){
+                        msg.addRecipient(Message.RecipientType.TO, recipient.getInternetAddress());
+                    }catch(MessagingException e){
                         Takoyaki.getInstance().getLogger().error(e.getMessage());
                     }
                 });
