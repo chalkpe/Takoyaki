@@ -6,11 +6,3 @@
 function onInit(name){
     logger.info("Hello, my name is " + name);
 }
-
-function onDataUpdated(filter, array){
-    for(var i = 0; i < array.length; i++){
-        if(array[i] instanceof Packages.pe.chalk.takoyaki.data.Member){
-            logger.info(array[i].getId());
-        }
-    }
-}

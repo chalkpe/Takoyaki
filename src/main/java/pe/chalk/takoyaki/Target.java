@@ -13,7 +13,11 @@ import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,6 +94,12 @@ public class Target extends Thread implements Prefix {
         this.menus = contentDocument.select("a[id^=menuLink]").stream()
                 .map(element -> new Menu(this, Integer.parseInt(element.id().substring(8)), element.text()))
                 .collect(Collectors.toList());
+
+        String[] strings = new String[this.menus.size()];
+        for(int i = 0; i < this.menus.size(); i++){
+            strings[i] = this.menus.get(i).toString();
+        }
+        Files.write(Paths.get(this.getAddress() + "-menus.json"), new JSONArray(strings).toString(4).getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 
         this.articleUrl = new URL(String.format(STRING_ARTICLE, this.getClubId()));
 
