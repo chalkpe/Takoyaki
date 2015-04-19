@@ -19,10 +19,13 @@ package pe.chalk.takoyaki;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mozilla.javascript.*;
 import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.ConsoleLogger;
 import pe.chalk.takoyaki.logger.Logger;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -39,6 +42,7 @@ public class Takoyaki implements Prefix {
     private static Takoyaki instance = null;
 
     private List<Target> targets;
+    private List<Plugin> plugins;
     private Logger logger;
 
     private boolean isAlive;
@@ -56,6 +60,37 @@ public class Takoyaki implements Prefix {
             this.targets.add(new Target(this, targetsArray.getJSONObject(i)));
         }
 
+        File pluginDirectory = new File("plugins");
+        if(!pluginDirectory.exists()){
+            if(pluginDirectory.mkdir()){
+                this.getLogger().debug("created plugin directory");
+            }
+        }
+
+        File[] pluginFiles = pluginDirectory.listFiles(file -> file.getName().endsWith(".js"));
+        if(pluginFiles != null){
+            this.plugins = new ArrayList<>(pluginFiles.length);
+            for(File pluginFile : pluginFiles){
+                String name = pluginFile.getName().substring(0, pluginFile.getName().lastIndexOf("."));
+                Context context = Context.enter();
+                try{
+                    Scriptable scriptable = new ImporterTopLevel(context);
+                    context.evaluateReader(scriptable, new FileReader(pluginFile), name, 0, null);
+
+                    Plugin plugin = new Plugin(name, scriptable);
+                    ScriptableObject.putProperty(scriptable, "logger", this.getLogger().getPrefixed(plugin));
+
+                    this.getLogger().debug("플러그인 " + name + "을(를) 불러왔습니다");
+                    this.plugins.add(plugin);
+                }catch(JavaScriptException | IOException e){
+                    this.getLogger().error(e.getMessage());
+                }finally{
+                    Context.exit();
+                }
+            }
+            this.plugins.forEach(plugin -> plugin.call("onCreate", new Object[]{plugin.getName()}));
+        }
+
         this.isAlive = false;
     }
 
@@ -70,6 +105,10 @@ public class Takoyaki implements Prefix {
             }
         }
         return null;
+    }
+
+    public List<Plugin> getPlugins(){
+        return this.plugins;
     }
 
     public Logger getLogger(){

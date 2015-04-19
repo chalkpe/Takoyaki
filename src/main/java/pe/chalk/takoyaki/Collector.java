@@ -26,7 +26,10 @@ public class Collector {
         try{
             this.getFilters().forEach(filter -> {
                 Document document = filter instanceof ContentFilter ? contentDocument : articleDocument;
-                filter.getFreshData(document).forEach(data -> filter.getLogger().info(data.toString()));
+                List<? extends Data> freshData = filter.getFreshData(document);
+                freshData.forEach(data -> filter.getLogger().info(data.toString()));
+
+                Takoyaki.getInstance().getPlugins().forEach(plugin -> plugin.call("onDataUpdated", new Object[]{filter, freshData.toArray()}));
             });
         }catch(Exception e){
             e.printStackTrace();
