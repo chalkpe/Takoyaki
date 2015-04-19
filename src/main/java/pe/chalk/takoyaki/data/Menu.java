@@ -27,7 +27,7 @@ public class Menu extends Data {
 
     @Override
     public String toString(){
-        return "[" + this.getName() + "#" + this.getId() + "]";
+        return "[" + this.getId() + "#" + this.getName() + "]";
     }
 
     @Override
