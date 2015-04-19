@@ -22,7 +22,7 @@
     },
     {
       "address": "ourmcspace",
-      "prefix": "OMS",
+      "prefix": "PMC",
       "interval": 5000,
       "timeout": 2000,
       "filters": [
