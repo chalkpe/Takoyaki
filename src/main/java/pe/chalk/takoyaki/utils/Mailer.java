@@ -1,6 +1,7 @@
 package pe.chalk.takoyaki.utils;
 
 import pe.chalk.takoyaki.Takoyaki;
+import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Member;
 import pe.chalk.takoyaki.data.Violation;
 import pe.chalk.takoyaki.logger.Logger;
@@ -11,6 +12,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -197,7 +199,7 @@ public class Mailer {
                 transport.sendMessage(message, message.getAllRecipients());
                 transport.close();
 
-                Takoyaki.getInstance().getLogger().debug("메일이 성공적으로 발송되었습니다!");
+                Takoyaki.getInstance().getLogger().debug(subject + " 메일이 성공적으로 발송되었습니다!");
             }catch(Exception e){
                 Takoyaki.getInstance().getLogger().error(e.getMessage());
             }
@@ -210,8 +212,9 @@ public class Mailer {
 
     public static void sendViolation(Violation violation, Object[] recipients){
         String subject = violation.getName();
-        String body = String.format("%s%n%n사유: %s%n수준: %s%n작성자: %s", violation.getViolation(), violation.getName(), violation.getLevel(), violation.getViolator());
+        String body = String.format("%s%n%n사유: %s%n수준: %s%n작성자: %s", String.join(String.format("%n"), Arrays.asList(violation.getViolations()).stream().map(Data::toString).collect(Collectors.toList())), violation.getName(), violation.getLevel(), violation.getViolator());
 
+        Takoyaki.getInstance().getLogger().warning(String.format("[%s] %s%n%s", violation.getPrefix(), subject, body));
         sendMail(violation.getPrefix(), subject, body, recipients);
     }
 

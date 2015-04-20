@@ -78,12 +78,16 @@ public class Article extends SimpleArticle {
         return isQuestion;
     }
 
+    public boolean hasHead(){
+        return this.getHead() != null && this.getHead().length() > 0;
+    }
+
     @Override
     public String toString(){
         return ChatColor.GREEN + "[" + this.getId() + "] " + ChatColor.RESET
                 + ChatColor.LIGHT_PURPLE + "[" + this.getTarget().getMenu(this.getMenuId()).getName() + "] " + ChatColor.RESET
                 + (this.isQuestion() ? ChatColor.LIGHT_PURPLE + "Q. " + ChatColor.RESET : "")
-                + (this.getHead() != null && this.getHead().length() > 0 ? ChatColor.LIGHT_PURPLE + "[" + this.getHead() + "] " + ChatColor.RESET : "")
+                + (this.hasHead() ? ChatColor.LIGHT_PURPLE + "[" + this.getHead() + "] " + ChatColor.RESET : "")
                 + this.getTitle()
                 + ChatColor.DARK_AQUA + " by " + this.getWriter().toString() + ChatColor.GOLD + " at " + this.getUploadDate() + ChatColor.RESET;
     }

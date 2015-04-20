@@ -43,16 +43,16 @@ public class Violation extends Data implements Prefix {
     private Level level;
 
     private Member violator;
-    private Data violation;
+    private Data[] violations;
 
-    public Violation(Target target, String name, Level level, Member violator, Data violation){
+    public Violation(Target target, String name, Level level, Member violator, Data[] violations){
         super(target);
 
         this.name = name;
         this.level = level;
 
         this.violator = violator;
-        this.violation = violation;
+        this.violations = violations;
     }
 
     public String getName(){
@@ -67,8 +67,8 @@ public class Violation extends Data implements Prefix {
         return this.violator;
     }
 
-    public Data getViolation(){
-        return this.violation;
+    public Data[] getViolations(){
+        return this.violations;
     }
 
     @Override
