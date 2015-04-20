@@ -33,23 +33,17 @@ import java.util.List;
  */
 public abstract class Filter<T extends Data> implements Prefix {
     private Target target;
-    private String prefix;
     private PrefixedLogger logger;
 
     private List<T> lastData;
 
     public Filter(Target target, JSONObject jsonObject){
         this.target = target;
-        this.prefix = jsonObject == null ? "" : jsonObject.getString("prefix");
         this.logger = target.getLogger().sub(this);
     }
 
     public Target getTarget(){
         return this.target;
-    }
-
-    public String getPrefix(){
-        return this.prefix;
     }
 
     public PrefixedLogger getLogger(){

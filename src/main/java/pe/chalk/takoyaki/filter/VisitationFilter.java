@@ -38,6 +38,11 @@ public class VisitationFilter extends ContentFilter<Member> {
     public VisitationFilter(Target target, JSONObject jsonObject){
         super(target, jsonObject);
     }
+    
+    @Override
+    public String getPrefix(){
+        return "방문";
+    }
 
     @Override
     public List<Member> filter(Document document){

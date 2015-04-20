@@ -42,6 +42,11 @@ public class ArticleFilter extends Filter<Article> {
     public ArticleFilter(Target target, JSONObject jsonObject){
         super(target, jsonObject);
     }
+    
+    @Override
+    public String getPrefix(){
+        return "새글";
+    }
 
     @Override
     public List<Article> filter(Document document){

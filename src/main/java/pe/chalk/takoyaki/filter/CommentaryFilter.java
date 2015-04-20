@@ -34,6 +34,11 @@ public class CommentaryFilter extends ContentFilter<SimpleArticle> {
     public CommentaryFilter(Target target, JSONObject jsonObject){
         super(target, jsonObject);
     }
+    
+    @Override
+    public String getPrefix(){
+        return "덧글";
+    }
 
     @Override
     public List<SimpleArticle> filter(Document document){
