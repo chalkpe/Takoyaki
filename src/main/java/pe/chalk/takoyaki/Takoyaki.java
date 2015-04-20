@@ -54,6 +54,7 @@ public class Takoyaki implements Prefix {
     }
 
     public Takoyaki(JSONObject properties) throws JSONException, IOException {
+        Takoyaki.instance = this;
         this.logger = new ConsoleLogger();
 
         JSONArray targetsArray = properties.getJSONArray("targets");
@@ -140,8 +141,7 @@ public class Takoyaki implements Prefix {
         try{
             String json = Files.lines(Paths.get(args[0]), Charset.forName("UTF-8")).collect(Collectors.joining());
 
-            Takoyaki.instance = new Takoyaki(new JSONObject(json));
-            Takoyaki.instance.start();
+            new Takoyaki(new JSONObject(json)).start();
         }catch(JSONException | IOException e){
             e.printStackTrace();
             System.exit(1);

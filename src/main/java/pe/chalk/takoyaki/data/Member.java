@@ -31,7 +31,7 @@ public class Member extends Data {
     private String id;
     private String name;
 
-    public Member(Target target, String id, String name){
+    public Member(Target target, String name, String id){
         super(target);
 
         this.id = id == null ? "" : id;

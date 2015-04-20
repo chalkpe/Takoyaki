@@ -5,10 +5,7 @@ import pe.chalk.takoyaki.data.Member;
 import pe.chalk.takoyaki.data.Violation;
 import pe.chalk.takoyaki.logger.Logger;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
@@ -159,7 +156,7 @@ public class Mailer {
             "</table>";
 
 
-    public static void send(String subject, String body, InternetAddress[] recipients){
+    public static void send(String subject, String body, Object[] recipients){
         new Thread(() -> {
             if(Mailer.PASSWORD == null){
                 throw new IllegalStateException("Mailer.PASSWORD must not be null");
@@ -182,7 +179,15 @@ public class Mailer {
                 }
 
                 try{
-                    message.addRecipients(Message.RecipientType.TO, recipients);
+                    for(Object recipient : recipients){
+                        if(recipient instanceof Address){
+                            message.addRecipient(Message.RecipientType.TO, (Address) recipient);
+                        }else if(recipient instanceof Member){
+                            message.addRecipient(Message.RecipientType.TO, ((Member) recipient).getInternetAddress());
+                        }else if(recipient instanceof String){
+                            message.addRecipient(Message.RecipientType.TO, new InternetAddress((String) recipient));
+                        }
+                    }
                 }catch(MessagingException e){
                     Takoyaki.getInstance().getLogger().error(e.getMessage());
                 }
@@ -199,15 +204,11 @@ public class Mailer {
         }).start();
     }
 
-    public static void send(String subject, String body, Member[] recipients){
-        send(subject, body, Arrays.asList(recipients).stream().map(Member::getInternetAddress).toArray(InternetAddress[]::new));
-    }
-
-    public static void sendMail(String prefix, String subject, String body, Member[] recipients){
+    public static void sendMail(String prefix, String subject, String body, Object[] recipients){
         send(String.format("[%s] [%s] %s", Takoyaki.getInstance().getPrefix(), prefix, subject), String.format(Mailer.FORMAT_HTML, body, Mailer.getFooter()).replaceAll(String.format("%n"), "<br>"), recipients);
     }
 
-    public static void sendViolation(Violation violation, Member[] recipients){
+    public static void sendViolation(Violation violation, Object[] recipients){
         String subject = violation.getName();
         String body = String.format("%s%n%n사유: %s%n수준: %s%n작성자: %s", violation.getViolation(), violation.getName(), violation.getLevel(), violation.getViolator());
 

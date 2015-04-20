@@ -55,7 +55,7 @@ public class VisitationFilter extends ContentFilter<Member> {
                         id = idMatcher.group(1);
                     }
 
-                    return new Member(this.getTarget(), id, name);
+                    return new Member(this.getTarget(), name, id);
                 }).collect(Collectors.toList());
     }
 }
