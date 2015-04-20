@@ -85,7 +85,7 @@ public class Target extends Thread implements Prefix {
         this.setName(contentDocument.select("h1.d-none").text());
         Matcher clubIdMatcher = Target.PATTERN_CLUB_ID.matcher(contentDocument.head().getElementsByTag("script").first().html());
         if(!clubIdMatcher.find()){
-            throw new JSONException("Cannot find menuId of " + this.getName());
+            throw new IllegalArgumentException("Cannot find menuId of " + this.getName());
         }
         this.clubId = Integer.parseInt(clubIdMatcher.group(1));
         this.menus = contentDocument.select("a[id^=menuLink]").stream()
