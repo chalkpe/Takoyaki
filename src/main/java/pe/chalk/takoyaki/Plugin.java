@@ -46,6 +46,6 @@ public class Plugin implements Prefix {
 
     @Override
     public String getPrefix(){
-        return "#" + this.getName();
+        return this.getName();
     }
 }

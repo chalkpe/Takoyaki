@@ -1,5 +1,7 @@
 package pe.chalk.takoyaki.logger;
 
+import pe.chalk.takoyaki.utils.ChatColor;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-15

@@ -16,9 +16,8 @@
 
 package pe.chalk.takoyaki.data;
 
-import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.Target;
-import pe.chalk.takoyaki.logger.ChatColor;
+import pe.chalk.takoyaki.utils.ChatColor;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>

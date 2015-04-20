@@ -1,4 +1,4 @@
-package pe.chalk.takoyaki.logger;
+package pe.chalk.takoyaki.utils;
 
 import java.util.regex.Pattern;
 

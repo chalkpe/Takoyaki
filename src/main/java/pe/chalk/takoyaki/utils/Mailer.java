@@ -1,5 +1,6 @@
-package pe.chalk.takoyaki;
+package pe.chalk.takoyaki.utils;
 
+import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.data.Member;
 
 import javax.mail.Message;
@@ -8,7 +9,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -155,40 +156,37 @@ public class Mailer {
             "</table>";
 
 
-    public static void send(String subject, String body, List<Member> recipients){
+    public static void send(String subject, String body, InternetAddress[] recipients){
         new Thread(() -> {
             if(Mailer.PASSWORD == null){
                 throw new IllegalStateException("Mailer.PASSWORD must not be null");
             }
 
-            Properties props = new Properties();
-            props.put("mail.smtps.auth", "true");
+            Properties properties = new Properties();
+            properties.put("mail.smtps.auth", "true");
 
-            Session session = Session.getDefaultInstance(props);
-            MimeMessage msg = new MimeMessage(session);
+            Session session = Session.getDefaultInstance(properties);
+            MimeMessage message = new MimeMessage(session);
 
             try{
-                msg.setSubject(subject);
-                msg.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-                msg.setContent(body, "text/html; charset=utf-8");
-                msg.setFrom(new InternetAddress(Mailer.USERNAME));
+                message.setSubject(subject);
+                message.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
+                message.setContent(body, "text/html; charset=\"utf-8\"");
+                message.setFrom(new InternetAddress(Mailer.USERNAME));
 
                 if(recipients == null){
                     throw new IllegalArgumentException("recipients must not be null");
                 }
 
-                recipients.forEach(recipient -> {
-                    try{
-                        msg.addRecipient(Message.RecipientType.TO, recipient.getInternetAddress());
-                    }catch(MessagingException e){
-                        Takoyaki.getInstance().getLogger().error(e.getMessage());
-                    }
-                });
+                try{
+                    message.addRecipients(Message.RecipientType.TO, recipients);
+                }catch(MessagingException e){
+                    Takoyaki.getInstance().getLogger().error(e.getMessage());
+                }
 
-                // 발송 처리
                 Transport transport = session.getTransport("smtps");
                 transport.connect("smtp.gmail.com", Mailer.USERNAME, Mailer.PASSWORD);
-                transport.sendMessage(msg, msg.getAllRecipients());
+                transport.sendMessage(message, message.getAllRecipients());
                 transport.close();
 
                 Takoyaki.getInstance().getLogger().debug("메일이 성공적으로 발송되었습니다!");
@@ -196,5 +194,9 @@ public class Mailer {
                 Takoyaki.getInstance().getLogger().error(e.getMessage());
             }
         }).start();
+    }
+
+    public static void send(String subject, String body, Member[] recipients){
+        send(subject, body, Arrays.asList(recipients).stream().map(Member::getInternetAddress).toArray(InternetAddress[]::new));
     }
 }

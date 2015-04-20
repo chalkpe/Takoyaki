@@ -1,5 +1,7 @@
 package pe.chalk.takoyaki.logger;
 
+import pe.chalk.takoyaki.utils.ChatColor;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
