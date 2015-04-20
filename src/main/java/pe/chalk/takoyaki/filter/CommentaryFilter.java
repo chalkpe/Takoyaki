@@ -16,7 +16,6 @@
 
 package pe.chalk.takoyaki.filter;
 
-import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.data.SimpleArticle;
@@ -31,8 +30,8 @@ import java.util.stream.Collectors;
 public class CommentaryFilter extends ContentFilter<SimpleArticle> {
     public static final String NAME = "commentary";
 
-    public CommentaryFilter(Target target, JSONObject jsonObject){
-        super(target, jsonObject);
+    public CommentaryFilter(Target target){
+        super(target);
     }
     
     @Override

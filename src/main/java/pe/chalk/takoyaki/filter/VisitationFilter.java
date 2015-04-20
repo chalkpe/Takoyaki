@@ -16,7 +16,6 @@
 
 package pe.chalk.takoyaki.filter;
 
-import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.data.Member;
@@ -35,8 +34,8 @@ public class VisitationFilter extends ContentFilter<Member> {
 
     private static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z_]+)'");
 
-    public VisitationFilter(Target target, JSONObject jsonObject){
-        super(target, jsonObject);
+    public VisitationFilter(Target target){
+        super(target);
     }
     
     @Override

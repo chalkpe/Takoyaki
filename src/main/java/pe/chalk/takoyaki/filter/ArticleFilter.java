@@ -16,7 +16,6 @@
 
 package pe.chalk.takoyaki.filter;
 
-import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -39,8 +38,8 @@ public class ArticleFilter extends Filter<Article> {
     private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9_]+)',");
     private static final Pattern MENU_ID_PATTERN = Pattern.compile("'(\\d+)'\\);");
 
-    public ArticleFilter(Target target, JSONObject jsonObject){
-        super(target, jsonObject);
+    public ArticleFilter(Target target){
+        super(target);
     }
     
     @Override

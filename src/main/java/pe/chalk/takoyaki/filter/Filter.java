@@ -16,7 +16,6 @@
 
 package pe.chalk.takoyaki.filter;
 
-import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.data.*;
@@ -37,7 +36,7 @@ public abstract class Filter<T extends Data> implements Prefix {
 
     private List<T> lastData;
 
-    public Filter(Target target, JSONObject jsonObject){
+    public Filter(Target target){
         this.target = target;
         this.logger = target.getLogger().sub(this);
     }

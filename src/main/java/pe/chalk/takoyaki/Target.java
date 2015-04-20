@@ -60,18 +60,16 @@ public class Target extends Thread implements Prefix {
         List<Filter<? extends Data>> filters = new ArrayList<>(filtersArray.length());
 
         for(int i = 0; i < filtersArray.length(); i++){
-            JSONObject filterObject = filtersArray.getJSONObject(i);
-
             Filter<? extends Data> filter;
-            switch(filterObject.getString("type")){
+            switch(filtersArray.getString(i)){
                 case ArticleFilter.NAME:
-                    filter = new ArticleFilter(this, filterObject);
+                    filter = new ArticleFilter(this);
                     break;
                 case CommentaryFilter.NAME:
-                    filter = new CommentaryFilter(this, filterObject);
+                    filter = new CommentaryFilter(this);
                     break;
                 case VisitationFilter.NAME:
-                    filter = new VisitationFilter(this, filterObject);
+                    filter = new VisitationFilter(this);
                     break;
                 default:
                     continue;
