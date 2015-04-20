@@ -2,6 +2,8 @@ package pe.chalk.takoyaki.utils;
 
 import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.data.Member;
+import pe.chalk.takoyaki.data.Violation;
+import pe.chalk.takoyaki.logger.Logger;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -10,6 +12,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -198,5 +201,23 @@ public class Mailer {
 
     public static void send(String subject, String body, Member[] recipients){
         send(subject, body, Arrays.asList(recipients).stream().map(Member::getInternetAddress).toArray(InternetAddress[]::new));
+    }
+
+    public static void sendMail(String prefix, String subject, String body, Member[] recipients){
+        send(String.format("[%s] [%s] %s", Takoyaki.getInstance().getPrefix(), prefix, subject), String.format(Mailer.FORMAT_HTML, body, Mailer.getFooter()).replaceAll(String.format("%n"), "<br>"), recipients);
+    }
+
+    public static void sendViolation(Violation violation, Member[] recipients){
+        String subject = violation.getName();
+        String body = String.format("%s%n%n사유: %s%n수준: %s%n작성자: %s", violation.getViolation(), violation.getName(), violation.getLevel(), violation.getViolator());
+
+        sendMail(violation.getPrefix(), subject, body, recipients);
+    }
+
+    public static String getFooter(){
+        return String.format(
+                "발신 시각: %s<br>서버 정보: %s - %s %s<br>자바 버전: %s<br>타코야키 버전: %s",
+                Logger.SIMPLE_DATE_FORMAT.format(new Date()), System.getProperty("user.name"), System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("java.version"), Takoyaki.VERSION
+        );
     }
 }
