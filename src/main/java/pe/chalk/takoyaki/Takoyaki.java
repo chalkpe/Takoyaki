@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
  * @since 2015-04-07
  */
 public class Takoyaki implements Prefix {
+    public static final String VERSION = "2.0";
+
     private static Takoyaki instance = null;
 
     private List<Target> targets;
