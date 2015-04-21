@@ -23,6 +23,7 @@ import org.mozilla.javascript.*;
 import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.ConsoleLogger;
 import pe.chalk.takoyaki.logger.Logger;
+import pe.chalk.takoyaki.plugin.Plugin;
 
 import java.io.File;
 import java.io.FileReader;
@@ -135,11 +136,6 @@ public class Takoyaki implements Prefix {
     }
 
     public static void main(String[] args){
-        if(args.length < 1){
-            System.out.println("Usage: java -jar Takoyaki.jar");
-            System.exit(1);
-        }
-
         try{
             new Takoyaki().start();
         }catch(JSONException | IOException e){

@@ -211,11 +211,12 @@ public class Mailer {
     }
 
     public static void sendViolation(Violation violation, Object[] recipients){
+        String prefix = violation.getPrefix();
         String subject = violation.getName();
         String body = String.format("%s%n%n사유: %s%n수준: %s%n작성자: %s", String.join(String.format("%n"), Arrays.asList(violation.getViolations()).stream().map(Data::toString).collect(Collectors.toList())), violation.getName(), violation.getLevel(), violation.getViolator());
 
-        Takoyaki.getInstance().getLogger().warning(String.format("[%s] %s%n%s", violation.getPrefix(), subject, body));
-        sendMail(violation.getPrefix(), subject, body, recipients);
+        violation.getTarget().getLogger().warning(String.format("[%s] %s%n%s", prefix, subject, body));
+        sendMail(prefix, subject, body, recipients);
     }
 
     public static String getFooter(){
