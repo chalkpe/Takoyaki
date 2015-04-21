@@ -129,7 +129,7 @@ public enum TextFormat {
                     }
                 }
                 matcher.appendTail(buffer);
-                return buffer.toString().replaceAll(String.format("%n"), "<br>");
+                return buffer.toString().replaceAll("\n", "<br>");
         }
     }
 }
