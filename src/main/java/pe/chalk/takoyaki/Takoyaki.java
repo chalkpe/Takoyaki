@@ -16,6 +16,14 @@
 
 package pe.chalk.takoyaki;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.mozilla.javascript.*;
+import pe.chalk.takoyaki.logger.Prefix;
+import pe.chalk.takoyaki.logger.ConsoleLogger;
+import pe.chalk.takoyaki.logger.Logger;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,19 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.JavaScriptException;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
-
 import pe.chalk.takoyaki.plugin.Plugin;
-import pe.chalk.takoyaki.logger.ConsoleLogger;
-import pe.chalk.takoyaki.logger.Logger;
-import pe.chalk.takoyaki.logger.Prefix;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
