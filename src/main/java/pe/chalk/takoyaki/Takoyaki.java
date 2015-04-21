@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 ChalkPE
+ * Copyright 2014-2015 ChalkPE
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
- * @since 2015-04-07
+ * @since 2014-2015-04-07
  */
 public class Takoyaki implements Prefix {
     public static final String VERSION = "2.0";

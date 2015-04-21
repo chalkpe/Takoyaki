@@ -2,7 +2,7 @@
 ### Takoyaki, the real-time monitoring system for [Naver Cafe](http://cafe.naver.com)
 
 ```
-Copyright 2015 ChalkPE
+Copyright 2014-2015 ChalkPE
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
