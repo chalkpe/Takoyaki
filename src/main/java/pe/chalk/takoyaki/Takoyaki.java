@@ -135,7 +135,7 @@ public class Takoyaki implements Prefix {
     }
 
     public static void main(String[] args){
-        if(args.length < 1){
+        if(args.length != 0){
             System.out.println("Usage: java -jar Takoyaki.jar");
             System.exit(1);
         }
