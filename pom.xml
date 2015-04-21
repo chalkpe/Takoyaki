@@ -7,7 +7,24 @@
     <groupId>pe.chalk</groupId>
     <artifactId>Takoyaki</artifactId>
     <version>2.0-SNAPSHOT</version>
+
+    <name>Takoyaki</name>
     <description>The real-time monitoring system for Naver Cafe</description>
+    <url>https://github.com/ChalkPE/Takoyaki</url>
+    <inceptionYear>2014</inceptionYear>
+
+    <developers>
+        <developer>
+            <id>ChalkPE</id>
+            <name>Chalk</name>
+            <url>http://chalk.pe</url>
+            <email>amato0617@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+9</timezone>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -72,6 +89,28 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>pe.chalk.takoyaki.Takoyaki</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
