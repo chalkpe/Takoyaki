@@ -17,12 +17,13 @@
 package pe.chalk.takoyaki.data;
 
 import pe.chalk.takoyaki.Target;
+import pe.chalk.takoyaki.logger.Prefix;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public abstract class Data {
+public abstract class Data implements Prefix {
     private final Target target;
     private final long creationTime;
 

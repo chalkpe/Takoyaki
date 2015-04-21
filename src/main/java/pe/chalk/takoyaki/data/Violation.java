@@ -10,7 +10,7 @@ import java.util.Map;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-20
  */
-public class Violation extends Data implements Prefix {
+public class Violation extends Data {
     public enum Level {
         DEMOTE,
 

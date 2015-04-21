@@ -1,6 +1,6 @@
 package pe.chalk.takoyaki.logger;
 
-import pe.chalk.takoyaki.utils.ChatColor;
+import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,11 +23,11 @@ public abstract class Logger implements Loggable {
     }};
 
     public static Map<Level, String> colorMap = new HashMap<Level, String>(){{
-        put(Level.DEBUG,    ChatColor.RESET.toString() + ChatColor.DARK_GRAY + ChatColor.ITALIC);
-        put(Level.INFO,     ChatColor.RESET.toString() + ChatColor.WHITE);
-        put(Level.WARNING,  ChatColor.RESET.toString() + ChatColor.YELLOW);
-        put(Level.CRITICAL, ChatColor.RESET.toString() + ChatColor.LIGHT_PURPLE);
-        put(Level.ERROR,    ChatColor.RESET.toString() + ChatColor.RED);
+        put(Level.DEBUG,    TextFormat.RESET.toString() + TextFormat.DARK_GRAY + TextFormat.ITALIC);
+        put(Level.INFO,     TextFormat.RESET.toString() + TextFormat.WHITE);
+        put(Level.WARNING,  TextFormat.RESET.toString() + TextFormat.YELLOW);
+        put(Level.CRITICAL, TextFormat.RESET.toString() + TextFormat.LIGHT_PURPLE);
+        put(Level.ERROR,    TextFormat.RESET.toString() + TextFormat.RED);
     }};
 
     protected abstract void log(String message);

@@ -173,7 +173,7 @@ public class Mailer {
             try{
                 message.setSubject(subject);
                 message.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-                message.setContent(body, "text/html; charset=\"utf-8\"");
+                message.setContent(TextFormat.replaceTo(TextFormat.Type.HTML, body), "text/html; charset=\"utf-8\"");
                 message.setFrom(new InternetAddress(Mailer.USERNAME));
 
                 if(recipients == null){
@@ -207,12 +207,12 @@ public class Mailer {
     }
 
     public static void sendMail(String prefix, String subject, String body, Object[] recipients){
-        send(String.format("[%s] [%s] %s", Takoyaki.getInstance().getPrefix(), prefix, subject), String.format(Mailer.FORMAT_HTML, body, Mailer.getFooter()).replaceAll(String.format("%n"), "<br>"), recipients);
+        send(String.format("[%s] [%s] %s", Takoyaki.getInstance().getPrefix(), prefix, subject), String.format(Mailer.FORMAT_HTML, body, Mailer.getFooter()), recipients);
     }
 
     public static void sendViolation(Violation violation, Object[] recipients){
-    	String prefix = violation.getPrefix();
-    	String subject = violation.getName();
+        String prefix = violation.getPrefix();
+        String subject = violation.getName();
         String body = String.format("%s%n%n사유: %s%n수준: %s%n작성자: %s", String.join(String.format("%n"), Arrays.asList(violation.getViolations()).stream().map(Data::toString).collect(Collectors.toList())), violation.getName(), violation.getLevel(), violation.getViolator());
 
         violation.getTarget().getLogger().warning(String.format("[%s] %s%n%s", prefix, subject, body));

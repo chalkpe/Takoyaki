@@ -1,6 +1,6 @@
 package pe.chalk.takoyaki.logger;
 
-import pe.chalk.takoyaki.utils.ChatColor;
+import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -9,6 +9,6 @@ import pe.chalk.takoyaki.utils.ChatColor;
 public class ConsoleLogger extends Logger {
     @Override
     protected void log(String message){
-        System.out.println(ChatColor.replaceTo(ChatColor.ReplaceType.ANSI, message));
+        System.out.println(TextFormat.replaceTo(TextFormat.Type.ANSI, message));
     }
 }
