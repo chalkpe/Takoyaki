@@ -24,6 +24,11 @@ import pe.chalk.takoyaki.utils.TextFormat;
  */
 public class ConsoleLogger extends Logger {
     @Override
+    public void newLine(){
+        System.out.println("");
+    }
+    
+    @Override
     protected void log(String message){
         System.out.println(TextFormat.replaceTo(TextFormat.Type.ANSI, message));
     }

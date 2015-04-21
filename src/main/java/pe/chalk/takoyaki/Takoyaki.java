@@ -100,6 +100,7 @@ public class Takoyaki implements Prefix {
                 }
             }
             this.plugins.forEach(plugin -> plugin.call("onCreate", new Object[]{plugin.getName()}));
+            this.getLogger().newLine();
         }
 
         this.isAlive = false;

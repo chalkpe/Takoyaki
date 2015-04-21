@@ -28,7 +28,12 @@ public class PrefixedLogger implements Loggable {
         this.parent = parent;
         this.prefix = prefix;
     }
-
+    
+    @Override
+    public void newLine(){
+        this.parent.newLine();
+    }
+    
     @Override
     public void debug(String message){
         this.parent.debug(String.format("[%s] %s", prefix.getPrefix(), message));
