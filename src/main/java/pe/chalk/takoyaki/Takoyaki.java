@@ -16,14 +16,6 @@
 
 package pe.chalk.takoyaki;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.mozilla.javascript.*;
-import pe.chalk.takoyaki.logger.Prefix;
-import pe.chalk.takoyaki.logger.ConsoleLogger;
-import pe.chalk.takoyaki.logger.Logger;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -33,6 +25,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+
+import pe.chalk.takoyaki.logger.ConsoleLogger;
+import pe.chalk.takoyaki.logger.Logger;
+import pe.chalk.takoyaki.logger.Prefix;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -56,8 +61,15 @@ public class Takoyaki implements Prefix {
     public Takoyaki() throws JSONException, IOException {
         Takoyaki.instance = this;
         this.logger = new ConsoleLogger();
+		JSONObject properties = null;
 
-        JSONObject properties = new JSONObject(Files.lines(Paths.get("properties.json"), Charset.forName("UTF-8")).collect(Collectors.joining()));
+		try {
+			properties = new JSONObject(Files.lines(Paths.get("properties.json"), Charset.forName("UTF-8")).collect(Collectors.joining()));
+		} catch (Exception e) {
+			this.getLogger().debug("properties.json을 읽는 중 오류가 발생했습니다. 파일이 존재하는지 확인해주세요.");
+			this.getLogger().debug("오류 메시지: " + e.getMessage());
+			System.exit(1);
+		}
 
         JSONArray targetsArray = properties.getJSONArray("targets");
         this.targets = new ArrayList<>(targetsArray.length());
