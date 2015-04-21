@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-15
  */
-public enum ChatColor {
+public enum TextFormat {
     RESET         ('r',  0, ""),
     BOLD          ('l',  1, "font-weight: bold;"),
     STRIKETHROUGH ('m',  9, "text-decoration: line-through;"),
@@ -39,9 +39,9 @@ public enum ChatColor {
 
     public static final Pattern PATTERN_MINECRAFT = Pattern.compile("(§[0-9A-FL-OR])");
 
-    public static final Map<String, ChatColor> MAP_BY_STRING = new HashMap<String, ChatColor>(){{
-        for(ChatColor chatColor : ChatColor.values()){
-            put(chatColor.toString(), chatColor);
+    public static final Map<String, TextFormat> MAP_BY_STRING = new HashMap<String, TextFormat>(){{
+        for(TextFormat textFormat : TextFormat.values()){
+            put(textFormat.toString(), textFormat);
         }
     }};
 
@@ -49,7 +49,7 @@ public enum ChatColor {
     private final int ansiCode;
     private final String css;
 
-    ChatColor(char minecraftCode, int ansiCode, String css){
+    TextFormat(char minecraftCode, int ansiCode, String css){
         this.minecraftCode = minecraftCode;
         this.ansiCode = ansiCode;
         this.css = css;
@@ -69,7 +69,7 @@ public enum ChatColor {
 
     @Override
     public String toString(){
-        return String.format(ChatColor.FORMAT_MINECRAFT, this.getMinecraftCode());
+        return String.format(TextFormat.FORMAT_MINECRAFT, this.getMinecraftCode());
     }
 
     public enum Type {
@@ -90,7 +90,7 @@ public enum ChatColor {
                 return minecraftString;
 
             case ANSI:
-                for(ChatColor color : ChatColor.values()){
+                for(TextFormat color : TextFormat.values()){
                     minecraftString = minecraftString.replaceAll(color.toString(), color.getAnsiCode());
                 }
                 return minecraftString;
@@ -100,8 +100,8 @@ public enum ChatColor {
                 StringBuffer buffer = new StringBuffer(minecraftString.length());
                 Matcher matcher = PATTERN_MINECRAFT.matcher(minecraftString);
                 while(matcher.find()){
-                    ChatColor chatColor = MAP_BY_STRING.get(matcher.group(1));
-                    if(chatColor == ChatColor.RESET){
+                    TextFormat textFormat = MAP_BY_STRING.get(matcher.group(1));
+                    if(textFormat == TextFormat.RESET){
                         StringBuilder closeTagBuilder = new StringBuilder(FORMAT_HTML_CLOSE.length() * indentLevel);
                         for(int i = 0; i < indentLevel; i++){
                             closeTagBuilder.append(FORMAT_HTML_CLOSE);
@@ -109,7 +109,7 @@ public enum ChatColor {
                         matcher.appendReplacement(buffer, closeTagBuilder.toString());
                     }else{
                         indentLevel++;
-                        matcher.appendReplacement(buffer, String.format(FORMAT_HTML_OPEN, chatColor.getCss()));
+                        matcher.appendReplacement(buffer, String.format(FORMAT_HTML_OPEN, textFormat.getCss()));
                     }
                 }
                 matcher.appendTail(buffer);

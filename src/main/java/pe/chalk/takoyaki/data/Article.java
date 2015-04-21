@@ -17,7 +17,7 @@
 package pe.chalk.takoyaki.data;
 
 import pe.chalk.takoyaki.Target;
-import pe.chalk.takoyaki.utils.ChatColor;
+import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -84,11 +84,11 @@ public class Article extends SimpleArticle {
 
     @Override
     public String toString(){
-        return ChatColor.GREEN + "[" + this.getId() + "] " + ChatColor.RESET
-                + ChatColor.LIGHT_PURPLE + "[" + this.getTarget().getMenu(this.getMenuId()).getName() + "] " + ChatColor.RESET
-                + (this.isQuestion() ? ChatColor.LIGHT_PURPLE + "Q. " + ChatColor.RESET : "")
-                + (this.hasHead() ? ChatColor.LIGHT_PURPLE + "[" + this.getHead() + "] " + ChatColor.RESET : "")
+        return TextFormat.GREEN + "[" + this.getId() + "] " + TextFormat.RESET
+                + TextFormat.LIGHT_PURPLE + "[" + this.getTarget().getMenu(this.getMenuId()).getName() + "] " + TextFormat.RESET
+                + (this.isQuestion() ? TextFormat.LIGHT_PURPLE + "Q. " + TextFormat.RESET : "")
+                + (this.hasHead() ? TextFormat.LIGHT_PURPLE + "[" + this.getHead() + "] " + TextFormat.RESET : "")
                 + this.getTitle()
-                + ChatColor.DARK_AQUA + " by " + this.getWriter().toString() + ChatColor.GOLD + " at " + this.getUploadDate() + ChatColor.RESET;
+                + TextFormat.DARK_AQUA + " by " + this.getWriter().toString() + TextFormat.GOLD + " at " + this.getUploadDate() + TextFormat.RESET;
     }
 }

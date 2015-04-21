@@ -173,7 +173,7 @@ public class Mailer {
             try{
                 message.setSubject(subject);
                 message.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-                message.setContent(ChatColor.replaceTo(ChatColor.Type.HTML, body), "text/html; charset=\"utf-8\"");
+                message.setContent(TextFormat.replaceTo(TextFormat.Type.HTML, body), "text/html; charset=\"utf-8\"");
                 message.setFrom(new InternetAddress(Mailer.USERNAME));
 
                 if(recipients == null){

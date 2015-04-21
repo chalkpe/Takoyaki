@@ -64,4 +64,9 @@ public class Member extends Data {
     public boolean equals(Object obj){
         return obj instanceof Member && this.getId().equalsIgnoreCase(((Member) obj).getId());
     }
+
+    @Override
+    public String getPrefix(){
+        return this.getId();
+    }
 }

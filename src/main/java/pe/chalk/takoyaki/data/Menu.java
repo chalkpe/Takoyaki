@@ -34,4 +34,9 @@ public class Menu extends Data {
     public boolean equals(Object another){
         return another instanceof Menu && this.getId() == ((Menu) another).getId();
     }
+
+    @Override
+    public String getPrefix(){
+        return this.getName();
+    }
 }

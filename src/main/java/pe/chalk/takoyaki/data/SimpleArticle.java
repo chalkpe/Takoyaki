@@ -1,7 +1,7 @@
 package pe.chalk.takoyaki.data;
 
 import pe.chalk.takoyaki.Target;
-import pe.chalk.takoyaki.utils.ChatColor;
+import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -39,6 +39,11 @@ public class SimpleArticle extends Data {
 
     @Override
     public String toString(){
-        return ChatColor.GREEN + "[" + this.getId() + "] " + ChatColor.RESET + this.getTitle() + ChatColor.GOLD + " [" + this.getCommentCount() + "]" + ChatColor.RESET;
+        return TextFormat.GREEN + "[" + this.getId() + "] " + TextFormat.RESET + this.getTitle() + TextFormat.GOLD + " [" + this.getCommentCount() + "]" + TextFormat.RESET;
+    }
+
+    @Override
+    public String getPrefix(){
+        return String.valueOf(this.getId());
     }
 }
