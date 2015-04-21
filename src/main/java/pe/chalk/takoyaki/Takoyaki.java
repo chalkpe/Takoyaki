@@ -58,18 +58,23 @@ public class Takoyaki implements Prefix {
         Takoyaki.instance = this;
         this.logger = new ConsoleLogger();
 
-        JSONObject properties = new JSONObject(Files.lines(Paths.get("properties.json"), Charset.forName("UTF-8")).collect(Collectors.joining()));
+        try{
+            JSONObject properties = new JSONObject(Files.lines(Paths.get("properties.json"), Charset.forName("UTF-8")).collect(Collectors.joining()));
 
-        JSONArray targetsArray = properties.getJSONArray("targets");
-        this.targets = new ArrayList<>(targetsArray.length());
-        for(int i = 0; i < targetsArray.length(); i++){
-            this.targets.add(new Target(this, targetsArray.getJSONObject(i)));
+            JSONArray targetsArray = properties.getJSONArray("targets");
+            this.targets = new ArrayList<>(targetsArray.length());
+            for(int i = 0; i < targetsArray.length(); i++){
+                this.targets.add(new Target(this, targetsArray.getJSONObject(i)));
+            }
+        }catch(IOException e){
+            this.getLogger().error("properties.json 파일을 읽을 수 없습니다 : " + e.getMessage());
+            System.exit(1);
         }
 
         File pluginDirectory = new File("plugins");
         if(!pluginDirectory.exists()){
             if(pluginDirectory.mkdir()){
-                this.getLogger().debug("created plugin directory");
+                this.getLogger().debug("plugin 디렉토리를 생성했습니다");
             }
         }
 

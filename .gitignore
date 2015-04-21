@@ -1,6 +1,8 @@
+### Takoyaki template
 plugins/
+*-menus.json
 
-# Created by .ignore support plugin (hsz.mobi)
+
 ### Eclipse template
 *.pydevproject
 .metadata
@@ -99,6 +101,7 @@ gradle-app.setting
 
 # IntelliJ
 out/
+target/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -110,5 +113,3 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
-
-
