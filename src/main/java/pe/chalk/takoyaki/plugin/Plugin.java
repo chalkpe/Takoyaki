@@ -1,4 +1,4 @@
-package pe.chalk.takoyaki;
+package pe.chalk.takoyaki.plugin;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;

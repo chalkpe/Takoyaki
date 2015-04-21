@@ -79,20 +79,50 @@
 		        <version>2.3</version>
 		        <executions>
 		            <execution>
-			        <phase>package</phase>
-			        <goals>
-				        <goal>shade</goal>
-			        </goals>
-			        <configuration>
-			        <transformers>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-					            <mainClass>pe.chalk.takoyaki.Takoyaki</mainClass>
-				            </transformer>
-			            </transformers>
-			        </configuration>
-		        </execution>
-		    </executions>
-		</plugin>
+			            <phase>package</phase>
+			            <goals>
+				            <goal>shade</goal>
+			            </goals>
+			            <configuration>
+			                <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+					                <mainClass>pe.chalk.takoyaki.Takoyaki</mainClass>
+				                </transformer>
+			                </transformers>
+			            </configuration>
+		            </execution>
+		        </executions>
+		    </plugin>
+	        <plugin>
+	    	    <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
+	    	    <artifactId>launch4j-plugin</artifactId>
+	    	    <version>1.5.0.0</version>
+	    	    <executions>
+		            <execution>
+                        <id>l4j</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>console</headerType>
+                            <outfile>target/Takoyaki.exe</outfile>
+                            <jar>target/${artifactId}-${version}-shaded.jar</jar>
+                            <errTitle>에러 발생</errTitle>
+                            <classPath>
+                                <mainClass>pe.chalk.takoyaki.Takoyaki</mainClass>
+                            </classPath>
+                            <icon>src/main/resources/exeIcon.ico</icon>
+                            <jre>
+                                <minVersion>1.6.0</minVersion>
+                                <maxVersion>1.8.0</maxVersion>
+                                <initialHeapSize>128</initialHeapSize>
+                                <maxHeapSize>1024</maxHeapSize>
+                            </jre>
+                        </configuration>
+                    </execution>
+                </executions>
+		    </plugin>
         </plugins>
     </build>
 </project>
