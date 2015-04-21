@@ -45,7 +45,7 @@ public class Collector {
                 List<? extends Data> freshData = filter.getFreshData(document);
                 freshData.forEach(data -> filter.getLogger().info(data.toString()));
 
-                Takoyaki.getInstance().getPlugins().forEach(plugin -> plugin.call("onDataUpdated", new Object[]{filter, freshData.toArray()}));
+                Takoyaki.getInstance().getPlugins().forEach(plugin -> plugin.call("onDataAdded", new Object[]{filter, freshData.toArray()}));
             });
         }catch(Exception e){
             e.printStackTrace();
