@@ -35,6 +35,7 @@ import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import pe.chalk.takoyaki.plugin.Plugin;
 import pe.chalk.takoyaki.logger.ConsoleLogger;
 import pe.chalk.takoyaki.logger.Logger;
 import pe.chalk.takoyaki.logger.Prefix;
