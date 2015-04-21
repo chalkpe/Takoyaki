@@ -173,7 +173,7 @@ public class Mailer {
             try{
                 message.setSubject(subject);
                 message.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-                message.setContent(body, "text/html; charset=\"utf-8\"");
+                message.setContent(ChatColor.replaceTo(ChatColor.Type.HTML, body), "text/html; charset=\"utf-8\"");
                 message.setFrom(new InternetAddress(Mailer.USERNAME));
 
                 if(recipients == null){
@@ -207,7 +207,7 @@ public class Mailer {
     }
 
     public static void sendMail(String prefix, String subject, String body, Object[] recipients){
-        send(String.format("[%s] [%s] %s", Takoyaki.getInstance().getPrefix(), prefix, subject), String.format(Mailer.FORMAT_HTML, body, Mailer.getFooter()).replaceAll(String.format("%n"), "<br>"), recipients);
+        send(String.format("[%s] [%s] %s", Takoyaki.getInstance().getPrefix(), prefix, subject), String.format(Mailer.FORMAT_HTML, body, Mailer.getFooter()), recipients);
     }
 
     public static void sendViolation(Violation violation, Object[] recipients){
