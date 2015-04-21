@@ -39,7 +39,7 @@ public class Mailer {
     public static String PASSWORD = null;
 
     public static final String FORMAT_HTML =
-            "<table align=\"center\" width=\"696\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">" +
+            "<table align=\"center\" width=\"696\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding: 20px; background-color: white;\">" +
                 "<tbody>" +
                     "<tr>" +
                         "<td align=\"left\">" +
@@ -166,7 +166,7 @@ public class Mailer {
                         "</td>" +
                     "</tr>" +
                     "<tr>" +
-                        "<td style=\"line-height: 0; height: 28px; border-top-width: 2px; border-top-style: solid; border-top-color: rgb(85, 79, 76); font-size: 0px;\">" +
+                        "<td style=\"line-height: 0; height: 0px; border-top-width: 2px; border-top-style: solid; border-top-color: rgb(85, 79, 76); font-size: 0px;\">" +
                             "&nbsp;" +
                         "</td>" +
                     "</tr>" +
