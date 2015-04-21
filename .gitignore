@@ -1,4 +1,7 @@
 plugins/
+target/
+dependency-reduced-pom.xml
+*-menus.json
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Eclipse template
