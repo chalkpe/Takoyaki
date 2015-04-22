@@ -16,29 +16,45 @@
 
 package pe.chalk.takoyaki.plugin;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
 import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
+
+import java.io.*;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-19
  */
 public class Plugin implements Prefix {
+    private File file;
     private String name;
     private Scriptable scriptable;
     private PrefixedLogger logger;
 
-    public Plugin(String name, Scriptable scriptable){
-        this.name = name;
-        this.scriptable = scriptable;
+    public Plugin(File file) throws JavaScriptException, IOException {
+        this.file = file;
+        this.name = file.getName().substring(0, file.getName().lastIndexOf("."));
         this.logger = Takoyaki.getInstance().getLogger().getPrefixed(this);
 
-        ScriptableObject.putProperty(scriptable, "logger", this.getLogger());
+        Context context = Context.enter();
+        try{
+            this.scriptable = new ImporterTopLevel(context);
+            context.evaluateReader(this.getScriptable(), new FileReader(this.getFile()), this.getName(), 0, null);
+            ScriptableObject.putProperty(this.getScriptable(), "logger", this.getLogger());
+        }finally{
+            Context.exit();
+        }
+
+        try(ObjectInputStream stream = new ObjectInputStream(new FileInputStream(new File(this.getFile().getParentFile(), this.getName().concat(".ser"))))){
+            Object data = stream.readObject();
+            ScriptableObject.putProperty(this.getScriptable(), "data", data);
+        }catch(Exception ignored){}
+    }
+
+    public File getFile(){
+        return this.file;
     }
 
     public String getName(){

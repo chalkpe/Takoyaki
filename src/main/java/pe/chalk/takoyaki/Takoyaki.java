@@ -26,7 +26,6 @@ import pe.chalk.takoyaki.logger.Logger;
 import pe.chalk.takoyaki.plugin.Plugin;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -54,7 +53,7 @@ public class Takoyaki implements Prefix {
         return instance;
     }
 
-    public Takoyaki() throws JSONException, IOException {
+    public Takoyaki() throws JSONException, IOException{
         Takoyaki.instance = this;
         this.logger = new ConsoleLogger();
 
@@ -82,20 +81,13 @@ public class Takoyaki implements Prefix {
         if(pluginFiles != null){
             this.plugins = new ArrayList<>(pluginFiles.length);
             for(File pluginFile : pluginFiles){
-                String name = pluginFile.getName().substring(0, pluginFile.getName().lastIndexOf("."));
-                Context context = Context.enter();
                 try{
-                    Scriptable scriptable = new ImporterTopLevel(context);
-                    context.evaluateReader(scriptable, new FileReader(pluginFile), name, 0, null);
+                    Plugin plugin = new Plugin(pluginFile);
 
-                    Plugin plugin = new Plugin(name, scriptable);
-
-                    this.getLogger().debug("플러그인 " + name + "을(를) 불러왔습니다");
+                    this.getLogger().debug("플러그인 " + plugin.getName() + "을(를) 불러왔습니다");
                     this.plugins.add(plugin);
                 }catch(JavaScriptException | IOException e){
                     this.getLogger().error(e.getMessage());
-                }finally{
-                    Context.exit();
                 }
             }
             this.plugins.forEach(plugin -> plugin.call("onCreate", new Object[]{plugin.getName()}));
