@@ -89,7 +89,6 @@ public class Takoyaki implements Prefix {
                     context.evaluateReader(scriptable, new FileReader(pluginFile), name, 0, null);
 
                     Plugin plugin = new Plugin(name, scriptable);
-                    ScriptableObject.putProperty(scriptable, "logger", this.getLogger().getPrefixed(plugin));
 
                     this.getLogger().debug("플러그인 " + name + "을(를) 불러왔습니다");
                     this.plugins.add(plugin);

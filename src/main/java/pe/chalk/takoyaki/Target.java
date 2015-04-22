@@ -113,7 +113,8 @@ public class Target extends Thread implements Prefix {
         this.articleUrl = new URL(String.format(STRING_ARTICLE, this.getClubId()));
 
         this.getLogger().debug("카페명: " + this.getName() + " (ID: " + this.getClubId() + ")");
-        this.getLogger().debug("게시판 수: " + this.getMenus().size() + "개\n");
+        this.getLogger().debug("게시판 수: " + this.getMenus().size() + "개");
+        this.getLogger().newLine();
     }
 
     public Takoyaki getTakoyaki(){

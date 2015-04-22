@@ -19,7 +19,10 @@ package pe.chalk.takoyaki.plugin;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.logger.Prefix;
+import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -28,10 +31,14 @@ import pe.chalk.takoyaki.logger.Prefix;
 public class Plugin implements Prefix {
     private String name;
     private Scriptable scriptable;
+    private PrefixedLogger logger;
 
     public Plugin(String name, Scriptable scriptable){
         this.name = name;
         this.scriptable = scriptable;
+        this.logger = Takoyaki.getInstance().getLogger().getPrefixed(this);
+
+        ScriptableObject.putProperty(scriptable, "logger", this.getLogger());
     }
 
     public String getName(){
@@ -42,6 +49,10 @@ public class Plugin implements Prefix {
         return this.scriptable;
     }
 
+    public PrefixedLogger getLogger(){
+        return this.logger;
+    }
+
     public Object call(String functionName, Object[] args){
         Context context = Context.enter();
         try{
@@ -49,10 +60,12 @@ public class Plugin implements Prefix {
             if(object != null && object instanceof Function){
                 return ((Function) object).call(context, scriptable, scriptable, args);
             }
-            return null;
+        }catch(Exception e){
+            this.getLogger().error(e.getMessage());
         }finally{
             Context.exit();
         }
+        return null;
     }
 
     @Override

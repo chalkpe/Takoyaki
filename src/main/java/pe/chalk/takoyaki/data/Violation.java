@@ -26,6 +26,8 @@ import java.util.Map;
  * @since 2015-04-20
  */
 public class Violation extends Data {
+    private static final long serialVersionUID = 808421183210237888L;
+
     public enum Level {
         DEMOTE,
 
@@ -40,6 +42,7 @@ public class Violation extends Data {
         ACCUSE
     }
 
+    @SuppressWarnings("serial")
     public static Map<Level, String> prefixMap = new HashMap<Level, String>(){{
         put(Level.DEMOTE,                   "강등");
 

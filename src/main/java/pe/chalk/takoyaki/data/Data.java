@@ -19,11 +19,15 @@ package pe.chalk.takoyaki.data;
 import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.logger.Prefix;
 
+import java.io.Serializable;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public abstract class Data implements Prefix {
+public abstract class Data implements Prefix, Serializable {
+    private static final long serialVersionUID = -4691808370381770362L;
+
     private final Target target;
     private final long creationTime;
 

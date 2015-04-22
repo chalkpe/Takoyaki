@@ -24,6 +24,8 @@ import pe.chalk.takoyaki.utils.TextFormat;
  * @since 2015-04-07
  */
 public class Article extends SimpleArticle {
+    private static final long serialVersionUID = -1055443610669214310L;
+    
     private final Member writer;
 
     private String head;

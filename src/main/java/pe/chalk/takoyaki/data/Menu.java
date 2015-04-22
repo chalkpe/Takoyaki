@@ -23,6 +23,8 @@ import pe.chalk.takoyaki.Target;
  * @since 2015-04-16
  */
 public class Menu extends Data {
+    private static final long serialVersionUID = 3467717725668913420L;
+
     private final int id;
     private final String name;
 

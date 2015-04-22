@@ -26,6 +26,8 @@ import javax.mail.internet.InternetAddress;
  * @since 2015-04-07
  */
 public class Member extends Data {
+    private static final long serialVersionUID = 3833289394713235574L;
+
     private static final String DEFAULT_DISPLAY_ID = "********";
 
     private String id;
