@@ -52,7 +52,7 @@ public enum TextFormat {
 
     public static final String FORMAT_MINECRAFT  = "§%c";
     public static final String FORMAT_ANSI       = "\u001B[%sm";
-    public static final String FORMAT_HTML_OPEN  = "<span style=\"%s\"";
+    public static final String FORMAT_HTML_OPEN  = "<span style=\"%s\">";
     public static final String FORMAT_HTML_CLOSE = "</span>";
 
     public static final Pattern PATTERN_MINECRAFT = Pattern.compile("(§[0-9a-fl-or])");
