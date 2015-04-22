@@ -94,6 +94,15 @@ public class Takoyaki implements Prefix {
             this.getLogger().newLine();
         }
 
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run(){
+                Takoyaki.this.getLogger().newLine();
+                Takoyaki.this.getLogger().debug("*** FINALIZATION RUNNING ***");
+
+                Takoyaki.this.getPlugins().forEach(Plugin::saveData);
+            }
+        });
         this.isAlive = false;
     }
 

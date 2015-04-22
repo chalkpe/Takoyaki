@@ -33,8 +33,8 @@ public class Member extends Data {
     private String id;
     private String name;
 
-    public Member(Target target, String name, String id){
-        super(target);
+    public Member(int targetId, String name, String id){
+        super(targetId);
 
         this.id = id == null ? "" : id;
         this.name = name;

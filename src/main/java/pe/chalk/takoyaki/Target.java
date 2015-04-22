@@ -105,7 +105,7 @@ public class Target extends Thread implements Prefix {
         }
         this.clubId = Integer.parseInt(clubIdMatcher.group(1));
         this.menus = contentDocument.select("a[id^=menuLink]").stream()
-                .map(element -> new Menu(this, Integer.parseInt(element.id().substring(8)), element.text()))
+                .map(element -> new Menu(this.getClubId(), Integer.parseInt(element.id().substring(8)), element.text()))
                 .collect(Collectors.toList());
 
         Files.write(Paths.get(this.getAddress() + "-menus.json"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);

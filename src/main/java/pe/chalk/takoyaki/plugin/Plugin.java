@@ -17,11 +17,15 @@
 package pe.chalk.takoyaki.plugin;
 
 import org.mozilla.javascript.*;
+import org.mozilla.javascript.json.JsonParser;
 import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.stream.Collectors;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -33,24 +37,28 @@ public class Plugin implements Prefix {
     private Scriptable scriptable;
     private PrefixedLogger logger;
 
-    public Plugin(File file) throws JavaScriptException, IOException {
+    private File dataFile;
+
+    public Plugin(File file) throws JavaScriptException, IOException{
         this.file = file;
         this.name = file.getName().substring(0, file.getName().lastIndexOf("."));
         this.logger = Takoyaki.getInstance().getLogger().getPrefixed(this);
+
+        this.dataFile = new File(this.getFile().getParentFile(), this.getName().concat(".ser"));
 
         Context context = Context.enter();
         try{
             this.scriptable = new ImporterTopLevel(context);
             context.evaluateReader(this.getScriptable(), new FileReader(this.getFile()), this.getName(), 0, null);
             ScriptableObject.putProperty(this.getScriptable(), "logger", this.getLogger());
+
+            try{
+                String json = Files.lines(this.dataFile.toPath(), Charset.forName("UTF-8")).collect(Collectors.joining());
+                this.call("setData", new Object[]{json});
+            }catch(Exception ignored){}
         }finally{
             Context.exit();
         }
-
-        try(ObjectInputStream stream = new ObjectInputStream(new FileInputStream(new File(this.getFile().getParentFile(), this.getName().concat(".ser"))))){
-            Object data = stream.readObject();
-            ScriptableObject.putProperty(this.getScriptable(), "data", data);
-        }catch(Exception ignored){}
     }
 
     public File getFile(){
@@ -72,7 +80,7 @@ public class Plugin implements Prefix {
     public Object call(String functionName, Object[] args){
         Context context = Context.enter();
         try{
-            Object object = this.getScriptable().get(functionName, this.getScriptable());
+            Object object = ScriptableObject.getProperty(this.getScriptable(), functionName);
             if(object != null && object instanceof Function){
                 return ((Function) object).call(context, scriptable, scriptable, args);
             }
@@ -82,6 +90,20 @@ public class Plugin implements Prefix {
             Context.exit();
         }
         return null;
+    }
+
+    public void saveData(){
+        Context.enter();
+        try{
+            Object data = this.call("getData", Context.emptyArgs);
+            if(data != null){
+                try(ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(this.dataFile))){
+                    stream.writeObject(data);
+                }catch(IOException ignored){}
+            }
+        }finally{
+            Context.exit();
+        }
     }
 
     @Override

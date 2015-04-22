@@ -16,7 +16,6 @@
 
 package pe.chalk.takoyaki.data;
 
-import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
@@ -37,8 +36,8 @@ public class Article extends SimpleArticle {
 
     private final boolean isQuestion;
 
-    public Article(Target target, int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
-        super(target, id, title, commentCount);
+    public Article(int targetId, int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
+        super(targetId, id, title, commentCount);
 
         this.writer = writer;
 

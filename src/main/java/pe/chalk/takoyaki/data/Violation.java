@@ -16,8 +16,6 @@
 
 package pe.chalk.takoyaki.data;
 
-import pe.chalk.takoyaki.Target;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,8 +61,8 @@ public class Violation extends Data {
     private Member violator;
     private Data[] violations;
 
-    public Violation(Target target, String name, Level level, Member violator, Data[] violations){
-        super(target);
+    public Violation(int targetId, String name, Level level, Member violator, Data[] violations){
+        super(targetId);
 
         this.name = name;
         this.level = level;

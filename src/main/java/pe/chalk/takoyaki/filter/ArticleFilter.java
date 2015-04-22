@@ -91,8 +91,8 @@ public class ArticleFilter extends Filter<Article> {
                         menuId = Integer.parseInt(menuIdMatcher.group(1));
                     }
 
-                    Member writer = new Member(this.getTarget(), memberName, memberId);
-                    return new Article(this.getTarget(), articleId, title, writer, head, uploadDate, menuId, viewCount, commentCount, recommendedCount, isQuestion);
+                    Member writer = new Member(this.getTarget().getClubId(), memberName, memberId);
+                    return new Article(this.getTarget().getClubId(), articleId, title, writer, head, uploadDate, menuId, viewCount, commentCount, recommendedCount, isQuestion);
                 }).collect(Collectors.toList());
     }
 }

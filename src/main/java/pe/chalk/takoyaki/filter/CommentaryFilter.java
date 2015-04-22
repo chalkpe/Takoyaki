@@ -50,7 +50,7 @@ public class CommentaryFilter extends ContentFilter<SimpleArticle> {
                     int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
                     String title = element.text();
 
-                    return new SimpleArticle(this.getTarget(), id, title, commentCount);
+                    return new SimpleArticle(this.getTarget().getClubId(), id, title, commentCount);
                 })
                 .collect(Collectors.toList());
     }

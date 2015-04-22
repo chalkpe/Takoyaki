@@ -16,6 +16,7 @@
 
 package pe.chalk.takoyaki.data;
 
+import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.logger.Prefix;
 
@@ -28,17 +29,22 @@ import java.io.Serializable;
 public abstract class Data implements Prefix, Serializable {
     private static final long serialVersionUID = -4691808370381770362L;
 
-    private final Target target;
+    private final int targetId;
     private final long creationTime;
 
-    public Data(Target target){
-        this.target = target;
+    public Data(int targetId){
+        this.targetId = targetId;
         this.creationTime = System.currentTimeMillis();
     }
 
-    public Target getTarget(){
-        return this.target;
+    public int getTargetId(){
+        return this.targetId;
     }
+
+    public Target getTarget(){
+        return Takoyaki.getInstance().getTarget(this.getTargetId());
+    }
+
     public long getCreationTime(){
         return this.creationTime;
     }

@@ -16,7 +16,6 @@
 
 package pe.chalk.takoyaki.data;
 
-import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
@@ -30,8 +29,8 @@ public class SimpleArticle extends Data {
     private String title;
     private int commentCount;
 
-    public SimpleArticle(Target target, int id, String title, int commentCount){
-        super(target);
+    public SimpleArticle(int targetId, int id, String title, int commentCount){
+        super(targetId);
 
         this.id = id;
         this.title = title;

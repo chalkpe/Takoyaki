@@ -16,6 +16,8 @@
 
 package pe.chalk.takoyaki.utils;
 
+import javafx.scene.control.TextField;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -53,8 +55,9 @@ public enum TextFormat {
     public static final String FORMAT_HTML_OPEN  = "<span style=\"%s\"";
     public static final String FORMAT_HTML_CLOSE = "</span>";
 
-    public static final Pattern PATTERN_MINECRAFT = Pattern.compile("(§[0-9A-FL-OR])");
+    public static final Pattern PATTERN_MINECRAFT = Pattern.compile("(§[0-9a-fl-or])");
 
+    @SuppressWarnings("serial")
     public static final Map<String, TextFormat> MAP_BY_STRING = new HashMap<String, TextFormat>(){{
         for(TextFormat textFormat : TextFormat.values()){
             put(textFormat.toString(), textFormat);
@@ -118,18 +121,26 @@ public enum TextFormat {
                 while(matcher.find()){
                     TextFormat textFormat = MAP_BY_STRING.get(matcher.group(1));
                     if(textFormat == TextFormat.RESET){
-                        StringBuilder closeTagBuilder = new StringBuilder(FORMAT_HTML_CLOSE.length() * indentLevel);
-                        for(int i = 0; i < indentLevel; i++){
-                            closeTagBuilder.append(FORMAT_HTML_CLOSE);
-                        }
-                        matcher.appendReplacement(buffer, closeTagBuilder.toString());
+                        matcher.appendReplacement(buffer, TextFormat.getCloseTags(indentLevel));
+                        indentLevel = 0;
                     }else{
                         indentLevel++;
                         matcher.appendReplacement(buffer, String.format(FORMAT_HTML_OPEN, textFormat.getCss()));
                     }
                 }
                 matcher.appendTail(buffer);
-                return buffer.toString().replaceAll("\n", "<br>");
+                return buffer.toString().replaceAll("\n", "<br>").concat(getCloseTags(indentLevel));
         }
+    }
+
+    private static String getCloseTags(int indentLevel){
+        if(indentLevel == 0){
+            return "";
+        }
+        StringBuilder closeTagBuilder = new StringBuilder(FORMAT_HTML_CLOSE.length() * indentLevel);
+        for(int i = 0; i < indentLevel; i++){
+            closeTagBuilder.append(FORMAT_HTML_CLOSE);
+        }
+        return closeTagBuilder.toString();
     }
 }
