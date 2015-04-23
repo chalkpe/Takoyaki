@@ -39,6 +39,10 @@ public class Mailer {
     public static String PASSWORD = null;
 
     public static final String FORMAT_HTML =
+            "<style>\n" +
+                "@import url(http://fonts.googleapis.com/css?family=Inconsolata);\n" +
+                "@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);\n" +
+            "</style>\n" +
             "<table align=\"center\" width=\"696\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding: 20px; background-color: white;\">" +
                 "<tbody>" +
                     "<tr>" +
@@ -98,7 +102,7 @@ public class Mailer {
                         "</td>" +
                     "</tr>" +
                     "<tr>" +
-                        "<td style=\"border: 1px solid rgb(233, 233, 233); background: rgb(249, 249, 249);\">" +
+                        "<td style=\"border: 5px solid #555555; background: #2B2B2B;\">" +
                             "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">" +
                                 "<tbody>" +
                                     "<tr>" +
@@ -116,7 +120,7 @@ public class Mailer {
                                                 "<tbody>" +
                                                     "<tr>" +
                                                         "<td>" +
-                                                            "<span style=\"color: rgb(102, 102, 102); font-weight: bold; line-height: 19px;\">" +
+                                                            "<span style=\"color: #BBBBBB; font-family: 'Inconsolata', 'Nanum Gothic', 'NanumGothic'; line-height: 19px;\">" +
                                                                 "%s" +
                                                             "</span>" +
                                                         "</td>" +
@@ -136,7 +140,7 @@ public class Mailer {
                         "</td>" +
                     "</tr>" +
                     "<tr>" +
-                        "<td style=\"line-height: 0; height: 25px; font-size: 0px;\">" +
+                        "<td style=\"line-height: 0; height: 20px; font-size: 0px;\">" +
                             "&nbsp;" +
                         "</td>" +
                     "</tr>" +
@@ -146,7 +150,7 @@ public class Mailer {
                         "</td>" +
                     "</tr>" +
                     "<tr>" +
-                        "<td style=\"line-height: 0; height: 24px; font-size: 0px;\">" +
+                        "<td style=\"line-height: 0; height: 20px; font-size: 0px;\">" +
                             "&nbsp;" +
                         "</td>" +
                     "</tr>" +
@@ -156,13 +160,18 @@ public class Mailer {
                         "</td>" +
                     "</tr>" +
                     "<tr>" +
-                        "<td style=\"line-height: 0; height: 24px; font-size: 0px;\">" +
-                                "&nbsp;" +
+                        "<td style=\"line-height: 0; height: 20px; font-size: 0px;\">" +
+                            "&nbsp;" +
                         "</td>" +
                     "</tr>" +
                     "<tr>" +
                         "<td align=\"center\" style=\"font-size: 16px; font-weight: bold; color: rgb(102, 102, 102)\">" +
                             "© 2014-2015 ChalkPE. All rights reserved." +
+                        "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td style=\"line-height: 0; height: 4px; font-size: 0px;\">" +
+                            "&nbsp;" +
                         "</td>" +
                     "</tr>" +
                     "<tr>" +
@@ -227,17 +236,16 @@ public class Mailer {
     }
 
     public static void sendViolation(Violation violation, Object[] recipients){
-        String prefix = violation.getPrefix();
-        String subject = violation.getName();
-        String body = String.format("%s\n\n사유: %s\n수준: %s\n작성자: %s", String.join("\n", Arrays.asList(violation.getViolations()).stream().map(Data::toString).collect(Collectors.toList())), violation.getName(), violation.getPrefix(), violation.getViolator());
+        String body = String.format("[%s] %s\n\n%s\n\n작성자: %s", violation.getLevel().toString(), violation.getName(), String.join("\n", Arrays.asList(violation.getViolations()).stream().map(Data::toString).collect(Collectors.toList())), violation.getViolator());
 
-        violation.getTarget().getLogger().warning(String.format("[%s] %s\n%s\n", prefix, subject, body));
-        sendMail(prefix, subject, body, recipients);
+        violation.getTarget().getLogger().warning(body);
+        violation.getTarget().getLogger().newLine();
+
+        sendMail(violation.getPrefix(), violation.getName(), body, recipients);
     }
 
     public static String getFooter(){
-        return String.format(
-                "발신 시각: %s<br>서버 정보: %s - %s %s<br>자바 버전: %s<br>타코야키 버전: %s",
+        return String.format("발신 시각: %s\n서버 정보: %s - %s %s\n자바 버전: %s\n타코야키 버전: %s",
                 Logger.SIMPLE_DATE_FORMAT.format(new Date()), System.getProperty("user.name"), System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("java.version"), Takoyaki.VERSION
         );
     }

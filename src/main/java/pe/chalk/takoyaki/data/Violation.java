@@ -16,9 +16,6 @@
 
 package pe.chalk.takoyaki.data;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-20
@@ -27,33 +24,29 @@ public class Violation extends Data {
     private static final long serialVersionUID = 808421183210237888L;
 
     public enum Level {
-        DEMOTE,
+        DEMOTE("강등"),
 
-        REMOVE,
-        WARN,
-        ACTIVITY_STOP_ONE_DAY,
-        ACTIVITY_STOP_ONE_WEEK,
-        ACTIVITY_STOP_ONE_MONTH,
-        ACTIVITY_STOP_LIMITLESS,
-        SECEDE,
-        SECEDE_AND_REJECT_REJOIN,
-        ACCUSE
+        REMOVE("삭제"),
+        WARN("주의"),
+        ACTIVITY_STOP_ONE_DAY("활동 정지 1일"),
+        ACTIVITY_STOP_ONE_WEEK("활동 정지 7일"),
+        ACTIVITY_STOP_ONE_MONTH("활동 정지 30일"),
+        ACTIVITY_STOP_LIMITLESS("무기한 활동 정지"),
+        SECEDE("강제 탈퇴"),
+        SECEDE_AND_REJECT_REJOIN("재가입 불가 강제 탈퇴"),
+        ACCUSE("고소");
+
+        private String name;
+
+        Level(String name){
+            this.name = name;
+        }
+
+        @Override
+        public String toString(){
+            return this.name;
+        }
     }
-
-    @SuppressWarnings("serial")
-    public static Map<Level, String> prefixMap = new HashMap<Level, String>(){{
-        put(Level.DEMOTE,                   "강등");
-
-        put(Level.REMOVE,                   "삭제");
-        put(Level.WARN,                     "주의");
-        put(Level.ACTIVITY_STOP_ONE_DAY,    "활동 정지 1일");
-        put(Level.ACTIVITY_STOP_ONE_WEEK,   "활동 정지 7일");
-        put(Level.ACTIVITY_STOP_ONE_MONTH,  "활동 정지 30일");
-        put(Level.ACTIVITY_STOP_LIMITLESS,  "무기한 활동 정지");
-        put(Level.SECEDE,                   "강제 탈퇴");
-        put(Level.SECEDE_AND_REJECT_REJOIN, "재가입 불가 강제 탈퇴");
-        put(Level.ACCUSE,                   "고소");
-    }};
 
     private String name;
     private Level level;
@@ -89,6 +82,6 @@ public class Violation extends Data {
 
     @Override
     public String getPrefix(){
-        return Violation.prefixMap.get(this.getLevel());
+        return this.getLevel().toString();
     }
 }
