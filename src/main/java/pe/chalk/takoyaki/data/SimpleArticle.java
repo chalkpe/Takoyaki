@@ -16,6 +16,7 @@
 
 package pe.chalk.takoyaki.data;
 
+import org.json.JSONObject;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
@@ -23,9 +24,7 @@ import pe.chalk.takoyaki.utils.TextFormat;
  * @since 2015-04-12
  */
 public class SimpleArticle extends Data {
-    private static final long serialVersionUID = 4569340242232623025L;
-
-    private int id;
+    private final int id;
     private String title;
     private int commentCount;
 
@@ -62,5 +61,16 @@ public class SimpleArticle extends Data {
     @Override
     public String getPrefix(){
         return String.valueOf(this.getId());
+    }
+
+    @Override
+    public JSONObject toJSON(){
+        JSONObject jsonObject = super.toJSON();
+
+        jsonObject.put("id", this.getId());
+        jsonObject.put("title", this.getTitle());
+        jsonObject.put("commentCount", this.getCommentCount());
+
+        return jsonObject;
     }
 }

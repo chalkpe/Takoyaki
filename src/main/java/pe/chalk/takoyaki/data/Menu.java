@@ -16,13 +16,13 @@
 
 package pe.chalk.takoyaki.data;
 
+import org.json.JSONObject;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-16
  */
 public class Menu extends Data {
-    private static final long serialVersionUID = 3467717725668913420L;
-
     private final int id;
     private final String name;
 
@@ -54,5 +54,15 @@ public class Menu extends Data {
     @Override
     public String getPrefix(){
         return this.getName();
+    }
+
+    @Override
+    public JSONObject toJSON(){
+        JSONObject jsonObject = super.toJSON();
+
+        jsonObject.put("id", this.getId());
+        jsonObject.put("name", this.getName());
+
+        return jsonObject;
     }
 }

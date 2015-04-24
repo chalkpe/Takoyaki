@@ -17,7 +17,6 @@
 package pe.chalk.takoyaki.plugin;
 
 import org.mozilla.javascript.*;
-import org.mozilla.javascript.json.JsonParser;
 import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
@@ -25,6 +24,8 @@ import pe.chalk.takoyaki.logger.PrefixedLogger;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.stream.Collectors;
 
 /**
@@ -37,14 +38,14 @@ public class Plugin implements Prefix {
     private Scriptable scriptable;
     private PrefixedLogger logger;
 
-    private File dataFile;
+    private Path dataPath;
 
     public Plugin(File file) throws JavaScriptException, IOException{
         this.file = file;
         this.name = file.getName().substring(0, file.getName().lastIndexOf("."));
         this.logger = Takoyaki.getInstance().getLogger().getPrefixed(this);
 
-        this.dataFile = new File(this.getFile().getParentFile(), this.getName().concat(".ser"));
+        this.dataPath = new File(this.getFile().getParentFile(), this.getName().concat(".json")).toPath();
 
         Context context = Context.enter();
         try{
@@ -53,7 +54,7 @@ public class Plugin implements Prefix {
             ScriptableObject.putProperty(this.getScriptable(), "logger", this.getLogger());
 
             try{
-                String json = Files.lines(this.dataFile.toPath(), Charset.forName("UTF-8")).collect(Collectors.joining());
+                String json = Files.lines(this.dataPath, Charset.forName("UTF-8")).collect(Collectors.joining());
                 this.call("setData", new Object[]{json});
             }catch(Exception ignored){}
         }finally{
@@ -97,8 +98,8 @@ public class Plugin implements Prefix {
         try{
             Object data = this.call("getData", Context.emptyArgs);
             if(data != null){
-                try(ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(this.dataFile))){
-                    stream.writeObject(data);
+                try(BufferedWriter writer = Files.newBufferedWriter(this.dataPath, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)){
+                    writer.write(data.toString());
                 }catch(IOException ignored){}
             }
         }finally{

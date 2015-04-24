@@ -16,6 +16,8 @@
 
 package pe.chalk.takoyaki.data;
 
+import org.json.JSONObject;
+import org.mozilla.javascript.annotations.JSFunction;
 import pe.chalk.takoyaki.Target;
 
 import javax.mail.internet.AddressException;
@@ -26,8 +28,6 @@ import javax.mail.internet.InternetAddress;
  * @since 2015-04-07
  */
 public class Member extends Data {
-    private static final long serialVersionUID = 3833289394713235574L;
-
     private static final String DEFAULT_DISPLAY_ID = "********";
 
     private String id;
@@ -70,5 +70,15 @@ public class Member extends Data {
     @Override
     public String getPrefix(){
         return this.getId();
+    }
+
+    @Override
+    public JSONObject toJSON(){
+        JSONObject jsonObject = super.toJSON();
+
+        jsonObject.put("id", this.getId());
+        jsonObject.put("name", this.getName());
+
+        return jsonObject;
     }
 }

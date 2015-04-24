@@ -16,19 +16,16 @@
 
 package pe.chalk.takoyaki.data;
 
+import org.json.JSONObject;
 import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.logger.Prefix;
-
-import java.io.Serializable;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public abstract class Data implements Prefix, Serializable {
-    private static final long serialVersionUID = -4691808370381770362L;
-
+public abstract class Data implements Prefix {
     private final int targetId;
     private final long creationTime;
 
@@ -47,5 +44,14 @@ public abstract class Data implements Prefix, Serializable {
 
     public long getCreationTime(){
         return this.creationTime;
+    }
+
+    public JSONObject toJSON(){
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("class", this.getClass().getCanonicalName());
+        jsonObject.put("creationTime", this.getCreationTime());
+
+        return jsonObject;
     }
 }

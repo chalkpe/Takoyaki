@@ -16,13 +16,13 @@
 
 package pe.chalk.takoyaki.data;
 
+import org.json.JSONObject;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-20
  */
 public class Violation extends Data {
-    private static final long serialVersionUID = 808421183210237888L;
-
     public enum Level {
         DEMOTE("강등"),
 
@@ -83,5 +83,17 @@ public class Violation extends Data {
     @Override
     public String getPrefix(){
         return this.getLevel().toString();
+    }
+
+    @Override
+    public JSONObject toJSON(){
+        JSONObject jsonObject = super.toJSON();
+
+        jsonObject.put("name", this.getName());
+        jsonObject.put("level", this.getLevel());
+        jsonObject.put("violator", this.getViolator());
+        jsonObject.put("violations", this.getViolations());
+
+        return jsonObject;
     }
 }

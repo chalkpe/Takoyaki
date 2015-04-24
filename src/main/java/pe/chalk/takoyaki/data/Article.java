@@ -16,6 +16,7 @@
 
 package pe.chalk.takoyaki.data;
 
+import org.json.JSONObject;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
@@ -23,8 +24,6 @@ import pe.chalk.takoyaki.utils.TextFormat;
  * @since 2015-04-07
  */
 public class Article extends SimpleArticle {
-    private static final long serialVersionUID = -1055443610669214310L;
-    
     private final Member writer;
 
     private String head;
@@ -52,31 +51,31 @@ public class Article extends SimpleArticle {
     }
 
     public Member getWriter(){
-        return writer;
+        return this.writer;
     }
 
     public String getHead(){
-        return head;
+        return this.head;
     }
 
     public String getUploadDate(){
-        return uploadDate;
+        return this.uploadDate;
     }
 
     public int getMenuId(){
-        return menuId;
+        return this.menuId;
     }
 
     public int getViewCount(){
-        return viewCount;
+        return this.viewCount;
     }
 
     public int getRecommendedCount(){
-        return recommendedCount;
+        return this.recommendedCount;
     }
 
     public boolean isQuestion(){
-        return isQuestion;
+        return this.isQuestion;
     }
 
     public boolean hasHead(){
@@ -91,5 +90,20 @@ public class Article extends SimpleArticle {
                 + (this.hasHead() ? TextFormat.LIGHT_PURPLE + "[" + this.getHead() + "] " + TextFormat.RESET : "")
                 + this.getTitle()
                 + TextFormat.DARK_AQUA + " by " + this.getWriter().toString() + TextFormat.GOLD + " at " + this.getUploadDate() + TextFormat.RESET;
+    }
+
+    @Override
+    public JSONObject toJSON(){
+        JSONObject jsonObject = super.toJSON();
+
+        jsonObject.put("writer", this.getWriter());
+        jsonObject.put("head", this.getHead());
+        jsonObject.put("uploadDate", this.getUploadDate());
+        jsonObject.put("menuId", this.getMenuId());
+        jsonObject.put("viewCount", this.getViewCount());
+        jsonObject.put("recommendedCount", this.getRecommendedCount());
+        jsonObject.put("isQuestion", this.isQuestion());
+
+        return jsonObject;
     }
 }
