@@ -100,7 +100,7 @@ public class Takoyaki implements Prefix {
                 Takoyaki.this.getLogger().newLine();
                 Takoyaki.this.getLogger().debug("*** FINALIZATION RUNNING ***");
 
-                Takoyaki.this.getPlugins().forEach(Plugin::saveData);
+                Takoyaki.this.getPlugins().forEach(plugin -> plugin.call("onDistroy", Context.emptyArgs));
             }
         });
         this.isAlive = false;

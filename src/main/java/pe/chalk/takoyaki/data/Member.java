@@ -17,8 +17,6 @@
 package pe.chalk.takoyaki.data;
 
 import org.json.JSONObject;
-import org.mozilla.javascript.annotations.JSFunction;
-import pe.chalk.takoyaki.Target;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;

@@ -21,12 +21,10 @@ import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.stream.Collectors;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -38,25 +36,15 @@ public class Plugin implements Prefix {
     private Scriptable scriptable;
     private PrefixedLogger logger;
 
-    private Path dataPath;
-
-    public Plugin(File file) throws JavaScriptException, IOException{
+    public Plugin(File file) throws JavaScriptException, IOException {
         this.file = file;
         this.name = file.getName().substring(0, file.getName().lastIndexOf("."));
         this.logger = Takoyaki.getInstance().getLogger().getPrefixed(this);
-
-        this.dataPath = new File(this.getFile().getParentFile(), this.getName().concat(".json")).toPath();
-
         Context context = Context.enter();
         try{
             this.scriptable = new ImporterTopLevel(context);
             context.evaluateReader(this.getScriptable(), new FileReader(this.getFile()), this.getName(), 0, null);
             ScriptableObject.putProperty(this.getScriptable(), "logger", this.getLogger());
-
-            try{
-                String json = Files.lines(this.dataPath, Charset.forName("UTF-8")).collect(Collectors.joining());
-                this.call("setData", new Object[]{json});
-            }catch(Exception ignored){}
         }finally{
             Context.exit();
         }
@@ -91,20 +79,6 @@ public class Plugin implements Prefix {
             Context.exit();
         }
         return null;
-    }
-
-    public void saveData(){
-        Context.enter();
-        try{
-            Object data = this.call("getData", Context.emptyArgs);
-            if(data != null){
-                try(BufferedWriter writer = Files.newBufferedWriter(this.dataPath, Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)){
-                    writer.write(data.toString());
-                }catch(IOException ignored){}
-            }
-        }finally{
-            Context.exit();
-        }
     }
 
     @Override
