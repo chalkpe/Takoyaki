@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
  */
 public enum TextFormat {
     RESET         ('r',  0, ""),
+    OBFUSCATED    ('k', -1, ""),
     BOLD          ('l',  1, "font-weight: bold;"),
     STRIKETHROUGH ('m',  9, "text-decoration: line-through;"),
     UNDERLINE     ('n',  4, "text-decoration: underline;"),
@@ -64,29 +65,29 @@ public enum TextFormat {
 
     private final char minecraftCode;
     private final int ansiCode;
-    private final String css;
+    private final String styleAttribute;
 
-    TextFormat(char minecraftCode, int ansiCode, String css){
+    TextFormat(char minecraftCode, int ansiCode, String styleAttribute){
         this.minecraftCode = minecraftCode;
         this.ansiCode = ansiCode;
-        this.css = css;
-    }
-
-    public char getMinecraftCode(){
-        return this.minecraftCode;
-    }
-
-    public String getAnsiCode(){
-        return String.format(FORMAT_ANSI, ansiCode);
-    }
-
-    public String getCss(){
-        return this.css;
+        this.styleAttribute = styleAttribute;
     }
 
     @Override
     public String toString(){
-        return String.format(TextFormat.FORMAT_MINECRAFT, this.getMinecraftCode());
+        return this.getMinecraftCode();
+    }
+
+    public String getMinecraftCode(){
+        return String.format(TextFormat.FORMAT_MINECRAFT, this.minecraftCode);
+    }
+
+    public String getAnsiCode(){
+        return this.ansiCode == -1 ? "" : String.format(FORMAT_ANSI, ansiCode);
+    }
+
+    public String getHtmlTag(){
+        return String.format(FORMAT_HTML_OPEN, this.styleAttribute);
     }
 
     public enum Type {
@@ -122,8 +123,8 @@ public enum TextFormat {
                         matcher.appendReplacement(buffer, TextFormat.getCloseTags(indentLevel));
                         indentLevel = 0;
                     }else{
+                        matcher.appendReplacement(buffer, textFormat.getHtmlTag());
                         indentLevel++;
-                        matcher.appendReplacement(buffer, String.format(FORMAT_HTML_OPEN, textFormat.getCss()));
                     }
                 }
                 matcher.appendTail(buffer);
