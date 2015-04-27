@@ -28,35 +28,45 @@ public class PrefixedLogger implements Loggable {
         this.parent = parent;
         this.prefix = prefix;
     }
+
+    @Override
+    public String println(String message){
+        return this.parent.println(message);
+    }
+
+    @Override
+    public String printf(String message, String... args){
+        return this.parent.printf(message, args);
+    }
+
+    @Override
+    public String newLine(){
+        return this.parent.newLine();
+    }
     
     @Override
-    public void newLine(){
-        this.parent.newLine();
-    }
-    
-    @Override
-    public void debug(String message){
-        this.parent.debug(String.format("[%s] %s", prefix.getPrefix(), message));
+    public String debug(String message, String... args){
+        return this.parent.debug(String.format("[%s] %s", prefix.getPrefix(), message), args);
     }
 
     @Override
-    public void info(String message){
-        this.parent.info(String.format("[%s] %s", prefix.getPrefix(), message));
+    public String info(String message, String... args){
+        return this.parent.info(String.format("[%s] %s", prefix.getPrefix(), message), args);
     }
 
     @Override
-    public void warning(String message){
-        this.parent.warning(String.format("[%s] %s", prefix.getPrefix(), message));
+    public String warning(String message, String... args){
+        return this.parent.warning(String.format("[%s] %s", prefix.getPrefix(), message), args);
     }
 
     @Override
-    public void critical(String message){
-        this.parent.critical(String.format("[%s] %s", prefix.getPrefix(), message));
+    public String critical(String message, String... args){
+        return this.parent.critical(String.format("[%s] %s", prefix.getPrefix(), message), args);
     }
 
     @Override
-    public void error(String message){
-        this.parent.error(String.format("[%s] %s", prefix.getPrefix(), message));
+    public String error(String message, String... args){
+        return this.parent.error(String.format("[%s] %s", prefix.getPrefix(), message), args);
     }
 
     public PrefixedLogger sub(Prefix prefix){

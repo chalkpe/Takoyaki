@@ -16,65 +16,55 @@
 
 package pe.chalk.takoyaki.logger;
 
-import pe.chalk.takoyaki.utils.TextFormat;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-14
  */
-public abstract class Logger implements Loggable {
+public class Logger implements Loggable {
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
-    public static Map<Level, String> prefixMap = new HashMap<Level, String>(){{
-        put(Level.DEBUG,    "DEBUG");
-        put(Level.INFO,     "INFO");
-        put(Level.WARNING,  "WARNING");
-        put(Level.CRITICAL, "CRITICAL");
-        put(Level.ERROR,    "ERROR");
-    }};
-
-    public static Map<Level, String> colorMap = new HashMap<Level, String>(){{
-        put(Level.DEBUG,    TextFormat.RESET.toString() + TextFormat.DARK_GRAY + TextFormat.ITALIC);
-        put(Level.INFO,     TextFormat.RESET.toString() + TextFormat.WHITE);
-        put(Level.WARNING,  TextFormat.RESET.toString() + TextFormat.YELLOW);
-        put(Level.CRITICAL, TextFormat.RESET.toString() + TextFormat.LIGHT_PURPLE);
-        put(Level.ERROR,    TextFormat.RESET.toString() + TextFormat.RED);
-    }};
-
-    protected abstract void log(String message);
-
-    protected void print(Level level, String message, Date date){
-        log(String.format("%s[%s] [%s] %s", colorMap.get(level), Logger.SIMPLE_DATE_FORMAT.format(date == null ? new Date() : date), prefixMap.get(level), message));
+    @Override
+    public String println(String message){
+        System.out.println(message);
+        return message;
     }
 
     @Override
-    public void debug(String message){
-        print(Level.DEBUG, message, null);
+    public String printf(String message, String... args){
+        return println(String.format("[%s] %s", Logger.SIMPLE_DATE_FORMAT.format(new Date()), String.format(message, args)));
     }
 
     @Override
-    public void info(String message){
-        print(Level.INFO, message, null);
+    public String newLine(){
+        return this.println("");
     }
 
     @Override
-    public void warning(String message){
-        print(Level.WARNING, message, null);
+    public String debug(String message, String... args){
+        return printf(String.format("%s[%s] %s", Level.DEBUG.getFormats(), Level.DEBUG.getPrefix(), message), args);
     }
 
     @Override
-    public void critical(String message){
-        print(Level.CRITICAL, message, null);
+    public String info(String message, String... args){
+        return printf(String.format("%s[%s] %s", Level.INFO.getFormats(), Level.INFO.getPrefix(), message), args);
     }
 
     @Override
-    public void error(String message){
-        print(Level.ERROR, message, null);
+    public String warning(String message, String... args){
+        return printf(String.format("%s[%s] %s", Level.WARNING.getFormats(), Level.WARNING.getPrefix(), message), args);
+    }
+
+    @Override
+    public String critical(String message, String... args){
+        return printf(String.format("%s[%s] %s", Level.CRITICAL.getFormats(), Level.CRITICAL.getPrefix(), message), args);
+    }
+
+    @Override
+    public String error(String message, String... args){
+        return printf(String.format("%s[%s] %s", Level.ERROR.getFormats(), Level.ERROR.getPrefix(), message), args);
     }
 
     public PrefixedLogger getPrefixed(Prefix prefix){

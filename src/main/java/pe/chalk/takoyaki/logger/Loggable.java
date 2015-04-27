@@ -16,20 +16,49 @@
 
 package pe.chalk.takoyaki.logger;
 
+import pe.chalk.takoyaki.utils.TextFormat;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-17
  */
 public interface Loggable {
-    enum Level {
-        DEBUG, INFO, WARNING, CRITICAL, ERROR
+    enum Level implements Prefix {
+        DEBUG    ("DEBUG",    Arrays.asList(TextFormat.RESET, TextFormat.ITALIC, TextFormat.DARK_GRAY)),
+        INFO     ("INFO",     Arrays.asList(TextFormat.RESET, TextFormat.WHITE)),
+        WARNING  ("WARNING",  Arrays.asList(TextFormat.RESET, TextFormat.YELLOW)),
+        CRITICAL ("CRITICAL", Arrays.asList(TextFormat.RESET, TextFormat.LIGHT_PURPLE)),
+        ERROR    ("ERROR",    Arrays.asList(TextFormat.RESET, TextFormat.RED));
+
+        private final String prefix;
+        private final String formats;
+
+        Level(String prefix, List<TextFormat> formats){
+            this.prefix = prefix;
+            this.formats = formats.stream().map(TextFormat::toString).collect(Collectors.joining());
+        }
+
+        public String getPrefix(){
+            return this.prefix;
+        }
+
+        public String getFormats(){
+            return this.formats;
+        }
     }
-    
-    void newLine();
-    
-    void debug(String message);
-    void info(String message);
-    void warning(String message);
-    void critical(String message);
-    void error(String message);
+
+    String println(String message);
+    String printf(String message, String... args);
+
+    String newLine();
+
+    String debug(String message, String... args);
+    String info(String message, String... args);
+    String warning(String message, String... args);
+    String critical(String message, String... args);
+    String error(String message, String... args);
 }

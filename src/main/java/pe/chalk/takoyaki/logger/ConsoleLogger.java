@@ -18,18 +18,22 @@ package pe.chalk.takoyaki.logger;
 
 import pe.chalk.takoyaki.utils.TextFormat;
 
+import java.io.PrintStream;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-15
  */
 public class ConsoleLogger extends Logger {
-    @Override
-    public void newLine(){
-        System.out.println("");
+    public PrintStream out;
+
+    public ConsoleLogger(PrintStream out){
+        this.out = out;
     }
-    
+
     @Override
-    protected void log(String message){
-        System.out.println(TextFormat.replaceTo(TextFormat.Type.ANSI, message));
+    public String println(String message){
+        this.out.println(TextFormat.replaceTo(TextFormat.Type.NONE, message));
+        return super.println(TextFormat.replaceTo(TextFormat.Type.ANSI, message));
     }
 }

@@ -22,11 +22,12 @@ import org.json.JSONObject;
 import org.mozilla.javascript.*;
 import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.ConsoleLogger;
-import pe.chalk.takoyaki.logger.Logger;
 import pe.chalk.takoyaki.plugin.Plugin;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -45,7 +46,7 @@ public class Takoyaki implements Prefix {
 
     private List<Target> targets;
     private List<Plugin> plugins;
-    private Logger logger;
+    private ConsoleLogger logger;
 
     private boolean isAlive;
 
@@ -55,19 +56,27 @@ public class Takoyaki implements Prefix {
 
     public Takoyaki() throws JSONException, IOException{
         Takoyaki.instance = this;
-        this.logger = new ConsoleLogger();
+        this.logger = new ConsoleLogger(System.out);
 
+        JSONObject properties;
         try{
-            JSONObject properties = new JSONObject(Files.lines(Paths.get("properties.json"), Charset.forName("UTF-8")).collect(Collectors.joining()));
-
-            JSONArray targetsArray = properties.getJSONArray("targets");
-            this.targets = new ArrayList<>(targetsArray.length());
-            for(int i = 0; i < targetsArray.length(); i++){
-                this.targets.add(new Target(this, targetsArray.getJSONObject(i)));
-            }
+            properties = new JSONObject(Files.lines(Paths.get("properties.json"), Charset.forName("UTF-8")).collect(Collectors.joining()));
         }catch(IOException e){
             this.getLogger().error("properties.json 파일을 읽을 수 없습니다 : " + e.getMessage());
+
             System.exit(1);
+            return;
+        }
+
+        if(properties.has("options")){
+            JSONObject optionsObject = properties.getJSONObject("options");
+            this.getLogger().out = new PrintStream(new FileOutputStream(optionsObject.getString("output"), true));
+        }
+
+        JSONArray targetsArray = properties.getJSONArray("targets");
+        this.targets = new ArrayList<>(targetsArray.length());
+        for(int i = 0; i < targetsArray.length(); i++){
+            this.targets.add(new Target(this, targetsArray.getJSONObject(i)));
         }
 
         File pluginDirectory = new File("plugins");
@@ -99,6 +108,7 @@ public class Takoyaki implements Prefix {
             public void run(){
                 Takoyaki.this.getLogger().newLine();
                 Takoyaki.this.getLogger().debug("*** FINALIZATION RUNNING ***");
+                Takoyaki.this.getLogger().newLine();
 
                 Takoyaki.this.getPlugins().forEach(plugin -> plugin.call("onDistroy", Context.emptyArgs));
             }
@@ -123,7 +133,7 @@ public class Takoyaki implements Prefix {
         return this.plugins;
     }
 
-    public Logger getLogger(){
+    public ConsoleLogger getLogger(){
         return this.logger;
     }
 

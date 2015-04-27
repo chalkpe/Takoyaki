@@ -14,5 +14,8 @@
       "timeout": 2000,
       "filters": ["article", "commentary", "visitation"]
     }
-  ]
+  ],
+  "options": {
+    "output": "Takoyaki.log"
+  }
 }
