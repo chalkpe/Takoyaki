@@ -108,7 +108,7 @@ public class Target extends Thread implements Prefix {
                 .map(element -> new Menu(this.getClubId(), Integer.parseInt(element.id().substring(8)), element.text()))
                 .collect(Collectors.toList());
 
-        Files.write(Paths.get(this.getAddress() + "-menus.json"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(Paths.get(this.getAddress() + "-menus.log"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
         this.articleUrl = new URL(String.format(STRING_ARTICLE, this.getClubId()));
 
