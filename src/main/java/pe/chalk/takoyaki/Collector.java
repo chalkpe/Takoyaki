@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
- * @since 2014-2015-04-12
+ * @since 2015-04-12
  */
 public class Collector {
     private List<Filter<? extends Data>> filters;
