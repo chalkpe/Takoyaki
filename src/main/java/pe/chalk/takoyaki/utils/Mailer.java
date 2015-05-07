@@ -224,7 +224,7 @@ public class Mailer {
                 transport.sendMessage(message, message.getAllRecipients());
                 transport.close();
 
-                Takoyaki.getInstance().getLogger().debug(String.format("메일이 성공적으로 발송되었습니다! (제목: %s)", subject));
+                Takoyaki.getInstance().getLogger().debug(String.format("메일이 성공적으로 발송되었습니다! (제목: %s, 수취인 목록: %s)", subject, Arrays.asList(message.getAllRecipients()).stream().map(Address::toString).collect(Collectors.joining(", "))));
             }catch(Exception e){
                 Takoyaki.getInstance().getLogger().error(e.getMessage());
             }

@@ -97,9 +97,9 @@ public class Takoyaki implements Prefix {
         }
 
         Path pluginsPath = Paths.get("plugins");
-        if(Files.exists(pluginsPath)){
+        if(!Files.exists(pluginsPath)){
             Files.createDirectories(pluginsPath);
-            this.getLogger().debug("plugin 디렉토리를 생성했습니다");
+            this.getLogger().debug("plugins 디렉토리를 생성했습니다");
         }
 
         this.plugins = new ArrayList<>();
