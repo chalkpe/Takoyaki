@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * @since 2015-04-07
  */
 public class Takoyaki implements Prefix {
-    public static final String VERSION = "2.0";
+    public static final String VERSION = "2.0.1-SNAPSHOT";
 
     private static Takoyaki instance = null;
     private static List<String> DEFAULT_CONFIG = Arrays.asList(
