@@ -16,6 +16,7 @@
     }
   ],
   "options": {
-    "output": "Takoyaki.log"
+    "output": "Takoyaki.log",
+    "excluded": ["debug.js"]
   }
 }
