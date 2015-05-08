@@ -1,22 +1,30 @@
 {
+  "options": {
+    "output": "Takoyaki.log",
+    "excluded": ["debug.js"]
+  },
   "targets": [
     {
       "address": "minecraftpe",
       "prefix": "M.K",
       "interval": 2500,
-      "timeout": 1000,
-      "filters": ["article", "commentary", "visitation"]
+      "filters": [
+        "article",
+        "commentary",
+        "visitation"
+      ],
+      "timeout": 1000
     },
     {
       "address": "ourmcspace",
       "prefix": "PMC",
       "interval": 5000,
-      "timeout": 2000,
-      "filters": ["article", "commentary", "visitation"]
+      "filters": [
+        "article",
+        "commentary",
+        "visitation"
+      ],
+      "timeout": 2000
     }
-  ],
-  "options": {
-    "output": "Takoyaki.log",
-    "excluded": ["debug.js"]
-  }
+  ]
 }

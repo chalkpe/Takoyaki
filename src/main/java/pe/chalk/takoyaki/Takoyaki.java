@@ -96,14 +96,14 @@ public class Takoyaki implements Prefix {
             this.targets.add(new Target(this, targetsArray.getJSONObject(i)));
         }
 
-        Path pluginsPath = Paths.get("plugins");
+        Path pluginsPath = Paths.get("plugins/");
         if(!Files.exists(pluginsPath)){
             Files.createDirectories(pluginsPath);
             this.getLogger().debug("plugins 디렉토리를 생성했습니다");
         }
 
         this.plugins = new ArrayList<>();
-        Files.list(pluginsPath).filter(path -> path.endsWith(".js") && !excluded.contains(path.getFileName().toString())).map(Path::toFile).forEach(pluginFile -> {
+        Files.list(pluginsPath).filter(path -> path.getFileName().toString().endsWith(".js") && !excluded.contains(path.getFileName().toString())).map(Path::toFile).forEach(pluginFile -> {
             try{
                 Plugin plugin = new Plugin(pluginFile);
 
@@ -128,7 +128,7 @@ public class Takoyaki implements Prefix {
             }
         });
 
-        Files.write(propertiesPath, properties.toString().getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     public List<Target> getTargets(){
