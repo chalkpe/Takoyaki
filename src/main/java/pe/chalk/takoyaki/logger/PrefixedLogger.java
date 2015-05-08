@@ -45,28 +45,28 @@ public class PrefixedLogger implements Loggable {
     }
     
     @Override
-    public String debug(String message, String... args){
-        return this.parent.debug(String.format("[%s] %s", prefix.getPrefix(), message), args);
+    public String debug(String message){
+        return this.parent.debug(String.format("[%s] %s", prefix.getPrefix(), message));
     }
 
     @Override
-    public String info(String message, String... args){
-        return this.parent.info(String.format("[%s] %s", prefix.getPrefix(), message), args);
+    public String info(String message){
+        return this.parent.info(String.format("[%s] %s", prefix.getPrefix(), message));
     }
 
     @Override
-    public String warning(String message, String... args){
-        return this.parent.warning(String.format("[%s] %s", prefix.getPrefix(), message), args);
+    public String warning(String message){
+        return this.parent.warning(String.format("[%s] %s", prefix.getPrefix(), message));
     }
 
     @Override
-    public String critical(String message, String... args){
-        return this.parent.critical(String.format("[%s] %s", prefix.getPrefix(), message), args);
+    public String critical(String message){
+        return this.parent.critical(String.format("[%s] %s", prefix.getPrefix(), message));
     }
 
     @Override
-    public String error(String message, String... args){
-        return this.parent.error(String.format("[%s] %s", prefix.getPrefix(), message), args);
+    public String error(String message){
+        return this.parent.error(String.format("[%s] %s", prefix.getPrefix(), message));
     }
 
     public PrefixedLogger sub(Prefix prefix){

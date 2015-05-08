@@ -56,9 +56,9 @@ public interface Loggable {
 
     String newLine();
 
-    String debug(String message, String... args);
-    String info(String message, String... args);
-    String warning(String message, String... args);
-    String critical(String message, String... args);
-    String error(String message, String... args);
+    String debug(String message);
+    String info(String message);
+    String warning(String message);
+    String critical(String message);
+    String error(String message);
 }

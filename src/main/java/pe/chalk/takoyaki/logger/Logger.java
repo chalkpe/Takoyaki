@@ -16,6 +16,8 @@
 
 package pe.chalk.takoyaki.logger;
 
+import pe.chalk.takoyaki.utils.TextFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -34,7 +36,7 @@ public class Logger implements Loggable {
 
     @Override
     public String printf(String message, String... args){
-        return println(String.format("[%s] %s", Logger.SIMPLE_DATE_FORMAT.format(new Date()), String.format(message, args)));
+        return println(String.format("[%s] %s%s", Logger.SIMPLE_DATE_FORMAT.format(new Date()), String.format(message, args), TextFormat.RESET.toString()));
     }
 
     @Override
@@ -43,28 +45,28 @@ public class Logger implements Loggable {
     }
 
     @Override
-    public String debug(String message, String... args){
-        return printf(String.format("%s[%s] %s", Level.DEBUG.getFormats(), Level.DEBUG.getPrefix(), message), args);
+    public String debug(String message){
+        return printf("%s[%s] %s", Level.DEBUG.getFormats(), Level.DEBUG.getPrefix(), message);
     }
 
     @Override
-    public String info(String message, String... args){
-        return printf(String.format("%s[%s] %s", Level.INFO.getFormats(), Level.INFO.getPrefix(), message), args);
+    public String info(String message){
+        return printf("%s[%s] %s", Level.INFO.getFormats(), Level.INFO.getPrefix(), message);
     }
 
     @Override
-    public String warning(String message, String... args){
-        return printf(String.format("%s[%s] %s", Level.WARNING.getFormats(), Level.WARNING.getPrefix(), message), args);
+    public String warning(String message){
+        return printf("%s[%s] %s", Level.WARNING.getFormats(), Level.WARNING.getPrefix(), message);
     }
 
     @Override
-    public String critical(String message, String... args){
-        return printf(String.format("%s[%s] %s", Level.CRITICAL.getFormats(), Level.CRITICAL.getPrefix(), message), args);
+    public String critical(String message){
+        return printf("%s[%s] %s", Level.CRITICAL.getFormats(), Level.CRITICAL.getPrefix(), message);
     }
 
     @Override
-    public String error(String message, String... args){
-        return printf(String.format("%s[%s] %s", Level.ERROR.getFormats(), Level.ERROR.getPrefix(), message), args);
+    public String error(String message){
+        return printf("%s[%s] %s", Level.ERROR.getFormats(), Level.ERROR.getPrefix(), message);
     }
 
     public PrefixedLogger getPrefixed(Prefix prefix){
