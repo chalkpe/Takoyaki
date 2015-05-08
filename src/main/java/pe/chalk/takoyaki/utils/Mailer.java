@@ -39,10 +39,8 @@ public class Mailer {
     public static String PASSWORD = null;
 
     public static final String FORMAT_HTML =
-            "<style>\n" +
-                "@import url(http://fonts.googleapis.com/css?family=Inconsolata);\n" +
-                "@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);\n" +
-            "</style>\n" +
+            "<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css' />" +
+            "<link href='http://fonts.googleapis.com/earlyaccess/nanumgothic.css' rel='stylesheet' type='text/css' />" +
             "<table align=\"center\" width=\"696\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding: 20px; background-color: white;\">" +
                 "<tbody>" +
                     "<tr>" +
