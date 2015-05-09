@@ -66,10 +66,22 @@ public class Plugin implements Prefix {
         return this.logger;
     }
 
+    public Object get(String name){
+        Context.enter();
+        try{
+            return ScriptableObject.getProperty(this.getScriptable(), name);
+        }catch(Exception e){
+            this.getLogger().error(e.getMessage());
+            return null;
+        }finally{
+            Context.exit();
+        }
+    }
+
     public Object call(String functionName, Object[] args){
         Context context = Context.enter();
         try{
-            Object object = ScriptableObject.getProperty(this.getScriptable(), functionName);
+            Object object = this.get(functionName);
             if(object != null && object instanceof Function){
                 return ((Function) object).call(context, scriptable, scriptable, args);
             }
