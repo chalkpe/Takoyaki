@@ -1,8 +1,5 @@
 {
-  "options": {
-    "output": "Takoyaki.log",
-    "excluded": ["debug.js"]
-  },
+  "options": {"excluded": ["debug.js"]},
   "targets": [
     {
       "address": "minecraftpe",

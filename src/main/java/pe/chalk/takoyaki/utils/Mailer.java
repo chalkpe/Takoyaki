@@ -180,6 +180,7 @@ public class Mailer {
                 "</tbody>" +
             "</table>";
 
+    private Mailer(){}
 
     public static void send(String subject, String body, Object[] recipients){
         new Thread(() -> {
@@ -222,7 +223,7 @@ public class Mailer {
                 transport.sendMessage(message, message.getAllRecipients());
                 transport.close();
 
-                Takoyaki.getInstance().getLogger().debug(String.format("메일이 성공적으로 발송되었습니다! (제목: %s, 수취인 목록: %s)", subject, Arrays.asList(message.getAllRecipients()).stream().map(Address::toString).collect(Collectors.joining(", "))));
+                Takoyaki.getInstance().getLogger().info(String.format("메일이 발송되었습니다: %s -> %s", subject, Arrays.asList(message.getAllRecipients()).stream().map(Address::toString).collect(Collectors.joining(", "))));
             }catch(Exception e){
                 Takoyaki.getInstance().getLogger().error(e.getMessage());
             }

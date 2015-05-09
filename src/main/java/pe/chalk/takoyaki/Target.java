@@ -26,6 +26,7 @@ import pe.chalk.takoyaki.data.Menu;
 import pe.chalk.takoyaki.filter.*;
 import pe.chalk.takoyaki.logger.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
+import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.io.IOException;
 import java.net.URL;
@@ -99,22 +100,17 @@ public class Target extends Thread implements Prefix {
 
         Document contentDocument = Jsoup.parse(this.contentUrl, this.getTimeout());
         this.setName(contentDocument.select("h1.d-none").text());
+
         Matcher clubIdMatcher = Target.PATTERN_CLUB_ID.matcher(contentDocument.head().getElementsByTag("script").first().html());
         if(!clubIdMatcher.find()){
             throw new IllegalArgumentException("Cannot find menuId of " + this.getName());
         }
+
         this.clubId = Integer.parseInt(clubIdMatcher.group(1));
-        this.menus = contentDocument.select("a[id^=menuLink]").stream()
-                .map(element -> new Menu(this.getClubId(), Integer.parseInt(element.id().substring(8)), element.text()))
-                .collect(Collectors.toList());
-
-        Files.write(Paths.get(this.getAddress() + "-menus.log"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-
+        this.menus = contentDocument.select("a[id^=menuLink]").stream().map(element -> new Menu(this.getClubId(), Integer.parseInt(element.id().substring(8)), element.text())).collect(Collectors.toList());
         this.articleUrl = new URL(String.format(STRING_ARTICLE, this.getClubId()));
 
-        this.getLogger().debug("카페명: " + this.getName() + " (ID: " + this.getClubId() + ")");
-        this.getLogger().debug("게시판 수: " + this.getMenus().size() + "개");
-        this.getLogger().newLine();
+        Files.write(Paths.get(this.getAddress() + "-menus.log"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     public Takoyaki getTakoyaki(){

@@ -47,20 +47,23 @@ public class Takoyaki implements Prefix {
     private static Takoyaki instance = null;
     private static List<String> DEFAULT_CONFIG = Arrays.asList(
             "{",
+            "  \"options\": {\"excluded\": [\"debug.js\"]},",
             "  \"targets\": [",
             "    {",
             "      \"address\": \"minecraftpe\",",
             "      \"prefix\": \"M.K\",",
             "      \"interval\": 2500,",
-            "      \"timeout\": 1000,",
-            "      \"filters\": [\"article\", \"commentary\", \"visitation\"]",
+            "      \"filters\": [",
+            "        \"article\",",
+            "        \"commentary\",",
+            "        \"visitation\"",
+            "      ],",
+            "      \"timeout\": 1000",
             "    }",
-            "  ],",
-            "  \"options\": {",
-            "    \"output\": \"Takoyaki.log\",",
-            "    \"excluded\": [\"debug.js\"]",
-            "  }",
+            "  ]",
             "}");
+
+    private List<String> excluded;
 
     private List<Target> targets;
     private List<Plugin> plugins;
@@ -74,20 +77,23 @@ public class Takoyaki implements Prefix {
 
     public Takoyaki() throws JSONException, IOException {
         Takoyaki.instance = this;
+        this.init();
+    }
+
+    private void init() throws JSONException, IOException {
+        this.logger = new ConsoleLogger(new PrintStream(new FileOutputStream("Takoyaki.log", true)));
 
         Path propertiesPath = Paths.get("properties.json");
         if(!Files.exists(propertiesPath)){
             Files.write(propertiesPath, DEFAULT_CONFIG, Charset.forName("UTF-8"), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
         }
         JSONObject properties = new JSONObject(Files.lines(propertiesPath, Charset.forName("UTF-8")).collect(Collectors.joining()));
+        Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
-        JSONObject optionsObject = properties.getJSONObject("options");
-        this.logger = new ConsoleLogger(new PrintStream(new FileOutputStream(optionsObject.getString("output"), true)));
-
-        JSONArray excludedArray = optionsObject.getJSONArray("excluded");
-        ArrayList<String> excluded = new ArrayList<>();
+        JSONArray excludedArray = properties.getJSONObject("options").getJSONArray("excluded");
+        this.excluded = new ArrayList<>();
         for(int i = 0; i < excludedArray.length(); i++){
-            excluded.add(excludedArray.getString(i));
+            this.excluded.add(excludedArray.getString(i));
         }
 
         JSONArray targetsArray = properties.getJSONArray("targets");
@@ -96,39 +102,39 @@ public class Takoyaki implements Prefix {
             this.targets.add(new Target(this, targetsArray.getJSONObject(i)));
         }
 
-        Path pluginsPath = Paths.get("plugins/");
+        this.loadPlugins();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            Takoyaki.this.getLogger().critical("*** FINALIZATION RUNNING ***");
+            Takoyaki.this.getPlugins().forEach(plugin -> plugin.call("onDestroy", Context.emptyArgs));
+        }));
+    }
+
+    private void loadPlugins() throws IOException {
+        Path pluginsPath = Paths.get("plugins");
         if(!Files.exists(pluginsPath)){
             Files.createDirectories(pluginsPath);
-            this.getLogger().debug("plugins 디렉토리를 생성했습니다");
         }
 
         this.plugins = new ArrayList<>();
-        Files.list(pluginsPath).filter(path -> path.getFileName().toString().endsWith(".js") && !excluded.contains(path.getFileName().toString())).map(Path::toFile).forEach(pluginFile -> {
+        Files.list(pluginsPath).filter(path -> path.getFileName().toString().endsWith(".js") && !this.excluded.contains(path.getFileName().toString())).map(Path::toFile).forEach(pluginFile -> {
             try{
                 Plugin plugin = new Plugin(pluginFile);
+                plugin.call("onCreate", new Object[]{plugin.getName()});
 
-                this.getLogger().debug("플러그인 " + plugin.getName() + "을(를) 불러왔습니다");
                 this.plugins.add(plugin);
+                this.logger.info("플러그인을 불러옵니다: " + plugin.getName());
             }catch(JavaScriptException | IOException e){
                 this.getLogger().error(e.getMessage());
             }
         });
+    }
 
-        this.plugins.forEach(plugin -> plugin.call("onCreate", new Object[]{plugin.getName()}));
-        this.getLogger().newLine();
+    public void start(){
+        this.isAlive = true;
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run(){
-                Takoyaki.this.getLogger().newLine();
-                Takoyaki.this.getLogger().debug("*** FINALIZATION RUNNING ***");
-                Takoyaki.this.getLogger().newLine();
-
-                Takoyaki.this.getPlugins().forEach(plugin -> plugin.call("onDestroy", Context.emptyArgs));
-            }
-        });
-
-        Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+        this.getTargets().forEach(target -> {target.start(); this.getLogger().info("모니터링을 시작합니다: " + target.getName() + " (ID: " + target.getClubId() + ")");});
+        this.getPlugins().forEach(plugin -> plugin.call("onStart", Context.emptyArgs));
     }
 
     public List<Target> getTargets(){
@@ -159,11 +165,6 @@ public class Takoyaki implements Prefix {
     @Override
     public String getPrefix(){
         return "타코야키";
-    }
-
-    public void start(){
-        this.isAlive = true;
-        this.getTargets().forEach(Target::start);
     }
 
     public static void main(String[] args){

@@ -41,7 +41,7 @@ public class Logger implements Loggable {
 
     @Override
     public String log(Level level, String message){
-        return println(String.format("%s[%s] [%s] %s%s", level.getFormats(), Logger.SIMPLE_DATE_FORMAT.format(new Date()), level.getPrefix(), message, TextFormat.RESET.toString()));
+        return println(String.format("%s%s%s %s[%s] %s%s", TextFormat.AQUA, Logger.SIMPLE_DATE_FORMAT.format(new Date()), TextFormat.RESET, level.getFormats(), level.getPrefix(), message, TextFormat.RESET.toString()));
     }
 
     @Override
