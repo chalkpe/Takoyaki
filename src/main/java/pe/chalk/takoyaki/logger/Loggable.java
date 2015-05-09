@@ -52,9 +52,9 @@ public interface Loggable {
     }
 
     String println(String message);
-    String printf(String message, String... args);
-
     String newLine();
+
+    String log(Level level, String message);
 
     String debug(String message);
     String info(String message);

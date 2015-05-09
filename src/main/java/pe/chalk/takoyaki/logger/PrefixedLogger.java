@@ -35,14 +35,15 @@ public class PrefixedLogger implements Loggable {
     }
 
     @Override
-    public String printf(String message, String... args){
-        return this.parent.printf(message, args);
-    }
-
-    @Override
     public String newLine(){
         return this.parent.newLine();
     }
+
+    @Override
+    public String log(Level level, String message){
+        return this.parent.log(level, message);
+    }
+
     
     @Override
     public String debug(String message){

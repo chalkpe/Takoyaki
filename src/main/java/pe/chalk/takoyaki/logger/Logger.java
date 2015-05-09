@@ -35,38 +35,38 @@ public class Logger implements Loggable {
     }
 
     @Override
-    public String printf(String message, String... args){
-        return println(String.format("[%s] %s%s", Logger.SIMPLE_DATE_FORMAT.format(new Date()), String.format(message, args), TextFormat.RESET.toString()));
-    }
-
-    @Override
     public String newLine(){
         return this.println("");
     }
 
     @Override
+    public String log(Level level, String message){
+        return println(String.format("%s[%s] [%s] %s%s", level.getFormats(), Logger.SIMPLE_DATE_FORMAT.format(new Date()), level.getPrefix(), message, TextFormat.RESET.toString()));
+    }
+
+    @Override
     public String debug(String message){
-        return printf("%s[%s] %s", Level.DEBUG.getFormats(), Level.DEBUG.getPrefix(), message);
+        return log(Level.DEBUG, message);
     }
 
     @Override
     public String info(String message){
-        return printf("%s[%s] %s", Level.INFO.getFormats(), Level.INFO.getPrefix(), message);
+        return log(Level.INFO, message);
     }
 
     @Override
     public String warning(String message){
-        return printf("%s[%s] %s", Level.WARNING.getFormats(), Level.WARNING.getPrefix(), message);
+        return log(Level.WARNING, message);
     }
 
     @Override
     public String critical(String message){
-        return printf("%s[%s] %s", Level.CRITICAL.getFormats(), Level.CRITICAL.getPrefix(), message);
+        return log(Level.CRITICAL, message);
     }
 
     @Override
     public String error(String message){
-        return printf("%s[%s] %s", Level.ERROR.getFormats(), Level.ERROR.getPrefix(), message);
+        return log(Level.ERROR, message);
     }
 
     public PrefixedLogger getPrefixed(Prefix prefix){
