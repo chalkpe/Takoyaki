@@ -22,13 +22,19 @@ import pe.chalk.takoyaki.data.Member;
 import pe.chalk.takoyaki.data.Violation;
 import pe.chalk.takoyaki.logger.Logger;
 
-import javax.mail.*;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 import java.util.stream.Collectors;
+
+@SuppressWarnings("unused")
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -196,8 +202,8 @@ public class Mailer {
 
             try{
                 message.setSubject(subject);
-                message.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-                message.setContent(TextFormat.replaceTo(TextFormat.Type.HTML, body), "text/html; charset=\"utf-8\"");
+                message.setHeader("Content-Type", "text/html; charset=UTF-8");
+                message.setContent(TextFormat.replaceTo(TextFormat.Type.HTML, body), "text/html; charset=UTF-8");
                 message.setFrom(new InternetAddress(Mailer.USERNAME));
 
                 if(recipients == null){
