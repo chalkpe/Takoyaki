@@ -18,9 +18,8 @@ package pe.chalk.takoyaki.logger;
 
 import pe.chalk.takoyaki.utils.TextFormat;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
@@ -28,18 +27,19 @@ import java.util.stream.Collectors;
  */
 public interface Loggable {
     enum Level implements Prefix {
-        DEBUG    ("DEBUG",    Arrays.asList(TextFormat.RESET, TextFormat.ITALIC, TextFormat.DARK_GRAY)),
-        INFO     ("INFO",     Arrays.asList(TextFormat.RESET, TextFormat.WHITE)),
-        WARNING  ("WARNING",  Arrays.asList(TextFormat.RESET, TextFormat.YELLOW)),
-        CRITICAL ("CRITICAL", Arrays.asList(TextFormat.RESET, TextFormat.LIGHT_PURPLE)),
-        ERROR    ("ERROR",    Arrays.asList(TextFormat.RESET, TextFormat.RED));
+        DEBUG    ("DEBUG",    new TextFormat[]{TextFormat.DARK_GRAY, TextFormat.ITALIC}),
+        INFO     ("INFO",     new TextFormat[]{TextFormat.WHITE}),
+        NOTICE   ("NOTICE",   new TextFormat[]{TextFormat.AQUA}),
+        WARNING  ("WARNING",  new TextFormat[]{TextFormat.YELLOW}),
+        ERROR    ("ERROR",    new TextFormat[]{TextFormat.DARK_RED}),
+        CRITICAL ("CRITICAL", new TextFormat[]{TextFormat.RED});
 
         private final String prefix;
         private final String formats;
 
-        Level(String prefix, List<TextFormat> formats){
+        Level(String prefix, TextFormat[] formats){
             this.prefix = prefix;
-            this.formats = formats.stream().map(TextFormat::toString).collect(Collectors.joining());
+            this.formats = Stream.of(formats).map(TextFormat::toString).collect(Collectors.joining());
         }
 
         public String getPrefix(){
@@ -51,14 +51,12 @@ public interface Loggable {
         }
     }
 
-    String println(String message);
-    String newLine();
+    void log(Level level, String message);
 
-    String log(Level level, String message);
-
-    String debug(String message);
-    String info(String message);
-    String warning(String message);
-    String critical(String message);
-    String error(String message);
+    void debug(String message);
+    void info(String message);
+    void notice(String message);
+    void warning(String message);
+    void error(String message);
+    void critical(String message);
 }

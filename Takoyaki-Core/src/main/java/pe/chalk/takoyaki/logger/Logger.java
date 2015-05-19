@@ -16,60 +16,59 @@
 
 package pe.chalk.takoyaki.logger;
 
-import pe.chalk.takoyaki.utils.TextFormat;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-14
  */
-public class Logger implements Loggable {
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-
+public abstract class Logger implements Loggable {
     @Override
-    public String println(String message){
-        System.out.println(message);
-        return message;
-    }
+    public void log(Level level, String message){
+        switch(level){
+            case DEBUG:
+                debug(message);
+                break;
 
-    @Override
-    public String newLine(){
-        return this.println("");
-    }
+            case INFO:
+                info(message);
+                break;
 
-    @Override
-    public String log(Level level, String message){
-        return println(String.format("%s%s%s %s[%s] %s%s", TextFormat.AQUA, Logger.SIMPLE_DATE_FORMAT.format(new Date()), TextFormat.RESET, level.getFormats(), level.getPrefix(), message, TextFormat.RESET.toString()));
-    }
+            case WARNING:
+                warning(message);
+                break;
 
-    @Override
-    public String debug(String message){
-        return log(Level.DEBUG, message);
+            case CRITICAL:
+        }
     }
 
     @Override
-    public String info(String message){
-        return log(Level.INFO, message);
+    public void debug(String message){
+        send(Level.DEBUG, Level.DEBUG.getFormats() + message);
     }
 
     @Override
-    public String warning(String message){
-        return log(Level.WARNING, message);
+    public void info(String message){
+        send(Level.INFO, Level.INFO.getFormats() + message);
     }
 
     @Override
-    public String critical(String message){
-        return log(Level.CRITICAL, message);
+    public void notice(String message){
+        send(Level.NOTICE, Level.NOTICE.getFormats() + message);
     }
 
     @Override
-    public String error(String message){
-        return log(Level.ERROR, message);
+    public void warning(String message){
+        send(Level.WARNING, Level.WARNING.getFormats() + message);
     }
 
-    public PrefixedLogger getPrefixed(Prefix prefix){
-        return new PrefixedLogger(this, prefix);
+    @Override
+    public void error(String message){
+        send(Level.ERROR, Level.ERROR.getFormats() + message);
     }
+
+    @Override
+    public void critical(String message){
+        send(Level.CRITICAL, Level.CRITICAL.getFormats() + message);
+    }
+
+    protected abstract void send(Level level, String message);
 }
