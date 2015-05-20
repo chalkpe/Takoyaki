@@ -26,6 +26,7 @@ import pe.chalk.takoyaki.logger.Logger;
 import pe.chalk.takoyaki.logger.LoggerTransmitter;
 import pe.chalk.takoyaki.logger.ConsoleLogger;
 import pe.chalk.takoyaki.plugin.Plugin;
+import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.io.FileOutputStream;
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class Takoyaki {
+public class Takoyaki implements Prefix {
     public static final String VERSION = "2.1-SNAPSHOT";
 
     private static Takoyaki instance = null;
@@ -171,6 +172,11 @@ public class Takoyaki {
 
     public boolean isAlive(){
         return this.isAlive;
+    }
+
+    @Override
+    public String getPrefix(){
+        return "타코야키";
     }
 
     public static void main(String[] args){

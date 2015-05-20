@@ -243,15 +243,13 @@ public class Mailer {
     public static void sendViolation(Violation violation, Object[] recipients){
         String body = String.format("[%s] %s\n\n%s\n\n작성자: %s", violation.getLevel().toString(), violation.getName(), String.join("\n", Arrays.asList(violation.getViolations()).stream().map(Data::toString).collect(Collectors.toList())), violation.getViolator());
 
-        violation.getTarget().getLogger().warning(body);
-        violation.getTarget().getLogger().newLine();
-
+        violation.getTarget().getLogger().warning(body + "\n");
         sendMail(violation.getPrefix(), violation.getName(), body, recipients);
     }
 
     public static String getFooter(){
         return String.format("발신 시각: %s\n서버 정보: %s - %s %s\n자바 버전: %s\n타코야키 버전: %s",
-                Logger.SIMPLE_DATE_FORMAT.format(new Date()), System.getProperty("user.name"), System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("java.version"), Takoyaki.VERSION
+                Logger.DATE_FORMAT.format(new Date()), System.getProperty("user.name"), System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("java.version"), Takoyaki.VERSION
         );
     }
 }

@@ -16,6 +16,7 @@
 
 package pe.chalk.takoyaki.logger;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +25,8 @@ import java.util.List;
  * @since 2015-04-14
  */
 public abstract class Logger implements Loggable {
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+
     protected List<LoggerTransmitter> transmitters;
 
     public Logger(LoggerTransmitter... transmitters){

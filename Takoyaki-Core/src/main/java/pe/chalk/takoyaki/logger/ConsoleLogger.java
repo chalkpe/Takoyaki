@@ -18,7 +18,6 @@ package pe.chalk.takoyaki.logger;
 
 import pe.chalk.takoyaki.utils.TextFormat;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -26,8 +25,6 @@ import java.util.Date;
  * @since 2015-04-15
  */
 public class ConsoleLogger extends Logger {
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-
     public ConsoleLogger(LoggerTransmitter... transmitters){
         super(transmitters);
     }
