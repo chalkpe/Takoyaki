@@ -31,7 +31,7 @@ public class ConsoleLogger extends Logger {
 
     @Override
     protected void send(Level level, String message){
-        message = TextFormat.AQUA + DATE_FORMAT.format(new Date()) + " " + TextFormat.RESET + level.getFormats() + message + TextFormat.RESET;
+        message = TextFormat.AQUA + DATE_FORMAT.format(new Date()) + " " + TextFormat.RESET + level.getFormats() + "[" + level.getPrefix() + "] " + message + TextFormat.RESET;
 
         System.out.println(TextFormat.replaceTo(TextFormat.Type.ANSI, message));
         for(LoggerTransmitter transmitter : this.transmitters){
