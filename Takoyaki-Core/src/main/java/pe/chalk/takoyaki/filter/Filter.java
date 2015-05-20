@@ -38,7 +38,7 @@ public abstract class Filter<T extends Data> implements Prefix {
 
     public Filter(Target target){
         this.target = target;
-        this.logger = target.getLogger().sub(this);
+        this.logger = new PrefixedLogger(target.getLogger(), this);
     }
 
     public Target getTarget(){

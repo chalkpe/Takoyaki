@@ -23,50 +23,50 @@ import pe.chalk.takoyaki.utils.Prefix;
  * @since 2015-04-17
  */
 public class PrefixedLogger implements Loggable {
-    private Logger logger;
+    private Loggable parent;
     private String prefix;
 
-    public PrefixedLogger(Logger logger, Prefix prefix){
-        this(logger, prefix.getPrefix());
+    public PrefixedLogger(Loggable parent, Prefix prefix){
+        this(parent, prefix.getPrefix());
     }
 
-    public PrefixedLogger(Logger logger, String prefix){
-        this.logger = logger;
+    public PrefixedLogger(Loggable parent, String prefix){
+        this.parent = parent;
         this.prefix = "[" + prefix + "]";
     }
 
     @Override
     public void log(Level level, String message){
-        this.logger.log(level, message);
+        this.parent.log(level, message);
     }
 
     @Override
     public void debug(String message){
-        this.logger.debug(this.prefix + " " + message);
+        this.parent.debug(this.prefix + " " + message);
     }
 
     @Override
     public void info(String message){
-        this.logger.info(this.prefix + " " + message);
+        this.parent.info(this.prefix + " " + message);
     }
 
     @Override
     public void warning(String message){
-        this.logger.warning(this.prefix + " " + message);
+        this.parent.warning(this.prefix + " " + message);
     }
 
     @Override
     public void notice(String message){
-        this.logger.notice(this.prefix + " " + message);
+        this.parent.notice(this.prefix + " " + message);
     }
 
     @Override
     public void error(String message){
-        this.logger.error(this.prefix + " " + message);
+        this.parent.error(this.prefix + " " + message);
     }
 
     @Override
     public void critical(String message){
-        this.logger.critical(this.prefix + " " + message);
+        this.parent.critical(this.prefix + " " + message);
     }
 }
