@@ -15,13 +15,13 @@ public class BukkitTakoyaki extends JavaPlugin {
     public void onEnable(){
         try{
             Takoyaki takoyaki = new Takoyaki();
-            takoyaki.getLogger().addTransmitter((level, message) -> {
+            takoyaki.start();
+
+            takoyaki.getLogger().addTransmitter((Loggable.Level level, String message) -> {
                 if(level == Loggable.Level.INFO){
                     BukkitTakoyaki.this.getServer().broadcastMessage(message);
                 }
             });
-
-            takoyaki.start();
         }catch(IOException e){
             e.printStackTrace();
         }

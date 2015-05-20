@@ -17,7 +17,7 @@
 package pe.chalk.takoyaki.logger;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,8 +29,12 @@ public abstract class Logger implements Loggable {
 
     protected List<LoggerTransmitter> transmitters;
 
-    public Logger(LoggerTransmitter... transmitters){
-        this.transmitters = Arrays.asList(transmitters);
+    public Logger(){
+        this(new ArrayList<>());
+    }
+
+    public Logger(List<LoggerTransmitter> transmitters){
+        this.transmitters = transmitters;
     }
 
     public boolean addTransmitter(LoggerTransmitter transmitter){

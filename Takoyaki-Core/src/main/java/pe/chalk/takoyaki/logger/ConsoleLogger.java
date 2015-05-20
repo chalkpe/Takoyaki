@@ -19,13 +19,17 @@ package pe.chalk.takoyaki.logger;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-15
  */
 public class ConsoleLogger extends Logger {
-    public ConsoleLogger(LoggerTransmitter... transmitters){
+    public ConsoleLogger(){
+        super();
+    }
+    public ConsoleLogger(List<LoggerTransmitter> transmitters){
         super(transmitters);
     }
 
