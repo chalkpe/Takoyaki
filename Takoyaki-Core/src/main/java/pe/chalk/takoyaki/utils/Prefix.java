@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.logger;
+package pe.chalk.takoyaki.utils;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>

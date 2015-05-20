@@ -18,7 +18,7 @@ package pe.chalk.takoyaki.plugin;
 
 import org.mozilla.javascript.*;
 import pe.chalk.takoyaki.Takoyaki;
-import pe.chalk.takoyaki.logger.Prefix;
+import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.io.File;

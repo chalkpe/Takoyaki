@@ -19,8 +19,9 @@ package pe.chalk.takoyaki;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mozilla.javascript.*;
-import pe.chalk.takoyaki.logger.Prefix;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.JavaScriptException;
+import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.logger.ConsoleLogger;
 import pe.chalk.takoyaki.plugin.Plugin;
 

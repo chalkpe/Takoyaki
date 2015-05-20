@@ -16,6 +16,8 @@
 
 package pe.chalk.takoyaki.logger;
 
+import pe.chalk.takoyaki.utils.Prefix;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-17

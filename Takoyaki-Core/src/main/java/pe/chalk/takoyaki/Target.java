@@ -24,9 +24,8 @@ import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Menu;
 import pe.chalk.takoyaki.filter.*;
-import pe.chalk.takoyaki.logger.Prefix;
+import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
-import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.io.IOException;
 import java.net.URL;

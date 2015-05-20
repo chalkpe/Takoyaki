@@ -16,6 +16,7 @@
 
 package pe.chalk.takoyaki.logger;
 
+import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.util.stream.Collectors;

@@ -19,7 +19,7 @@ package pe.chalk.takoyaki.data;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.Target;
-import pe.chalk.takoyaki.logger.Prefix;
+import pe.chalk.takoyaki.utils.Prefix;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
