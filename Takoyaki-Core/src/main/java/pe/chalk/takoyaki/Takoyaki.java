@@ -87,7 +87,7 @@ public class Takoyaki implements Prefix {
 
     private void init() throws JSONException, IOException {
         this.logger = new ConsoleLogger(new LoggerTransmitter(){
-            PrintStream stream = new PrintStream(new FileOutputStream("Takoyaki.log", true));
+            PrintStream stream = new PrintStream(new FileOutputStream("Takoyaki.log", true), true, "UTF-8");
 
             @Override
             public void transmit(Loggable.Level level, String message){
