@@ -16,11 +16,28 @@
 
 package pe.chalk.takoyaki.logger;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-14
  */
 public abstract class Logger implements Loggable {
+    protected List<LoggerTransmitter> transmitters;
+
+    public Logger(LoggerTransmitter... transmitters){
+        this.transmitters = Arrays.asList(transmitters);
+    }
+
+    public boolean addTransmitter(LoggerTransmitter transmitter){
+        return transmitters.add(transmitter);
+    }
+
+    public boolean removeTransmitter(LoggerTransmitter transmitter){
+        return transmitters.remove(transmitter);
+    }
+
     @Override
     public void log(Level level, String message){
         switch(level){
@@ -32,42 +49,52 @@ public abstract class Logger implements Loggable {
                 info(message);
                 break;
 
+            case NOTICE:
+                notice(message);
+                break;
+
             case WARNING:
                 warning(message);
                 break;
 
+            case ERROR:
+                error(message);
+                break;
+
             case CRITICAL:
+                critical(message);
+                break;
         }
     }
 
     @Override
     public void debug(String message){
-        send(Level.DEBUG, Level.DEBUG.getFormats() + message);
+        send(Level.DEBUG, message);
     }
 
     @Override
     public void info(String message){
-        send(Level.INFO, Level.INFO.getFormats() + message);
+        send(Level.INFO, message);
     }
 
     @Override
     public void notice(String message){
-        send(Level.NOTICE, Level.NOTICE.getFormats() + message);
+        send(Level.NOTICE, message);
     }
 
     @Override
     public void warning(String message){
-        send(Level.WARNING, Level.WARNING.getFormats() + message);
+        send(Level.WARNING, message);
     }
 
     @Override
     public void error(String message){
-        send(Level.ERROR, Level.ERROR.getFormats() + message);
+        send(Level.ERROR, message);
     }
 
     @Override
     public void critical(String message){
-        send(Level.CRITICAL, Level.CRITICAL.getFormats() + message);
+        send(Level.CRITICAL, message);
     }
 
     protected abstract void send(Level level, String message);

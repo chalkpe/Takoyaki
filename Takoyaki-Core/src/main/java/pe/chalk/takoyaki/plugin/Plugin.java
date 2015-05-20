@@ -39,7 +39,8 @@ public class Plugin implements Prefix {
     public Plugin(File file) throws JavaScriptException, IOException {
         this.file = file;
         this.name = file.getName().substring(0, file.getName().lastIndexOf("."));
-        this.logger = Takoyaki.getInstance().getLogger().getPrefixed(this);
+        this.logger = new PrefixedLogger(Takoyaki.getInstance().getLogger(), this);
+
         Context context = Context.enter();
         try{
             this.scriptable = new ImporterTopLevel(context);

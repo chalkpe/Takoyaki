@@ -21,9 +21,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.JavaScriptException;
-import pe.chalk.takoyaki.utils.Prefix;
+import pe.chalk.takoyaki.logger.Loggable;
+import pe.chalk.takoyaki.logger.Logger;
+import pe.chalk.takoyaki.logger.LoggerTransmitter;
 import pe.chalk.takoyaki.logger.ConsoleLogger;
 import pe.chalk.takoyaki.plugin.Plugin;
+import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,7 +45,7 @@ import java.util.stream.Collectors;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
-public class Takoyaki implements Prefix {
+public class Takoyaki {
     public static final String VERSION = "2.1-SNAPSHOT";
 
     private static Takoyaki instance = null;
@@ -68,7 +71,7 @@ public class Takoyaki implements Prefix {
 
     private List<Target> targets;
     private List<Plugin> plugins;
-    private ConsoleLogger logger;
+    private Logger logger;
 
     private boolean isAlive = false;
 
@@ -82,7 +85,14 @@ public class Takoyaki implements Prefix {
     }
 
     private void init() throws JSONException, IOException {
-        this.logger = new ConsoleLogger(new PrintStream(new FileOutputStream("Takoyaki.log", true)));
+        this.logger = new ConsoleLogger(new LoggerTransmitter(){
+            PrintStream stream = new PrintStream(new FileOutputStream("Takoyaki.log", true));
+
+            @Override
+            public void transmit(Loggable.Level level, String message){
+                stream.println(TextFormat.replaceTo(TextFormat.Type.NONE, message));
+            }
+        });
 
         Path propertiesPath = Paths.get("properties.json");
         if(!Files.exists(propertiesPath)){
@@ -155,17 +165,12 @@ public class Takoyaki implements Prefix {
         return this.plugins;
     }
 
-    public ConsoleLogger getLogger(){
+    public Logger getLogger(){
         return this.logger;
     }
 
     public boolean isAlive(){
         return this.isAlive;
-    }
-
-    @Override
-    public String getPrefix(){
-        return "타코야키";
     }
 
     public static void main(String[] args){

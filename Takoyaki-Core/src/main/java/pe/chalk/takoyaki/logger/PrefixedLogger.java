@@ -21,59 +21,52 @@ import pe.chalk.takoyaki.utils.Prefix;
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-17
- * @todo Fix all method
  */
 public class PrefixedLogger implements Loggable {
-    private Loggable parent;
-    private Prefix prefix;
+    private Logger logger;
+    private String prefix;
 
-    public PrefixedLogger(Loggable parent, Prefix prefix){
-        this.parent = parent;
-        this.prefix = prefix;
+    public PrefixedLogger(Logger logger, Prefix prefix){
+        this(logger, prefix.getPrefix());
+    }
+
+    public PrefixedLogger(Logger logger, String prefix){
+        this.logger = logger;
+        this.prefix = "[" + prefix + "]";
     }
 
     @Override
-    public String println(String message){
-        return this.parent.println(message);
+    public void log(Level level, String message){
+        this.logger.log(level, message);
     }
 
     @Override
-    public String newLine(){
-        return this.parent.newLine();
+    public void debug(String message){
+        this.logger.debug(this.prefix + " " + message);
     }
 
     @Override
-    public String log(Level level, String message){
-        return this.parent.log(level, message);
-    }
-
-    
-    @Override
-    public String debug(String message){
-        return this.parent.debug(String.format("[%s] %s", prefix.getPrefix(), message));
+    public void info(String message){
+        this.logger.info(this.prefix + " " + message);
     }
 
     @Override
-    public String info(String message){
-        return this.parent.info(String.format("[%s] %s", prefix.getPrefix(), message));
+    public void warning(String message){
+        this.logger.warning(this.prefix + " " + message);
     }
 
     @Override
-    public String warning(String message){
-        return this.parent.warning(String.format("[%s] %s", prefix.getPrefix(), message));
+    public void notice(String message){
+        this.logger.notice(this.prefix + " " + message);
     }
 
     @Override
-    public String critical(String message){
-        return this.parent.critical(String.format("[%s] %s", prefix.getPrefix(), message));
+    public void error(String message){
+        this.logger.error(this.prefix + " " + message);
     }
 
     @Override
-    public String error(String message){
-        return this.parent.error(String.format("[%s] %s", prefix.getPrefix(), message));
-    }
-
-    public PrefixedLogger sub(Prefix prefix){
-        return new PrefixedLogger(this, prefix);
+    public void critical(String message){
+        this.logger.critical(this.prefix + " " + message);
     }
 }

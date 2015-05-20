@@ -67,7 +67,7 @@ public class Target extends Thread implements Prefix {
     public Target(Takoyaki takoyaki, JSONObject jsonObject) throws JSONException, IOException {
         this.takoyaki = takoyaki;
         this.prefix = jsonObject.getString("prefix");
-        this.logger = this.getTakoyaki().getLogger().getPrefixed(this);
+        this.logger = new PrefixedLogger(this.getTakoyaki().getLogger(), this);
 
         this.interval = jsonObject.getLong("interval");
         this.timeout = jsonObject.getInt("timeout");

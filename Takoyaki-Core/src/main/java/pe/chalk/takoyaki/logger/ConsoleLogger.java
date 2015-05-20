@@ -18,7 +18,6 @@ package pe.chalk.takoyaki.logger;
 
 import pe.chalk.takoyaki.utils.TextFormat;
 
-import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -29,21 +28,17 @@ import java.util.Date;
 public class ConsoleLogger extends Logger {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
-    public PrintStream out;
-
-    public ConsoleLogger(){
-        this(null);
-    }
-
-    public ConsoleLogger(PrintStream out){
-        this.out = out;
+    public ConsoleLogger(LoggerTransmitter... transmitters){
+        super(transmitters);
     }
 
     @Override
     protected void send(Level level, String message){
-        String log = TextFormat.AQUA + DATE_FORMAT.format(new Date()) + " " + TextFormat.RESET + message + TextFormat.RESET;
-        System.out.println(log);
+        message = TextFormat.AQUA + DATE_FORMAT.format(new Date()) + " " + TextFormat.RESET + level.getFormats() + message + TextFormat.RESET;
 
-        //TODO: Implement this method
+        System.out.println(TextFormat.replaceTo(TextFormat.Type.ANSI, message));
+        for(LoggerTransmitter transmitter : this.transmitters){
+            transmitter.transmit(level, message);
+        }
     }
 }
