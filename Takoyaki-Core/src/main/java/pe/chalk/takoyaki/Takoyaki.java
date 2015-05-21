@@ -21,10 +21,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.JavaScriptException;
-import pe.chalk.takoyaki.logger.Loggable;
 import pe.chalk.takoyaki.logger.Logger;
-import pe.chalk.takoyaki.logger.LoggerTransmitter;
-import pe.chalk.takoyaki.logger.ConsoleLogger;
+import pe.chalk.takoyaki.logger.LoggerStream;
 import pe.chalk.takoyaki.plugin.Plugin;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.utils.TextFormat;
@@ -86,15 +84,9 @@ public class Takoyaki implements Prefix {
     }
 
     private void init() throws JSONException, IOException {
-        this.logger = new ConsoleLogger();
-        this.logger.addTransmitter(new LoggerTransmitter(){
-            PrintStream stream = new PrintStream(new FileOutputStream("Takoyaki.log", true), true, "UTF-8");
-
-            @Override
-            public void transmit(Loggable.Level level, String message){
-                stream.println(TextFormat.replaceTo(TextFormat.Type.NONE, message));
-            }
-        });
+        this.logger = new Logger();
+        this.logger.addStream(new LoggerStream(TextFormat.Type.ANSI, System.out));
+        this.logger.addStream(new LoggerStream(TextFormat.Type.NONE, new PrintStream(new FileOutputStream("Takoyaki.log", true), true, "UTF-8")));
 
         Path propertiesPath = Paths.get("properties.json");
         if(!Files.exists(propertiesPath)){

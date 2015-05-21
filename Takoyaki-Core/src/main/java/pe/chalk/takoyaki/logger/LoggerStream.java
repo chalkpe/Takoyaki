@@ -18,28 +18,30 @@ package pe.chalk.takoyaki.logger;
 
 import pe.chalk.takoyaki.utils.TextFormat;
 
+import java.io.PrintStream;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-15
  */
-public class ConsoleLogger extends Logger {
-    public ConsoleLogger(){
-        super();
-    }
-    public ConsoleLogger(List<LoggerTransmitter> transmitters){
-        super(transmitters);
+public class LoggerStream extends PrintStream {
+    private TextFormat.Type type;
+
+    public LoggerStream(TextFormat.Type type, PrintStream stream){
+        super(stream);
+        this.type = type;
     }
 
-    @Override
-    protected void send(Level level, String message){
-        message = TextFormat.AQUA + DATE_FORMAT.format(new Date()) + " " + TextFormat.RESET + level.getFormats() + "[" + level.getPrefix() + "] " + message + TextFormat.RESET;
+    public TextFormat.Type getType(){
+        return this.type;
+    }
 
-        System.out.println(TextFormat.replaceTo(TextFormat.Type.ANSI, message));
-        for(LoggerTransmitter transmitter : this.transmitters){
-            transmitter.transmit(level, message);
-        }
+    public void setType(TextFormat.Type type){
+        this.type = type;
+    }
+
+    public void println(Loggable.Level level, String message){
+        super.println(TextFormat.replaceTo(this.getType(), TextFormat.AQUA + Logger.DATE_FORMAT.format(new Date()) + " " + TextFormat.RESET + level.getFormats() + "[" + level.getPrefix() + "] " + message + TextFormat.RESET));
     }
 }

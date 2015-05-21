@@ -16,6 +16,7 @@
 
 package pe.chalk.takoyaki.logger;
 
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,25 +25,40 @@ import java.util.List;
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-14
  */
-public abstract class Logger implements Loggable {
+public class Logger implements Loggable {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
+    protected List<LoggerStream> streams;
     protected List<LoggerTransmitter> transmitters;
 
     public Logger(){
-        this(new ArrayList<>());
+        this(new ArrayList<>(), new ArrayList<>());
     }
 
-    public Logger(List<LoggerTransmitter> transmitters){
+    public Logger(List<LoggerStream> streams, List<LoggerTransmitter> transmitters){
+        this.streams = streams;
         this.transmitters = transmitters;
     }
 
+    public boolean addStream(LoggerStream stream){
+        return this.streams.add(stream);
+    }
+
+    @SuppressWarnings("SuspiciousMethodCalls")
+    public boolean removeStream(PrintStream stream){
+        return this.streams.remove(stream);
+    }
+
+    public boolean removeStream(LoggerStream stream){
+        return this.streams.remove(stream);
+    }
+
     public boolean addTransmitter(LoggerTransmitter transmitter){
-        return transmitters.add(transmitter);
+        return this.transmitters.add(transmitter);
     }
 
     public boolean removeTransmitter(LoggerTransmitter transmitter){
-        return transmitters.remove(transmitter);
+        return this.transmitters.remove(transmitter);
     }
 
     @Override
@@ -104,5 +120,8 @@ public abstract class Logger implements Loggable {
         send(Level.CRITICAL, message);
     }
 
-    protected abstract void send(Level level, String message);
+    protected void send(Level level, String message){
+        this.streams.forEach(stream -> stream.println(level, message));
+        this.transmitters.forEach(transmitter -> transmitter.transmit(level, message));
+    }
 }
