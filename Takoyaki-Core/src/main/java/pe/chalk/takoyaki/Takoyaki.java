@@ -63,7 +63,18 @@ public class Takoyaki implements Prefix {
             "      ],",
             "      \"timeout\": 1000",
             "    }",
-            "  ]",
+            "    {",
+            "      \"address\": \"ourmcspace\",",
+            "      \"prefix\": \"PMC\",",
+            "      \"interval\": 5000,",
+            "      \"filters\": [",
+            "        \"article\",",
+            "        \"commentary\",",
+            "        \"visitation\"",
+            "      ],",
+            "      \"timeout\": 2000",
+            "    }",
+            "  ],",
             "}");
 
     private List<String> excluded;
