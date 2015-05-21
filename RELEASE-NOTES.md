@@ -1,3 +1,11 @@
+# Takoyaki 2.0.2
+## 2015-05-21
+
+### Bug fixes
+- Fixed wrong encoding options of the mail
+
+
+
 # Takoyaki 2.0.1
 ## 2015-05-09
 
@@ -21,4 +29,4 @@
 # Takoyaki 2.0
 ## 2015-04-27
 
-First release!
+- First release!
