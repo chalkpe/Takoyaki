@@ -62,7 +62,7 @@ public class Takoyaki implements Prefix {
             "        \"visitation\"",
             "      ],",
             "      \"timeout\": 1000",
-            "    }",
+            "    },",
             "    {",
             "      \"address\": \"ourmcspace\",",
             "      \"prefix\": \"PMC\",",
