@@ -26,7 +26,7 @@ import java.util.List;
  * @since 2015-04-14
  */
 public class Logger implements Loggable {
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
     protected List<LoggerStream> streams;
     protected List<LoggerTransmitter> transmitters;
