@@ -2,7 +2,6 @@ package pe.chalk.takoyaki_bukkit;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import pe.chalk.takoyaki.Takoyaki;
-import pe.chalk.takoyaki.logger.Loggable;
 
 import java.io.IOException;
 
@@ -15,13 +14,10 @@ public class BukkitTakoyaki extends JavaPlugin {
     public void onEnable(){
         try{
             Takoyaki takoyaki = new Takoyaki();
-            takoyaki.start();
+            takoyaki.getLogger().removeStream(System.out);
+            takoyaki.getLogger().addTransmitter((level, message) -> BukkitTakoyaki.this.getServer().broadcastMessage(level.getFormats() + "[" + level.getPrefix() + "] " + message));
 
-            takoyaki.getLogger().addTransmitter((Loggable.Level level, String message) -> {
-                if(level == Loggable.Level.INFO){
-                    BukkitTakoyaki.this.getServer().broadcastMessage(message);
-                }
-            });
+            takoyaki.start();
         }catch(IOException e){
             e.printStackTrace();
         }
