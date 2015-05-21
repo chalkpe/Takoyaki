@@ -44,9 +44,13 @@ public class Logger implements Loggable {
         return this.streams.add(stream);
     }
 
-    @SuppressWarnings("SuspiciousMethodCalls")
     public boolean removeStream(PrintStream stream){
-        return this.streams.remove(stream);
+        for(LoggerStream loggerStream : this.streams){
+            if(stream.equals(loggerStream.getStream())){
+                return this.streams.remove(loggerStream);
+            }
+        }
+        return false;
     }
 
     public boolean removeStream(LoggerStream stream){

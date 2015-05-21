@@ -27,9 +27,12 @@ import java.util.Date;
  */
 public class LoggerStream extends PrintStream {
     private TextFormat.Type type;
+    private PrintStream stream;
 
     public LoggerStream(TextFormat.Type type, PrintStream stream){
         super(stream);
+
+        this.stream = stream;
         this.type = type;
     }
 
@@ -39,6 +42,10 @@ public class LoggerStream extends PrintStream {
 
     public void setType(TextFormat.Type type){
         this.type = type;
+    }
+
+    public PrintStream getStream(){
+        return this.stream;
     }
 
     public void println(Loggable.Level level, String message){
