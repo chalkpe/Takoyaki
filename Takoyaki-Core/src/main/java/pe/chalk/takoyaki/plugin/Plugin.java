@@ -21,9 +21,11 @@ import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 
 /**
@@ -44,7 +46,7 @@ public class Plugin implements Prefix {
         Context context = Context.enter();
         try{
             this.scriptable = new ImporterTopLevel(context);
-            context.evaluateReader(this.getScriptable(), new FileReader(this.getFile()), this.getName(), 0, null);
+            context.evaluateReader(this.getScriptable(), new BufferedReader(new InputStreamReader(new FileInputStream(this.getFile()), "UTF-8")), this.getName(), 0, null);
             ScriptableObject.putProperty(this.getScriptable(), "logger", this.getLogger());
         }finally{
             Context.exit();
