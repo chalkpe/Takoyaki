@@ -13,6 +13,7 @@
     <modules>
         <module>Takoyaki-Core</module>
         <module>Takoyaki-Bukkit</module>
+        <!-- <module>Takoyaki-Android</module> TODO: Migrate to "Gradle" -->
     </modules>
 
     <name>Takoyaki</name>
