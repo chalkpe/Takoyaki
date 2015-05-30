@@ -3,13 +3,15 @@ package pe.chalk.takoyaki_bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import pe.chalk.takoyaki.data.Data;
+
 public class TakoyakiEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
-	private String message;
+	private Data[] message;
 	
-	public TakoyakiEvent(String message) {
-		this.message = message;
+	public TakoyakiEvent(Object[] message) {
+		this.message = (Data[]) message;
 	}
 	
 	@Override

@@ -48,7 +48,7 @@ public class Collector {
 
                 if(freshData.size() > 0){
                     Takoyaki.getInstance().getPlugins().forEach(plugin -> plugin.call("onDataAdded", new Object[]{filter, freshData.toArray()}));
-                    new pe.chalk.takoyaki_bukkit.TakoyakiEvent(null);
+                    new pe.chalk.takoyaki_bukkit.TakoyakiEvent(freshData.toArray());
                 }
             });
         }catch(Exception e){
