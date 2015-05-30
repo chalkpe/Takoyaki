@@ -19,6 +19,10 @@
             <id>central</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+                <id>spigot-repo</id>
+                <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
