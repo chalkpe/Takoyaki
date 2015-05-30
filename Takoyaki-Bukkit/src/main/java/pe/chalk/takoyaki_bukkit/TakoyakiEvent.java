@@ -8,7 +8,7 @@ public class TakoyakiEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	private String message;
 	
-	TakoyakiEvent(String message) {
+	public TakoyakiEvent(String message) {
 		this.message = message;
 	}
 	
