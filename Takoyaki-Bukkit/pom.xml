@@ -32,18 +32,10 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.8.6-R0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
             <type>jar</type>
         </dependency>
     </dependencies>
-
-	<dependencySets>
-	    <dependencySet>
-	        <excludes>
-	            <exclude>spigot-api</exclude>
-	        </excludes>
-	    </dependencySet>
-	</dependencySets>
 	
     <build>
         <defaultGoal>install</defaultGoal>
