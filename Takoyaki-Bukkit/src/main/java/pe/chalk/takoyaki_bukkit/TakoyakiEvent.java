@@ -8,10 +8,10 @@ import pe.chalk.takoyaki.data.Data;
 public class TakoyakiEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
-	private Data[] message;
+	private Object[] message;
 	
 	public TakoyakiEvent(Object[] message) {
-		this.message = (Data[]) message;
+		this.message = message;
 	}
 	
 	@Override
@@ -23,7 +23,7 @@ public class TakoyakiEvent extends Event {
         return handlers;
     }
     
-    public Data[] getMessage() {
+    public Object[] getMessage() {
     	return message;
     }
     
