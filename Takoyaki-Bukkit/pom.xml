@@ -37,6 +37,14 @@
         </dependency>
     </dependencies>
 
+	<dependencySets>
+	    <dependencySet>
+	        <excludes>
+	            <exclude>spigot-api</exclude>
+	        </excludes>
+	    </dependencySet>
+	</dependencySets>
+	
     <build>
         <defaultGoal>install</defaultGoal>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>

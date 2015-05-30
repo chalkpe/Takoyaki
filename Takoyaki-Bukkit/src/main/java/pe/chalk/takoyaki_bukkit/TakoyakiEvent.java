@@ -22,4 +22,9 @@ public class TakoyakiEvent extends Event {
     public static HandlerList getHandlerList() {
         return handlers;
     }
+    
+    public Data[] getMessage() {
+    	return message;
+    }
+    
 }
