@@ -138,8 +138,10 @@ public class Takoyaki implements Prefix {
                 Plugin plugin = new Plugin(pluginFile);
                 plugin.call("onCreate", new Object[]{plugin.getName()});
 
+                Object version = plugin.get("VERSION");
+
                 this.plugins.add(plugin);
-                this.logger.info("플러그인을 불러옵니다: " + plugin.getName() + " v" + plugin.get("VERSION"));
+                this.logger.info("플러그인을 불러옵니다: " + plugin.getName() + (version != null ? " v" + plugin.get("VERSION") : ""));
             }catch(JavaScriptException | IOException e){
                 this.getLogger().error(e.getMessage());
             }
