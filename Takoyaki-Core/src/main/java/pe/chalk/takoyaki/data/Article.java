@@ -21,13 +21,14 @@ import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
 public class Article extends SimpleArticle {
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.KOREA);
 
     private final Member writer;
 

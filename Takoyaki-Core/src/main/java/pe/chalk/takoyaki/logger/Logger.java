@@ -20,13 +20,14 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-14
  */
 public class Logger implements Loggable {
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA);
 
     protected List<LoggerStream> streams;
     protected List<LoggerTransmitter> transmitters;
