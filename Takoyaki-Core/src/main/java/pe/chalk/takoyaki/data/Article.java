@@ -19,17 +19,13 @@ package pe.chalk.takoyaki.data;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.utils.TextFormat;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * @author ChalkPE <amato0617@gmail.com>
  * @since 2015-04-07
  */
 public class Article extends SimpleArticle {
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.KOREA);
-
     private final Member writer;
 
     private String head;
@@ -96,7 +92,7 @@ public class Article extends SimpleArticle {
                 + (this.hasHead() ? TextFormat.LIGHT_PURPLE + "[" + this.getHead() + "] " + TextFormat.RESET : "")
                 + this.getTitle()
                 + TextFormat.DARK_AQUA + " by " + this.getWriter().toString() + TextFormat.RESET
-                + TextFormat.GOLD + " at " + SIMPLE_DATE_FORMAT.format(new Date(this.getCreationTime())) + " (" + this.getUploadDate() + ")" + TextFormat.RESET;
+                + TextFormat.GOLD + " at " + TextFormat.SIMPLE_DATE_FORMAT.format(new Date(this.getCreationTime())) + " (" + this.getUploadDate() + ")" + TextFormat.RESET;
     }
 
     @Override

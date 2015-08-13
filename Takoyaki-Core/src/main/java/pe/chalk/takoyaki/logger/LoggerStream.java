@@ -49,6 +49,6 @@ public class LoggerStream extends PrintStream {
     }
 
     public void println(Loggable.Level level, String message){
-        super.println(TextFormat.replaceTo(this.getType(), TextFormat.AQUA + Logger.DATE_FORMAT.format(new Date()) + " " + TextFormat.RESET + level.getFormats() + "[" + level.getPrefix() + "] " + message + TextFormat.RESET));
+        super.println(TextFormat.replaceTo(this.getType(), TextFormat.AQUA + TextFormat.DATE_FORMAT.format(new Date()) + " " + TextFormat.RESET + level.getFormats() + "[" + level.getPrefix() + "] " + message + TextFormat.RESET));
     }
 }

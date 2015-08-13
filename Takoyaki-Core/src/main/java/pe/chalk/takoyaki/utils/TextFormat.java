@@ -16,7 +16,9 @@
 
 package pe.chalk.takoyaki.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,6 +57,9 @@ public enum TextFormat {
     public static final String FORMAT_HTML_CLOSE = "</span>";
 
     public static final Pattern PATTERN_MINECRAFT = Pattern.compile("(§[0-9a-fl-or])");
+
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA);
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.KOREA);
 
     @SuppressWarnings("serial")
     public static final Map<String, TextFormat> MAP_BY_STRING = new HashMap<String, TextFormat>(){{
@@ -128,7 +133,7 @@ public enum TextFormat {
                     }
                 }
                 matcher.appendTail(buffer);
-                return buffer.toString().replaceAll("\n", "<br>").concat(getCloseTags(indentLevel));
+                return "<span style=\"vertical-align: middle\">" + buffer.toString().replaceAll("\n", "<br>").concat(getCloseTags(indentLevel)) + "</span>";
         }
     }
 
