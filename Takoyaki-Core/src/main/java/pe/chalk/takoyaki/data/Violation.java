@@ -24,6 +24,7 @@ import org.json.JSONObject;
  */
 public class Violation extends Data {
     public enum Level {
+        INFO                     ("정보"),
         DEMOTE                   ("강등"),
         REMOVE                   ("삭제"),
         WARN                     ("주의"),
