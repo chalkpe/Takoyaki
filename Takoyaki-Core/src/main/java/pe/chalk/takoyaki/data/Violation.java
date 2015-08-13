@@ -23,18 +23,24 @@ import org.json.JSONObject;
  * @since 2015-04-20
  */
 public class Violation extends Data {
+    @SuppressWarnings("unused")
     public enum Level {
-        INFO                     ("정보"),
-        DEMOTE                   ("강등"),
-        REMOVE                   ("삭제"),
-        WARN                     ("주의"),
-        ACTIVITY_STOP_ONE_DAY    ("활동 정지 1일"),
-        ACTIVITY_STOP_ONE_WEEK   ("활동 정지 7일"),
-        ACTIVITY_STOP_ONE_MONTH  ("활동 정지 30일"),
-        ACTIVITY_STOP_LIMITLESS  ("무기한 활동 정지"),
-        SECEDE                   ("강제 탈퇴"),
-        SECEDE_AND_REJECT_REJOIN ("재가입 불가 강제 탈퇴"),
-        ACCUSE                   ("고소");
+        CAUTION("주의"),
+        WARN("경고"),
+
+        REMOVE("삭제"),
+        DEMOTE("강등"),
+
+        STOP_ACTIVITY_ONE_DAY("활동 정지 1일"),
+        STOP_ACTIVITY_ONE_WEEK("활동 정지 7일"),
+        STOP_ACTIVITY_ONE_MONTH("활동 정지 30일"),
+        STOP_ACTIVITY_LIMITLESS("무기한 활동 정지"),
+
+        SECEDE("강제 탈퇴"),
+        REFUSE_REJOIN("재가입 불가"),
+        SECEDE_AND_REFUSE_REJOIN("재가입 불가 강제 탈퇴"),
+
+        ACCUSE("고소");
 
         private String name;
 
