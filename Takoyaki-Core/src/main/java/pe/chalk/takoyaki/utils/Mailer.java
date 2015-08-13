@@ -17,10 +17,10 @@
 package pe.chalk.takoyaki.utils;
 
 import pe.chalk.takoyaki.Takoyaki;
+import pe.chalk.takoyaki.data.Article;
 import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Member;
 import pe.chalk.takoyaki.data.Violation;
-import pe.chalk.takoyaki.logger.Logger;
 
 import javax.mail.Address;
 import javax.mail.Message;
@@ -29,10 +29,10 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * @since 2015-04-19
  */
 public class Mailer {
-    public static String USERNAME = "mcpekorea.takoyaki@gmail.com";
+    public static String USERNAME = null;
     public static String PASSWORD = null;
 
     public static final String FORMAT_HTML =
@@ -190,8 +190,8 @@ public class Mailer {
 
     public static void send(String subject, String body, Object[] recipients){
         new Thread(() -> {
-            if(Mailer.PASSWORD == null){
-                throw new IllegalStateException("Mailer.PASSWORD must not be null");
+            if(Mailer.USERNAME == null || Mailer.PASSWORD == null){
+                throw new IllegalStateException("You should set your gmail account to send mail");
             }
 
             Properties properties = new Properties();
@@ -229,7 +229,7 @@ public class Mailer {
                 transport.sendMessage(message, message.getAllRecipients());
                 transport.close();
 
-                Takoyaki.getInstance().getLogger().info(String.format("메일이 발송되었습니다: %s -> %s", subject, Arrays.asList(message.getAllRecipients()).stream().map(Address::toString).collect(Collectors.joining(", "))));
+                Takoyaki.getInstance().getLogger().info(String.format("메일이 발송되었습니다: %s -> %s", subject, Stream.of(message.getAllRecipients()).map(Address::toString).collect(Collectors.joining(", "))));
             }catch(Exception e){
                 Takoyaki.getInstance().getLogger().error(e.getMessage());
             }
@@ -241,15 +241,25 @@ public class Mailer {
     }
 
     public static void sendViolation(Violation violation, Object[] recipients){
-        String body = String.format("[%s] %s\n\n%s\n\n작성자: %s", violation.getLevel().toString(), violation.getName(), String.join("\n", Arrays.asList(violation.getViolations()).stream().map(Data::toString).collect(Collectors.toList())), violation.getViolator());
+        String body = String.format("[%s] %s\n\n%s\n\n작성자: %s", violation.getLevel(), violation.getName(), Stream.of(violation.getViolations()).map(data -> {
+            String str = data.toString();
+            if(data instanceof Article){
+                str = TextFormat.replaceTo(TextFormat.Type.HTML, str)
+                        + "  <a href=\"http://cafe.naver.com/" + violation.getTarget().getAddress() + "/" + ((Article) data).getId()
+                        + "\"><img src=\"http://pocketmine.me/api/ArticleDoctor.php?clubid=" + violation.getTargetId() + "&articleid=" + ((Article) data).getId()
+                        + "\" style=\"vertical-align: middle\" width=\"15px\" height=\"15px\"></a>";
+            }
 
-        violation.getTarget().getLogger().warning(body + "\n");
+            return str;
+        }).collect(Collectors.joining("\n")), violation.getViolator());
+
+        violation.getTarget().getLogger().warning(String.format("[%s] %s - 작성자: %s\n%s", violation.getLevel(), violation.getName(), violation.getViolator(), Stream.of(violation.getViolations()).map(Data::toString).collect(Collectors.joining("\n"))));
         sendMail(violation.getPrefix(), violation.getName(), body, recipients);
     }
 
     public static String getFooter(){
         return String.format("발신 시각: %s\n서버 정보: %s - %s %s\n자바 버전: %s\n타코야키 버전: %s",
-                Logger.DATE_FORMAT.format(new Date()), System.getProperty("user.name"), System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("java.version"), Takoyaki.VERSION
+                TextFormat.DATE_FORMAT.format(new Date()), System.getProperty("user.name"), System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("java.version"), Takoyaki.VERSION
         );
     }
 }
