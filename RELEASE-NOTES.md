@@ -1,3 +1,11 @@
+# Takoyaki 2.1.1
+## 2015-09-18
+
+### New features
+- Now you can set `Mailer.HOOK_URL` to enable ArticleDoctor.
+
+
+
 # Takoyaki 2.1
 ## 2015-08-13
 
