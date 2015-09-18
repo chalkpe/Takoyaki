@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 public class Mailer {
     public static String USERNAME = null;
     public static String PASSWORD = null;
+    public static String HOOK_URL = null;
 
     public static final String FORMAT_HTML =
             "<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css' />" +
@@ -243,10 +244,11 @@ public class Mailer {
     public static void sendViolation(Violation violation, Object[] recipients){
         String body = String.format("[%s] %s\n\n%s\n\n작성자: %s", violation.getLevel(), violation.getName(), Stream.of(violation.getViolations()).map(data -> {
             String str = data.toString();
-            if(data instanceof Article){
+
+            if(Mailer.HOOK_URL != null && data instanceof Article){
                 str = TextFormat.replaceTo(TextFormat.Type.HTML, str)
                         + "  <a href=\"http://cafe.naver.com/" + violation.getTarget().getAddress() + "/" + ((Article) data).getId()
-                        + "\"><img src=\"http://pocketmine.me/api/ArticleDoctor.php?clubid=" + violation.getTargetId() + "&articleid=" + ((Article) data).getId()
+                        + "\"><img src=\"" + Mailer.HOOK_URL + "/ArticleDoctor.php?clubid=" + violation.getTargetId() + "&articleid=" + ((Article) data).getId()
                         + "\" style=\"vertical-align: middle\" width=\"15px\" height=\"15px\"></a>";
             }
 
