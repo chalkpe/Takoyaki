@@ -9,7 +9,7 @@ $ git clone https://github.com/ChalkPE/Takoyaki.git && cd Takoyaki
 $ mvn install
 ```
 
-# How to run
+## How to run
 ```
 $ java -Dfile.encoding=UTF-8 -jar Takoyaki/target/Takoyaki-<VERSION>.jar
 ```
