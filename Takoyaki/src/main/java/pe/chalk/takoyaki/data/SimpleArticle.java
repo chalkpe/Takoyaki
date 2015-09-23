@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-12
  */
 public class SimpleArticle extends Data {

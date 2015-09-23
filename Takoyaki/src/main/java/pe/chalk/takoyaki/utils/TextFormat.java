@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-15
  */
 public enum TextFormat {

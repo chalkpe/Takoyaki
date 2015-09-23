@@ -24,7 +24,7 @@ import pe.chalk.takoyaki.filter.Filter;
 import java.util.List;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-12
  */
 public class Collector {

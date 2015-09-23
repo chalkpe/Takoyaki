@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
 public abstract class Filter<T extends Data> implements Prefix {

@@ -19,7 +19,7 @@ package pe.chalk.takoyaki.data;
 import org.json.JSONObject;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-20
  */
 public class Violation extends Data {

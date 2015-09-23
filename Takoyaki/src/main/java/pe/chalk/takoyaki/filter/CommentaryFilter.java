@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
 public class CommentaryFilter extends ContentFilter<SimpleArticle> {

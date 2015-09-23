@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-19
  */
 public class Mailer {

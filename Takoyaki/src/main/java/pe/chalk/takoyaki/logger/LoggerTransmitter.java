@@ -17,7 +17,7 @@
 package pe.chalk.takoyaki.logger;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-05-20
  */
 public interface LoggerTransmitter {

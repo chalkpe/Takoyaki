@@ -5,15 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pe.chalk.takoyaki</groupId>
-    <artifactId>Takoyaki</artifactId>
+    <artifactId>TakoyakiPackage</artifactId>
     <version>2</version>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>Takoyaki-Core</module>
-        <module>Takoyaki-Bukkit</module>
-        <!-- <module>Takoyaki-Android</module> TODO: Migrate to "Gradle" -->
+        <module>Takoyaki</module>
+        <module>TakoyakiBukkit</module>
     </modules>
 
     <name>Takoyaki</name>
@@ -26,7 +25,7 @@
             <id>ChalkPE</id>
             <name>Chalk</name>
             <url>http://chalk.pe</url>
-            <email>amato0617@gmail.com</email>
+            <email>chalkpe@gmail.com</email>
             <roles>
                 <role>developer</role>
             </roles>

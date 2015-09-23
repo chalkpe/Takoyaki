@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
 public class Target extends Thread implements Prefix {

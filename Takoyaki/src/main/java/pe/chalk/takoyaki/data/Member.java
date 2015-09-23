@@ -22,7 +22,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
 public class Member extends Data {
