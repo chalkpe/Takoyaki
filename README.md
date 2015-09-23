@@ -1,12 +1,20 @@
 <p align="center"><img src="http://i.imgur.com/yFLWB2v.png" alt="Logo Image"/></p>
 <h3 align="center">Takoyaki, the real-time monitoring system for <a href="http://cafe.naver.com">Naver Cafe</a></h3>
 
-### How to build
-1. Install [JDK 8](http://www.oracle.com/technetwork/java/javase/downloads) and [Apache Maven 3.3.3](http://maven.apache.org/download.cgi).
-2. Issue the `mvn install` at the command line.
-3. The jar file is `/Takoyaki/target/Takoyaki-<VERSION>.jar`.
+<br><br>
 
-### License
+## How to build
+```
+$ git clone https://github.com/ChalkPE/Takoyaki.git && cd Takoyaki
+$ mvn install
+```
+
+# How to run
+```
+$ java -Dfile.encoding=UTF-8 -jar Takoyaki/target/Takoyaki-<VERSION>.jar
+```
+
+## License
 ```
 Copyright 2014-2015 ChalkPE
 
