@@ -72,7 +72,7 @@ public class Takoyaki implements Prefix {
             "        \"commentary\",",
             "        \"visitation\"",
             "      ],",
-            "      \"timeout\": 2000",
+            "      \"timeout\": 2500",
             "    }",
             "  ],",
             "}");
@@ -99,7 +99,7 @@ public class Takoyaki implements Prefix {
         this.logger.addStream(new LoggerStream(TextFormat.Type.ANSI, System.out));
         this.logger.addStream(new LoggerStream(TextFormat.Type.NONE, new PrintStream(new FileOutputStream("Takoyaki.log", true), true, "UTF-8")));
 
-        Path propertiesPath = Paths.get("properties.json");
+        Path propertiesPath = Paths.get("Takoyaki.json");
         if(!Files.exists(propertiesPath)){
             Files.write(propertiesPath, DEFAULT_CONFIG, Charset.forName("UTF-8"), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
         }
