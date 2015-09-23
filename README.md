@@ -1,12 +1,12 @@
-![Logo Image](http://i.imgur.com/yFLWB2v.png)
-### Takoyaki, the real-time monitoring system for [Naver Cafe](http://cafe.naver.com)
+<p align="center"><img src="http://i.imgur.com/yFLWB2v.png" alt="Logo Image"/></p>
+<h3 align="center">Takoyaki, the real-time monitoring system for <a href="http://cafe.naver.com">Naver Cafe</a></h3>
 
-# Building
-1. Install [Java SE Development Kit 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) and [Apache Maven 3.3.3](http://maven.apache.org/download.cgi).
+### How to build
+1. Install [JDK 8](http://www.oracle.com/technetwork/java/javase/downloads) and [Apache Maven 3.3.3](http://maven.apache.org/download.cgi).
 2. Issue the `mvn install` at the command line.
-3. The build jar is `/Takoyaki-Core/target/Takoyaki-Core-VERSION-NAME.jar`.
+3. The jar file is `/Takoyaki/target/Takoyaki-<VERSION>.jar`.
 
-# License
+### License
 ```
 Copyright 2014-2015 ChalkPE
 
