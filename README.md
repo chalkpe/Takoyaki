@@ -1,4 +1,4 @@
-<p align="center"><img src="http://i.imgur.com/yFLWB2v.png" alt="Logo Image"/></p>
+<p align="center"><img src="https://raw.github.com/ChalkPE/Takoyaki/master/Takoyaki.png" alt="Logo Image"/></p>
 <h3 align="center">Takoyaki, the real-time monitoring system for <a href="http://cafe.naver.com">Naver Cafe</a></h3>
 
 <br><br>
