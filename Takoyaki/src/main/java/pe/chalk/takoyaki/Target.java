@@ -16,12 +16,10 @@
 
 package pe.chalk.takoyaki;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.data.Data;
 import pe.chalk.takoyaki.data.Menu;
 import pe.chalk.takoyaki.filter.*;
 import pe.chalk.takoyaki.utils.Prefix;
@@ -31,8 +29,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +47,6 @@ public class Target extends Thread implements Prefix {
     private URL contentUrl;
     private URL articleUrl;
 
-    private Takoyaki takoyaki;
     private String prefix;
     private PrefixedLogger logger;
 
@@ -64,56 +59,57 @@ public class Target extends Thread implements Prefix {
     private final int clubId;
     private List<Menu> menus;
 
-    public Target(Takoyaki takoyaki, JSONObject jsonObject) throws JSONException, IOException {
-        this.takoyaki = takoyaki;
-        this.prefix = jsonObject.getString("prefix");
+    public Target(JSONObject properties){
+        this.prefix = properties.getString("prefix");
         this.logger = new PrefixedLogger(this.getTakoyaki().getLogger(), this);
 
-        this.interval = jsonObject.getLong("interval");
-        this.timeout = jsonObject.getInt("timeout");
+        this.interval = properties.getLong("interval");
+        this.timeout = properties.getInt("timeout");
 
-        JSONArray filtersArray = jsonObject.getJSONArray("filters");
-        List<Filter<? extends Data>> filters = new ArrayList<>(filtersArray.length());
-
-        for(int i = 0; i < filtersArray.length(); i++){
-            Filter<? extends Data> filter;
-            switch(filtersArray.getString(i)){
+        this.collector = new Collector(Takoyaki.<String>buildStream(properties.getJSONArray("filters")).map(filterName -> {
+            switch(filterName){
                 case ArticleFilter.NAME:
-                    filter = new ArticleFilter(this);
-                    break;
+                    return new ArticleFilter(this);
+
                 case CommentaryFilter.NAME:
-                    filter = new CommentaryFilter(this);
-                    break;
+                    return new CommentaryFilter(this);
+
                 case VisitationFilter.NAME:
-                    filter = new VisitationFilter(this);
-                    break;
+                    return new VisitationFilter(this);
+
                 default:
-                    continue;
+                    return null;
             }
-            filters.add(filter);
+        }).filter(filter -> filter != null).collect(Collectors.toList()));
+
+        try{
+            this.address = properties.getString("address");
+            this.contentUrl = new URL(String.format(STRING_CONTENT, this.getAddress()));
+
+            Document contentDocument = Jsoup.parse(this.contentUrl, this.getTimeout());
+            this.setName(contentDocument.select("h1.d-none").text());
+
+            Matcher clubIdMatcher = Target.PATTERN_CLUB_ID.matcher(contentDocument.head().getElementsByTag("script").first().html());
+            if(!clubIdMatcher.find()){
+                throw new IllegalArgumentException("카페 ID를 찾을 수 없습니다: " + this.getName());
+            }
+
+            this.clubId = Integer.parseInt(clubIdMatcher.group(1));
+            this.menus = contentDocument.select("a[id^=menuLink]").stream().map(element -> new Menu(this.getClubId(), Integer.parseInt(element.id().substring(8)), element.text())).collect(Collectors.toList());
+
+            this.articleUrl = new URL(String.format(STRING_ARTICLE, this.getClubId()));
+
+            Files.write(Paths.get("TakoyakiMenu-" + this.getAddress() + ".log"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()));
+        }catch(IOException | JSONException e){
+            String errorMessage = "모니터링이 불가합니다: " + e.getClass().getName() + ": " + e.getMessage();
+
+            this.getLogger().error(errorMessage);
+            throw new IllegalStateException(errorMessage);
         }
-        this.collector = new Collector(filters);
-
-        this.address = jsonObject.getString("address");
-        this.contentUrl = new URL(String.format(STRING_CONTENT, this.getAddress()));
-
-        Document contentDocument = Jsoup.parse(this.contentUrl, this.getTimeout());
-        this.setName(contentDocument.select("h1.d-none").text());
-
-        Matcher clubIdMatcher = Target.PATTERN_CLUB_ID.matcher(contentDocument.head().getElementsByTag("script").first().html());
-        if(!clubIdMatcher.find()){
-            throw new IllegalArgumentException("Cannot find menuId of " + this.getName());
-        }
-
-        this.clubId = Integer.parseInt(clubIdMatcher.group(1));
-        this.menus = contentDocument.select("a[id^=menuLink]").stream().map(element -> new Menu(this.getClubId(), Integer.parseInt(element.id().substring(8)), element.text())).collect(Collectors.toList());
-        this.articleUrl = new URL(String.format(STRING_ARTICLE, this.getClubId()));
-
-        Files.write(Paths.get(this.getAddress() + "-menus.log"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     public Takoyaki getTakoyaki(){
-        return this.takoyaki;
+        return Takoyaki.getInstance();
     }
 
     public PrefixedLogger getLogger(){
@@ -156,6 +152,8 @@ public class Target extends Thread implements Prefix {
 
     @Override
     public void run(){
+        this.getTakoyaki().getLogger().info("모니터링을 시작합니다: " + this.getName() + " (ID: " + this.getClubId() + ")");
+
         while(this.getTakoyaki().isAlive()){
             try{
                 Thread.sleep(this.getInterval());
@@ -165,7 +163,7 @@ public class Target extends Thread implements Prefix {
 
                 this.collector.collect(contentDocument, articleDocument);
             }catch(IOException e){
-                this.getLogger().error(e.getMessage());
+                this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
             }catch(InterruptedException e){
                 e.printStackTrace();
             }
