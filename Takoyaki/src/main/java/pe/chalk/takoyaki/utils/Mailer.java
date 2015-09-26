@@ -189,10 +189,10 @@ public class Mailer {
 
     private Mailer(){}
 
-    public static void send(String subject, String body, Object[] recipients){
-        new Thread(() -> {
-            if(Mailer.USERNAME == null || Mailer.PASSWORD == null){
-                throw new IllegalStateException("You should set your gmail account to send mail");
+    private static void __send(String subject, String body, Object[] recipients){
+        try{
+            if(Mailer.USERNAME == null || Mailer.PASSWORD == null || recipients == null){
+                return;
             }
 
             Properties properties = new Properties();
@@ -201,47 +201,56 @@ public class Mailer {
             Session session = Session.getDefaultInstance(properties);
             MimeMessage message = new MimeMessage(session);
 
-            try{
-                message.setSubject(subject);
-                message.setHeader("Content-Type", "text/html; charset=UTF-8");
-                message.setContent(TextFormat.replaceTo(TextFormat.Type.HTML, body), "text/html; charset=UTF-8");
-                message.setFrom(new InternetAddress(Mailer.USERNAME));
+            message.setSubject(subject);
+            message.setHeader("Content-Type", "text/html; charset=UTF-8");
+            message.setContent(TextFormat.replaceTo(TextFormat.Type.HTML, body), "text/html; charset=UTF-8");
+            message.setFrom(new InternetAddress(Mailer.USERNAME));
 
-                if(recipients == null){
-                    throw new IllegalArgumentException("recipients must not be null");
+            for(Object recipient : recipients){
+                if(recipient instanceof Address){
+                    message.addRecipient(Message.RecipientType.TO, (Address) recipient);
+                }else if(recipient instanceof Member){
+                    message.addRecipient(Message.RecipientType.TO, ((Member) recipient).getInternetAddress());
+                }else if(recipient instanceof String){
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress((String) recipient));
                 }
-
-                try{
-                    for(Object recipient : recipients){
-                        if(recipient instanceof Address){
-                            message.addRecipient(Message.RecipientType.TO, (Address) recipient);
-                        }else if(recipient instanceof Member){
-                            message.addRecipient(Message.RecipientType.TO, ((Member) recipient).getInternetAddress());
-                        }else if(recipient instanceof String){
-                            message.addRecipient(Message.RecipientType.TO, new InternetAddress((String) recipient));
-                        }
-                    }
-                }catch(MessagingException e){
-                    Takoyaki.getInstance().getLogger().error(e.getMessage());
-                }
-
-                Transport transport = session.getTransport("smtps");
-                transport.connect("smtp.gmail.com", Mailer.USERNAME, Mailer.PASSWORD);
-                transport.sendMessage(message, message.getAllRecipients());
-                transport.close();
-
-                Takoyaki.getInstance().getLogger().info(String.format("메일이 발송되었습니다: %s -> %s", subject, Stream.of(message.getAllRecipients()).map(Address::toString).collect(Collectors.joining(", "))));
-            }catch(Exception e){
-                Takoyaki.getInstance().getLogger().error(e.getMessage());
             }
-        }).start();
+
+            Transport transport = session.getTransport("smtps");
+            transport.connect("smtp.gmail.com", Mailer.USERNAME, Mailer.PASSWORD);
+            transport.sendMessage(message, message.getAllRecipients());
+            transport.close();
+
+            Takoyaki.getInstance().getLogger().info(String.format("메일이 발송되었습니다: %s -> %s", subject, Stream.of(message.getAllRecipients()).map(Address::toString).collect(Collectors.joining(", "))));
+        }catch(MessagingException e){
+            Takoyaki.getInstance().getLogger().error(e.getMessage());
+        }
+    }
+
+    public static void send(String subject, String body, Object[] recipients){
+        send(subject, body, recipients, true);
+    }
+
+    public static void send(String subject, String body, Object[] recipients, boolean async){
+        if(async){
+            new Thread(() -> __send(subject, body, recipients)).start();
+        }else{
+            __send(subject, body, recipients);
+        }
     }
 
     public static void sendMail(String prefix, String subject, String body, Object[] recipients){
-        send(String.format("[%s] [%s] %s", Takoyaki.getInstance().getPrefix(), prefix, subject), String.format(Mailer.FORMAT_HTML, body, Mailer.getFooter()), recipients);
+        sendMail(prefix, subject, body, recipients, true);
     }
 
+    public static void sendMail(String prefix, String subject, String body, Object[] recipients, boolean async){
+        send(String.format("[%s] [%s] %s", Takoyaki.getInstance().getPrefix(), prefix, subject), String.format(Mailer.FORMAT_HTML, body, Mailer.getFooter()), recipients, async);
+    }
     public static void sendViolation(Violation violation, Object[] recipients){
+        sendViolation(violation, recipients, true);
+    }
+
+    public static void sendViolation(Violation violation, Object[] recipients, boolean async){
         String body = String.format("[%s] %s\n\n%s\n\n작성자: %s", violation.getLevel(), violation.getName(), Stream.of(violation.getViolations()).map(data -> {
             String str = data.toString();
 
@@ -256,7 +265,7 @@ public class Mailer {
         }).collect(Collectors.joining("\n")), violation.getViolator());
 
         violation.getTarget().getLogger().warning(String.format("[%s] %s - 작성자: %s\n%s", violation.getLevel(), violation.getName(), violation.getViolator(), Stream.of(violation.getViolations()).map(Data::toString).collect(Collectors.joining("\n"))));
-        sendMail(violation.getPrefix(), violation.getName(), body, recipients);
+        sendMail(violation.getPrefix(), violation.getName(), body, recipients, async);
     }
 
     public static String getFooter(){

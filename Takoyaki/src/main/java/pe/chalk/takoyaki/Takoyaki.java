@@ -90,11 +90,15 @@ public class Takoyaki implements Prefix {
     }
 
     public Takoyaki() throws JSONException, IOException {
+        if(Takoyaki.instance != null) Takoyaki.instance.stop();
         Takoyaki.instance = this;
+
         this.init();
     }
 
     private void init() throws JSONException, IOException {
+        Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::stop));
+
         this.logger = new Logger();
         this.logger.addStream(new LoggerStream(TextFormat.Type.ANSI, System.out));
         this.logger.addStream(new LoggerStream(TextFormat.Type.NONE, new PrintStream(new FileOutputStream("Takoyaki.log", true), true, "UTF-8")));
@@ -118,13 +122,7 @@ public class Takoyaki implements Prefix {
         this.excluded = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excluded")).collect(Collectors.toList());
         this.targets  = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::new).collect(Collectors.toList());
 
-
         this.loadPlugins();
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Takoyaki.this.getLogger().critical("*** FINALIZATION RUNNING ***");
-            Takoyaki.this.getPlugins().forEach(plugin -> plugin.call("onDestroy", Context.emptyArgs));
-        }));
     }
 
     @SuppressWarnings("unchecked")
@@ -167,6 +165,15 @@ public class Takoyaki implements Prefix {
 
         this.getTargets().forEach(Target::start);
         this.getPlugins().forEach(plugin -> plugin.call("onStart", Context.emptyArgs));
+    }
+
+    public void stop(){
+        this.isAlive = false;
+
+        if(this.getLogger() != null) this.getLogger().info("*** 타코야키를 종료합니다 ***");
+
+        if(this.getTargets() != null) this.getTargets().forEach(Thread::interrupt);
+        if(this.getPlugins() != null) this.getPlugins().forEach(plugin -> plugin.call("onDestroy", Context.emptyArgs));
     }
 
     public List<Target> getTargets(){
