@@ -1,7 +1,5 @@
 package pe.chalk.takoyaki.bot;
 
-import de.vivistra.telegrambot.client.Bot;
-import de.vivistra.telegrambot.model.GroupChat;
 import de.vivistra.telegrambot.model.message.Message;
 import de.vivistra.telegrambot.model.message.MessageType;
 import de.vivistra.telegrambot.model.message.TextMessage;
@@ -23,8 +21,8 @@ import java.util.Set;
 public class TakoyakiBot implements IReceiverService {
     private Set<Integer> recipients = new HashSet<>();
 
-    public TakoyakiBot() throws IOException {
-        BotSettings.setApiToken("124453597:AAGbjb4D3G32NwQxcXbrpxCv9WA5yhnFQg8");
+    public TakoyakiBot(String token) throws IOException {
+        BotSettings.setApiToken(token);
         Receiver.subscribe(this);
 
         Takoyaki takoyaki = new Takoyaki();
@@ -33,7 +31,11 @@ public class TakoyakiBot implements IReceiverService {
     }
 
     public static void main(String[] args) throws IOException {
-        new TakoyakiBot();
+        if(args.length < 1){
+            throw new IllegalArgumentException();
+        }
+
+        new TakoyakiBot(args[0]);
     }
 
     public void received(Message message){
