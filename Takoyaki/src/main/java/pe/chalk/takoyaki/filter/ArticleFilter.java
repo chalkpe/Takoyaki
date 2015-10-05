@@ -20,8 +20,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import pe.chalk.takoyaki.Target;
-import pe.chalk.takoyaki.data.Article;
-import pe.chalk.takoyaki.data.Member;
+import pe.chalk.takoyaki.model.Article;
+import pe.chalk.takoyaki.model.Member;
 
 import java.util.List;
 import java.util.regex.Matcher;

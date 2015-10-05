@@ -17,7 +17,7 @@
 package pe.chalk.takoyaki;
 
 import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.data.Data;
+import pe.chalk.takoyaki.model.Data;
 import pe.chalk.takoyaki.filter.ContentFilter;
 import pe.chalk.takoyaki.filter.Filter;
 

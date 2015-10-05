@@ -20,8 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.data.Menu;
-import pe.chalk.takoyaki.filter.*;
+import pe.chalk.takoyaki.filter.ArticleFilter;
+import pe.chalk.takoyaki.filter.CommentaryFilter;
+import pe.chalk.takoyaki.filter.VisitationFilter;
+import pe.chalk.takoyaki.model.Menu;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 

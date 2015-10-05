@@ -32,13 +32,13 @@ import java.io.InputStreamReader;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-19
  */
-public class Plugin implements Prefix {
+public class JavaScriptPlugin implements Prefix {
     private File file;
     private String name;
     private Scriptable scriptable;
     private PrefixedLogger logger;
 
-    public Plugin(File file) throws JavaScriptException, IOException {
+    public JavaScriptPlugin(File file) throws JavaScriptException, IOException {
         this.file = file;
         this.name = file.getName().substring(0, file.getName().lastIndexOf("."));
         this.logger = new PrefixedLogger(Takoyaki.getInstance().getLogger(), this);

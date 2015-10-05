@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.data;
+package pe.chalk.takoyaki.model;
 
 import org.json.JSONObject;
 import pe.chalk.takoyaki.Takoyaki;

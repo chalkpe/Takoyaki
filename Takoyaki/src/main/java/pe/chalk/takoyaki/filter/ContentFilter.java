@@ -17,7 +17,7 @@
 package pe.chalk.takoyaki.filter;
 
 import pe.chalk.takoyaki.Target;
-import pe.chalk.takoyaki.data.Data;
+import pe.chalk.takoyaki.model.Data;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>

@@ -17,10 +17,10 @@
 package pe.chalk.takoyaki.utils;
 
 import pe.chalk.takoyaki.Takoyaki;
-import pe.chalk.takoyaki.data.Article;
-import pe.chalk.takoyaki.data.Data;
-import pe.chalk.takoyaki.data.Member;
-import pe.chalk.takoyaki.data.Violation;
+import pe.chalk.takoyaki.model.Article;
+import pe.chalk.takoyaki.model.Data;
+import pe.chalk.takoyaki.model.Member;
+import pe.chalk.takoyaki.model.Violation;
 
 import javax.mail.Address;
 import javax.mail.Message;

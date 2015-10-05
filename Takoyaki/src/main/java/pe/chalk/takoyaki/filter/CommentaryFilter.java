@@ -18,7 +18,7 @@ package pe.chalk.takoyaki.filter;
 
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.Target;
-import pe.chalk.takoyaki.data.SimpleArticle;
+import pe.chalk.takoyaki.model.SimpleArticle;
 
 import java.util.List;
 import java.util.stream.Collectors;

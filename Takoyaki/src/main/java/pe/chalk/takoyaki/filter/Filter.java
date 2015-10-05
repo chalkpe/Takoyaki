@@ -18,7 +18,10 @@ package pe.chalk.takoyaki.filter;
 
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.Target;
-import pe.chalk.takoyaki.data.*;
+import pe.chalk.takoyaki.model.Article;
+import pe.chalk.takoyaki.model.Data;
+import pe.chalk.takoyaki.model.Member;
+import pe.chalk.takoyaki.model.SimpleArticle;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 
