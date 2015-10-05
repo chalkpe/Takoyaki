@@ -156,7 +156,7 @@ public class Target extends Thread implements Prefix {
     public void run(){
         this.getTakoyaki().getLogger().info("모니터링을 시작합니다: " + this.getName() + " (ID: " + this.getClubId() + ")");
 
-        while(this.getTakoyaki().isAlive()){
+        while(this.getTakoyaki().isAlive() && !this.isInterrupted()){
             try{
                 Thread.sleep(this.getInterval());
 
@@ -164,6 +164,8 @@ public class Target extends Thread implements Prefix {
                 Document articleDocument = Jsoup.parse(this.articleUrl, this.getTimeout());
 
                 this.collector.collect(contentDocument, articleDocument);
+            }catch(InterruptedException e){
+                return;
             }catch(Exception e){
                 this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
             }

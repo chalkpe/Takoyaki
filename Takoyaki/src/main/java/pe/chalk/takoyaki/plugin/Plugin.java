@@ -9,7 +9,7 @@ import pe.chalk.takoyaki.utils.Prefix;
 import java.util.List;
 
 /**
- * @author ChalkPE <amato0617@gmail.com>
+ * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-10-05
  */
 public abstract class Plugin implements Prefix {
