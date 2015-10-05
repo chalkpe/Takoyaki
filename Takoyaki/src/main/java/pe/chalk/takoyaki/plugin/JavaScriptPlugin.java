@@ -16,33 +16,39 @@
 
 package pe.chalk.takoyaki.plugin;
 
-import org.mozilla.javascript.*;
-import pe.chalk.takoyaki.Takoyaki;
-import pe.chalk.takoyaki.utils.Prefix;
-import pe.chalk.takoyaki.logger.PrefixedLogger;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import pe.chalk.takoyaki.filter.Filter;
+import pe.chalk.takoyaki.model.Data;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-19
  */
-public class JavaScriptPlugin implements Prefix {
+public class JavaScriptPlugin extends Plugin {
     private File file;
-    private String name;
     private Scriptable scriptable;
-    private PrefixedLogger logger;
 
-    public JavaScriptPlugin(File file) throws JavaScriptException, IOException {
+    public JavaScriptPlugin(File file) throws IOException, RhinoException {
+        super(file.getName().substring(0, file.getName().lastIndexOf(".")));
+
         this.file = file;
-        this.name = file.getName().substring(0, file.getName().lastIndexOf("."));
-        this.logger = new PrefixedLogger(Takoyaki.getInstance().getLogger(), this);
+        this.initScriptable();
+    }
 
+    private void initScriptable() throws IOException, RhinoException {
         Context context = Context.enter();
         try{
             this.scriptable = new ImporterTopLevel(context);
@@ -57,23 +63,15 @@ public class JavaScriptPlugin implements Prefix {
         return this.file;
     }
 
-    public String getName(){
-        return this.name;
-    }
-
     public Scriptable getScriptable(){
         return this.scriptable;
     }
 
-    public PrefixedLogger getLogger(){
-        return this.logger;
-    }
-
-    public Object get(String name){
+    private Object getScriptableProperty(String name){
         Context.enter();
         try{
             return ScriptableObject.getProperty(this.getScriptable(), name);
-        }catch(Exception e){
+        }catch(RhinoException e){
             this.getLogger().error(e.getMessage());
             return null;
         }finally{
@@ -81,28 +79,56 @@ public class JavaScriptPlugin implements Prefix {
         }
     }
 
-    public Object call(String functionName, Object[] args){
+    private Object callScriptableFunction(String functionName){
+        return this.callScriptableFunction(functionName, Context.emptyArgs);
+    }
+
+    private Object callScriptableFunction(String functionName, Object[] args){
         Context context = Context.enter();
         try{
-            Object object = this.get(functionName);
+            Object object = this.getScriptableProperty(functionName);
             if(object != null && object instanceof Function){
                 return ((Function) object).call(context, scriptable, scriptable, args);
             }
-        }catch(Exception e){
+        }catch(RhinoException e){
             this.getLogger().error(e.getMessage());
         }finally{
             Context.exit();
         }
+
         return null;
     }
 
     @Override
-    public String toString(){
-        return this.getName();
+    public String getVersion(){
+        Object version = this.getScriptableProperty("VERSION");
+        return version == null ? null : version.toString();
     }
 
     @Override
-    public String getPrefix(){
-        return this.getName();
+    public void reload(){
+        this.callScriptableFunction("reload");
+    }
+
+    @Override
+    public void onLoad(){
+        this.callScriptableFunction("onLoad");
+    }
+
+    @Override
+    public void onDestroy(){
+        this.callScriptableFunction("onDestroy");
+
+    }
+
+    @Override
+    public void onStart(){
+        this.callScriptableFunction("onStart");
+
+    }
+
+    @Override
+    public void onDataAdded(List<? extends Data> freshData, Filter<? extends Data> filter){
+        this.callScriptableFunction("onDataAdded", new Object[]{ freshData.toArray(), filter });
     }
 }

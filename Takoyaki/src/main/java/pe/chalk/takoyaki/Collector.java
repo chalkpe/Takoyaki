@@ -41,13 +41,10 @@ public class Collector {
     public void collect(Document contentDocument, Document articleDocument){
         try{
             this.getFilters().forEach(filter -> {
-                Document document = filter instanceof ContentFilter ? contentDocument : articleDocument;
-                List<? extends Data> freshData = filter.getFreshData(document);
-                freshData.forEach(data -> filter.getLogger().info(data.toString()));
+                List<? extends Data> list = filter.getFreshData(filter instanceof ContentFilter ? contentDocument : articleDocument);
 
-                if(freshData.size() > 0){
-                    Takoyaki.getInstance().getPlugins().forEach(plugin -> plugin.call("onDataAdded", new Object[]{filter, freshData.toArray()}));
-                }
+                list.forEach(data -> filter.getLogger().info(data.toString()));
+                Takoyaki.getInstance().getPlugins().forEach(plugin -> plugin.onDataAdded(list, filter));
             });
         }catch(Exception e){
             e.printStackTrace();

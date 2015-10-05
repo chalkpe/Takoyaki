@@ -19,10 +19,10 @@ package pe.chalk.takoyaki;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.RhinoException;
 import pe.chalk.takoyaki.logger.Logger;
 import pe.chalk.takoyaki.logger.LoggerStream;
+import pe.chalk.takoyaki.plugin.JavaScriptPlugin;
 import pe.chalk.takoyaki.plugin.Plugin;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.utils.TextFormat;
@@ -148,13 +148,12 @@ public class Takoyaki implements Prefix {
         this.plugins = new ArrayList<>();
         Files.list(pluginsPath).filter(path -> path.getFileName().toString().endsWith(".js") && !this.excluded.contains(path.getFileName().toString())).map(Path::toFile).forEach(pluginFile -> {
             try{
-                Plugin plugin = new Plugin(pluginFile);
-                plugin.call("onCreate", new Object[]{plugin.getName()});
-                Object version = plugin.get("VERSION");
+                JavaScriptPlugin plugin = new JavaScriptPlugin(pluginFile);
+                plugin.onLoad();
 
                 this.plugins.add(plugin);
-                this.logger.info("플러그인을 불러옵니다: " + plugin.getName() + (version != null ? " v" + version : ""));
-            }catch(JavaScriptException | IOException e){
+                this.logger.info("플러그인을 불러옵니다: " + plugin.getName() + (plugin.getVersion() != null ? " v" + plugin.getVersion() : ""));
+            }catch(IOException | RhinoException e){
                 this.getLogger().error(e.getMessage());
             }
         });
@@ -164,7 +163,7 @@ public class Takoyaki implements Prefix {
         this.isAlive = true;
 
         this.getTargets().forEach(Target::start);
-        this.getPlugins().forEach(plugin -> plugin.call("onStart", Context.emptyArgs));
+        this.getPlugins().forEach(Plugin::onStart);
     }
 
     public void stop(){
@@ -173,7 +172,7 @@ public class Takoyaki implements Prefix {
         if(this.getLogger() != null) this.getLogger().info("*** 타코야키를 종료합니다 ***");
 
         if(this.getTargets() != null) this.getTargets().forEach(Thread::interrupt);
-        if(this.getPlugins() != null) this.getPlugins().forEach(plugin -> plugin.call("onDestroy", Context.emptyArgs));
+        if(this.getPlugins() != null) this.getPlugins().forEach(Plugin::onDestroy);
     }
 
     public List<Target> getTargets(){
