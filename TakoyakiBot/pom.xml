@@ -22,7 +22,7 @@
         <dependency>
             <groupId>de.vivistra</groupId>
             <artifactId>telegrambot</artifactId>
-            <version>0.9.0</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
