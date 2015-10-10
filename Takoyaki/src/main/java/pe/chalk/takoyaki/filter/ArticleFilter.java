@@ -49,7 +49,11 @@ public class ArticleFilter extends Filter<Article> {
 
     @Override
     public List<Article> filter(Document document){
-        return document.select("form[name=ArticleList] tr[align=center]").stream()
+        return this.filter(document, "form[name=ArticleList] tr[align=center]");
+    }
+
+    public List<Article> filter(Document document, String cssQuery){
+        return document.select(cssQuery).stream()
                 .map(element -> {
                     int articleId = Integer.parseInt(element.select(".m-tcol-c.list-count").first().text());
                     int viewCount = Integer.parseInt(element.select(".view-count.m-tcol-c._rosReadcount").first().text());
@@ -76,7 +80,7 @@ public class ArticleFilter extends Filter<Article> {
                     Element nicknameElement = element.select(".p-nick a[href=#]").first();
                     String memberName = nicknameElement.child(0).text();
 
-                    Element memberLevelElement = nicknameElement.select("img.mem-level").first();
+                    //Element memberLevelElement = nicknameElement.select("img.mem-level").first();
                     //TODO: url to valid member level value (0, 1, staff, manager etc)
 
                     String memberId = null;
