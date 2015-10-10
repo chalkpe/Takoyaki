@@ -26,7 +26,6 @@ import pe.chalk.takoyaki.data.Data;
  * @since 2015-05-30
  */
 
-@SuppressWarnings("unused")
 public class TakoyakiEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Data[] data;
