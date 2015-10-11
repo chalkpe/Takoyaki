@@ -41,13 +41,14 @@ import java.util.stream.Collectors;
  * @since 2015-04-07
  */
 public class Target extends Thread implements Prefix {
-    private static final String STRING_CONTENT = "http://cafe.naver.com/%s";
+    private static final String STRING_CONTENT = "http://cafe.naver.com/%s.cafe";
     private static final String STRING_ARTICLE = "http://cafe.naver.com/ArticleList.nhn?search.clubid=%d&search.boardtype=L";
+    private static final String USER_AGENT_CHROME = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
     private static final Pattern PATTERN_CLUB_ID = Pattern.compile("var g_sClubId = \"(\\d+)\";");
 
-    private URL contentUrl;
-    private URL articleUrl;
+    private String contentUrl;
+    private String articleUrl;
 
     private String prefix;
     private PrefixedLogger logger;
@@ -86,12 +87,12 @@ public class Target extends Thread implements Prefix {
 
         try{
             this.address = properties.getString("address");
-            this.contentUrl = new URL(String.format(STRING_CONTENT, this.getAddress()));
+            this.contentUrl = String.format(STRING_CONTENT, this.getAddress());
 
-            Document contentDocument = Jsoup.parse(this.contentUrl, this.getTimeout());
+            Document contentDocument = Jsoup.connect(this.contentUrl).userAgent(USER_AGENT_CHROME).timeout(this.getTimeout()).get();
             this.setName(contentDocument.select("h1.d-none").text());
 
-            Matcher clubIdMatcher = Target.PATTERN_CLUB_ID.matcher(contentDocument.head().getElementsByTag("script").first().html());
+            Matcher clubIdMatcher = Target.PATTERN_CLUB_ID.matcher(contentDocument.head().select("script:not([type]):not([src])").first().html());
             if(!clubIdMatcher.find()){
                 throw new IllegalArgumentException("카페 ID를 찾을 수 없습니다: " + this.getName());
             }
@@ -99,7 +100,7 @@ public class Target extends Thread implements Prefix {
             this.clubId = Integer.parseInt(clubIdMatcher.group(1));
             this.menus = contentDocument.select("a[id^=menuLink]").stream().map(element -> new Menu(this.getClubId(), Integer.parseInt(element.id().substring(8)), element.text())).collect(Collectors.toList());
 
-            this.articleUrl = new URL(String.format(STRING_ARTICLE, this.getClubId()));
+            this.articleUrl = String.format(STRING_ARTICLE, this.getClubId());
 
             Files.write(Paths.get("TakoyakiMenu-" + this.getAddress() + ".log"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()));
         }catch(IOException | JSONException e){
@@ -160,8 +161,8 @@ public class Target extends Thread implements Prefix {
             try{
                 Thread.sleep(this.getInterval());
 
-                Document contentDocument = Jsoup.parse(this.contentUrl, this.getTimeout());
-                Document articleDocument = Jsoup.parse(this.articleUrl, this.getTimeout());
+                Document contentDocument = Jsoup.connect(this.contentUrl).userAgent(USER_AGENT_CHROME).timeout(this.getTimeout()).get();
+                Document articleDocument = Jsoup.connect(this.articleUrl).userAgent(USER_AGENT_CHROME).timeout(this.getTimeout()).get();
 
                 this.collector.collect(contentDocument, articleDocument);
             }catch(InterruptedException e){
