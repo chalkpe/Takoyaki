@@ -79,7 +79,7 @@ public enum TextFormat {
     public static final String FORMAT_HTML_OPEN  = "<span style=\"%s\">";
     public static final String FORMAT_HTML_CLOSE = "</span>";
 
-    public static final Pattern PATTERN_MINECRAFT = Pattern.compile("§(_?[0-9a-f]|[k-or])");
+    public static final Pattern PATTERN_MINECRAFT = Pattern.compile("(§_?[0-9a-f]|§[k-or])");
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA);
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.KOREA);
