@@ -90,14 +90,14 @@ public class Takoyaki implements Prefix {
     }
 
     public Takoyaki() throws JSONException, IOException {
-        if(Takoyaki.instance != null) Takoyaki.instance.stop();
+        if(Takoyaki.instance != null) Takoyaki.instance.stop("새로운 인스턴스가 생성되었습니다");
         Takoyaki.instance = this;
 
         this.init();
     }
 
     private void init() throws JSONException, IOException {
-        Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::stop));
+        Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::shutdown));
 
         this.logger = new Logger();
         this.logger.addStream(new LoggerStream(TextFormat.Type.ANSI, System.out));
@@ -166,10 +166,19 @@ public class Takoyaki implements Prefix {
         this.getPlugins().forEach(Plugin::onStart);
     }
 
+    public void shutdown(){
+        this.stop("VM에 의한 종료");
+    }
+
+    @SuppressWarnings("unused")
     public void stop(){
+        this.stop("알 수 없음");
+    }
+
+    public void stop(String reason){
         this.isAlive = false;
 
-        if(this.getLogger() != null) this.getLogger().info("*** 타코야키를 종료합니다 ***");
+        if(this.getLogger() != null) this.getLogger().info("타코야키를 종료합니다: 사유: " + reason);
 
         if(this.getTargets() != null) this.getTargets().forEach(Thread::interrupt);
         if(this.getPlugins() != null) this.getPlugins().forEach(Plugin::onDestroy);
