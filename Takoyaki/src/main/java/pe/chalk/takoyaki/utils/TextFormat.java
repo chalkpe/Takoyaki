@@ -140,7 +140,7 @@ public enum TextFormat {
                 int indentLevel = 0;
                 StringBuffer buffer = new StringBuffer(minecraftString.length());
 
-                Matcher matcher = PATTERN_MINECRAFT.matcher(minecraftString);
+                Matcher matcher = PATTERN_MINECRAFT.matcher(minecraftString.replaceAll(" ", "&nbsp;"));
                 while(matcher.find()){
                     TextFormat textFormat = MAP_BY_STRING.get(matcher.group(1));
                     if(textFormat == TextFormat.RESET){

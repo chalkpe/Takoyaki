@@ -18,14 +18,13 @@ package pe.chalk.takoyaki.bukkit;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import pe.chalk.takoyaki.data.Data;
+import pe.chalk.takoyaki.model.Data;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
  * @author 파차리로디드 <fcreloaded@outlook.kr>
  * @since 2015-05-30
  */
-
 public class TakoyakiEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Data[] data;
