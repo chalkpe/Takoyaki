@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class VisitationFilter extends ContentFilter<Member> {
     public static final String NAME = "visitation";
 
-    private static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z_]+)'");
+    private static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z-_]+)'");
 
     public VisitationFilter(Target target){
         super(target);

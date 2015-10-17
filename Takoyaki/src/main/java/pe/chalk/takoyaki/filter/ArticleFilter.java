@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class ArticleFilter extends Filter<Article> {
     public static final String NAME = "article";
 
-    private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9_]+)',");
+    private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9-_]+)',");
     private static final Pattern MENU_ID_PATTERN = Pattern.compile("'(\\d+)'\\);");
 
     public ArticleFilter(Target target){
@@ -56,12 +56,12 @@ public class ArticleFilter extends Filter<Article> {
         return document.select(cssQuery).stream()
                 .map(element -> {
                     int articleId = Integer.parseInt(element.select(".m-tcol-c.list-count").first().text());
-                    int viewCount = Integer.parseInt(element.select(".view-count.m-tcol-c._rosReadcount").first().text());
 
                     Elements countElements = element.select(".view-count.m-tcol-c");
-                    String uploadDate = countElements.get(0).text().trim();
 
-                    int recommendedCount = Integer.parseInt(countElements.get(1).text());
+                    String uploadDate = countElements.get(0).text().trim();
+                    int viewCount = Integer.parseInt(countElements.get(1).text());
+                    int recommendedCount = Integer.parseInt(countElements.get(2).text());
 
                     boolean isQuestion = !element.select(".ico-q.m-tcol-p").isEmpty();
 
