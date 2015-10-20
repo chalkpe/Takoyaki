@@ -46,7 +46,7 @@ public class CommentaryFilter extends ContentFilter<SimpleArticle> {
                     String commentCountAttr = element.parent().attr("title");
                     String articleIdAttr = element.parent().attr("href");
 
-                    int commentCount = Integer.parseInt(commentCountAttr.substring(commentCountAttr.lastIndexOf("/") + 2));
+                    int commentCount = Integer.parseInt(commentCountAttr.substring(commentCountAttr.lastIndexOf("덧") + 1));
                     int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
                     String title = element.text();
 

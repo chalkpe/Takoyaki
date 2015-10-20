@@ -30,7 +30,7 @@ import pe.chalk.takoyaki.utils.TextFormat;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,38 +50,36 @@ public class Takoyaki implements Prefix {
     private static Takoyaki instance = null;
     private static List<String> DEFAULT_CONFIG = Arrays.asList(
             "{",
-            "  \"options\": {\"excluded\": [\"debug.js\"]},",
+            "  \"naverAccount\": {",
+            "    \"username\": \"\",",
+            "    \"password\": \"\"",
+            "  },",
+            "  \"options\": {",
+            "    \"timeout\": 5000,",
+            "    \"excludedPlugins\": [\"debug.js\"]",
+            "  },",
             "  \"targets\": [",
             "    {",
             "      \"address\": \"minecraftpe\",",
             "      \"prefix\": \"M.K\",",
             "      \"interval\": 2500,",
-            "      \"filters\": [",
-            "        \"article\",",
-            "        \"commentary\",",
-            "        \"visitation\"",
-            "      ],",
-            "      \"timeout\": 1000",
+            "      \"filters\": [\"article\", \"commentary\", \"visitation\"]",
             "    },",
             "    {",
             "      \"address\": \"ourmcspace\",",
             "      \"prefix\": \"PMC\",",
             "      \"interval\": 5000,",
-            "      \"filters\": [",
-            "        \"article\",",
-            "        \"commentary\",",
-            "        \"visitation\"",
-            "      ],",
-            "      \"timeout\": 2500",
+            "      \"filters\": [\"article\", \"commentary\", \"visitation\"]",
             "    }",
-            "  ],",
+            "  ]",
             "}");
 
-    private List<String> excluded;
+    private List<String> excludedPlugins;
 
     private List<Target> targets;
     private List<Plugin> plugins;
     private Logger logger;
+    private Staff staff;
 
     private boolean isAlive = false;
 
@@ -89,14 +87,14 @@ public class Takoyaki implements Prefix {
         return instance;
     }
 
-    public Takoyaki() throws JSONException, IOException {
+    public Takoyaki() throws IOException {
         if(Takoyaki.instance != null) Takoyaki.instance.stop("새로운 인스턴스가 생성되었습니다");
         Takoyaki.instance = this;
 
         this.init();
     }
 
-    private void init() throws JSONException, IOException {
+    private void init() throws IOException {
         Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::shutdown));
 
         this.logger = new Logger();
@@ -105,24 +103,28 @@ public class Takoyaki implements Prefix {
 
         this.getLogger().info("타코야키를 시작합니다: " + Takoyaki.VERSION);
 
+        try{
+            final Path propertiesPath = Paths.get("Takoyaki.json");
+            if(!Files.exists(propertiesPath)){
+                this.getLogger().info("프로퍼티를 생성합니다: " + propertiesPath.toString());
+                Files.write(propertiesPath, Takoyaki.DEFAULT_CONFIG, StandardCharsets.UTF_8);
+            }
 
-        Path propertiesPath = Paths.get("Takoyaki.json");
-        if(!Files.exists(propertiesPath)){
-            this.getLogger().info("프로퍼티를 생성합니다: " + propertiesPath.toString());
+            this.getLogger().info("프로퍼티를 불러옵니다: " + propertiesPath);
 
-            Files.write(propertiesPath, Takoyaki.DEFAULT_CONFIG, Charset.forName("UTF-8"));
+            final JSONObject properties = new JSONObject(Files.lines(propertiesPath, StandardCharsets.UTF_8).collect(Collectors.joining()));
+            //Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
+
+            this.staff = new Staff(properties.getJSONObject("naverAccount"), properties.getJSONObject("options").getInt("timeout"));
+
+            this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
+            this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::new).collect(Collectors.toList());
+
+            this.loadPlugins();
+        }catch(Exception e){
+            this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
+            throw e;
         }
-
-
-        this.getLogger().info("프로퍼티를 불러옵니다: " + propertiesPath);
-
-        JSONObject properties = new JSONObject(Files.lines(propertiesPath, Charset.forName("UTF-8")).collect(Collectors.joining()));
-        Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
-
-        this.excluded = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excluded")).collect(Collectors.toList());
-        this.targets  = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::new).collect(Collectors.toList());
-
-        this.loadPlugins();
     }
 
     @SuppressWarnings("unchecked")
@@ -146,7 +148,7 @@ public class Takoyaki implements Prefix {
         }
 
         this.plugins = new ArrayList<>();
-        Files.list(pluginsPath).filter(path -> path.getFileName().toString().endsWith(".js") && !this.excluded.contains(path.getFileName().toString())).map(Path::toFile).forEach(pluginFile -> {
+        Files.list(pluginsPath).filter(path -> path.getFileName().toString().endsWith(".js") && !this.excludedPlugins.contains(path.getFileName().toString())).map(Path::toFile).forEach(pluginFile -> {
             try{
                 JavaScriptPlugin plugin = new JavaScriptPlugin(pluginFile);
                 plugin.onLoad();
@@ -154,7 +156,7 @@ public class Takoyaki implements Prefix {
                 this.plugins.add(plugin);
                 this.logger.info("플러그인을 불러옵니다: " + plugin.getName() + (plugin.getVersion() != null ? " v" + plugin.getVersion() : ""));
             }catch(IOException | RhinoException e){
-                this.getLogger().error(e.getMessage());
+                this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
             }
         });
     }
@@ -203,6 +205,10 @@ public class Takoyaki implements Prefix {
 
     public Logger getLogger(){
         return this.logger;
+    }
+
+    public Staff getStaff(){
+        return this.staff;
     }
 
     public boolean isAlive(){

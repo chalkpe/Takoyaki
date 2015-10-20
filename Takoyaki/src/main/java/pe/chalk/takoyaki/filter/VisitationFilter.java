@@ -45,10 +45,10 @@ public class VisitationFilter extends ContentFilter<Member> {
 
     @Override
     public List<Member> filter(Document document){
-        return document.select("#first-visit-page [href=#]").stream()
+        return document.select("div#member-news ul.group-list li span.id a.tcol-c").stream()
                 .map(element -> {
                     String id = null;
-                    String name = element.child(0).child(0).text();
+                    String name = element.text();
 
                     Matcher idMatcher = VisitationFilter.ID_PATTERN.matcher(element.attr("onclick"));
                     if(idMatcher.find()){

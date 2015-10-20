@@ -18,7 +18,6 @@ package pe.chalk.takoyaki;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.filter.ArticleFilter;
 import pe.chalk.takoyaki.filter.CommentaryFilter;
@@ -28,7 +27,7 @@ import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.io.IOException;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -43,8 +42,6 @@ import java.util.stream.Collectors;
 public class Target extends Thread implements Prefix {
     private static final String STRING_CONTENT = "http://cafe.naver.com/%s.cafe";
     private static final String STRING_ARTICLE = "http://cafe.naver.com/ArticleList.nhn?search.clubid=%d&search.boardtype=L";
-    private static final String USER_AGENT_CHROME = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
-
     private static final Pattern PATTERN_CLUB_ID = Pattern.compile("var g_sClubId = \"(\\d+)\";");
 
     private String contentUrl;
@@ -54,7 +51,6 @@ public class Target extends Thread implements Prefix {
     private PrefixedLogger logger;
 
     private long interval;
-    private int timeout;
 
     private Collector collector;
 
@@ -65,10 +61,7 @@ public class Target extends Thread implements Prefix {
     public Target(JSONObject properties){
         this.prefix = properties.getString("prefix");
         this.logger = new PrefixedLogger(this.getTakoyaki().getLogger(), this);
-
         this.interval = properties.getLong("interval");
-        this.timeout = properties.getInt("timeout");
-
         this.collector = new Collector(Takoyaki.<String>buildStream(properties.getJSONArray("filters")).map(filterName -> {
             switch(filterName){
                 case ArticleFilter.NAME:
@@ -85,11 +78,11 @@ public class Target extends Thread implements Prefix {
             }
         }).filter(filter -> filter != null).collect(Collectors.toList()));
 
-        try{
-            this.address = properties.getString("address");
-            this.contentUrl = String.format(STRING_CONTENT, this.getAddress());
+        this.address = properties.getString("address");
+        this.contentUrl = String.format(STRING_CONTENT, this.getAddress());
 
-            Document contentDocument = Jsoup.connect(this.contentUrl).userAgent(USER_AGENT_CHROME).timeout(this.getTimeout()).get();
+        try{
+            Document contentDocument = this.getTakoyaki().getStaff().parse(this.contentUrl);
             this.setName(contentDocument.select("h1.d-none").text());
 
             Matcher clubIdMatcher = Target.PATTERN_CLUB_ID.matcher(contentDocument.head().select("script:not([type]):not([src])").first().html());
@@ -102,7 +95,7 @@ public class Target extends Thread implements Prefix {
 
             this.articleUrl = String.format(STRING_ARTICLE, this.getClubId());
 
-            Files.write(Paths.get("TakoyakiMenu-" + this.getAddress() + ".log"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()));
+            Files.write(Paths.get("Takoyaki-menus-" + this.getAddress() + ".log"), this.getMenus().stream().map(Menu::toString).collect(Collectors.toList()), StandardCharsets.UTF_8);
         }catch(IOException | JSONException e){
             String errorMessage = "모니터링이 불가합니다: " + e.getClass().getName() + ": " + e.getMessage();
 
@@ -121,10 +114,6 @@ public class Target extends Thread implements Prefix {
 
     public long getInterval(){
         return this.interval;
-    }
-
-    public int getTimeout(){
-        return this.timeout;
     }
 
     public String getAddress(){
@@ -155,14 +144,13 @@ public class Target extends Thread implements Prefix {
 
     @Override
     public void run(){
-        this.getTakoyaki().getLogger().info("모니터링을 시작합니다: " + this.getName() + " (ID: " + this.getClubId() + ")");
-
+        this.getTakoyaki().getLogger().info("모니터링을 시작합니다: " + this);
         while(this.getTakoyaki().isAlive() && !this.isInterrupted()){
             try{
                 Thread.sleep(this.getInterval());
 
-                Document contentDocument = Jsoup.connect(this.contentUrl).userAgent(USER_AGENT_CHROME).timeout(this.getTimeout()).get();
-                Document articleDocument = Jsoup.connect(this.articleUrl).userAgent(USER_AGENT_CHROME).timeout(this.getTimeout()).get();
+                Document contentDocument = this.getTakoyaki().getStaff().parse(this.contentUrl);
+                Document articleDocument = this.getTakoyaki().getStaff().parse(this.articleUrl);
 
                 this.collector.collect(contentDocument, articleDocument);
             }catch(InterruptedException e){
@@ -171,5 +159,10 @@ public class Target extends Thread implements Prefix {
                 this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
             }
         }
+    }
+
+    @Override
+    public String toString(){
+        return this.getName() + " (ID: " + this.getClubId() + ")";
     }
 }
