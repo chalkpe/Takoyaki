@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * @since 2015-04-07
  */
 public class Takoyaki implements Prefix {
-    public static final String VERSION = "2.1.2-SNAPSHOT";
+    public static final String VERSION = "2.2";
 
     private static Takoyaki instance = null;
     private static List<String> DEFAULT_CONFIG = Arrays.asList(

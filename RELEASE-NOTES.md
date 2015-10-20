@@ -1,8 +1,26 @@
+# Takoyaki 2.2
+## 2015-10-20
+
+### New features
+- Now you can parse Naver web pages by logged in session
+- TextFormat supports background color codes (e.g. §_c = red background)
+
+### Bug fixes
+- Updated the Naver ID patterns (added '-')
+
+### Tweaks/other
+- Improved the mail sending
+- Renamed and reformatted the properties file
+- Renamed projects and some packages
+- Made Plugin extensible
+
+
+
 # Takoyaki 2.1.1
 ## 2015-09-18
 
 ### New features
-- Now you can set `Mailer.HOOK_URL` to enable ArticleDoctor.
+- Now you can set `Mailer.HOOK_URL` to enable ArticleDoctor
 
 
 
