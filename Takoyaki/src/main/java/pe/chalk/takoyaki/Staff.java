@@ -57,6 +57,8 @@ public class Staff extends WebClient {
         if(!errors.isEmpty()){
             Takoyaki.getInstance().getLogger().warning("네이버 로그인 실패: " + errors.text());
         }
+
+        this.close();
     }
 
     public Document parse(String url) throws IOException {
@@ -64,7 +66,9 @@ public class Staff extends WebClient {
     }
 
     public Document parse(URL url) throws IOException {
-        return Jsoup.parse(this.getPage(url).getWebResponse().getContentAsString());
+        final String html = this.getPage(url).getWebResponse().getContentAsString();
 
+        this.close();
+        return Jsoup.parse(html);
     }
 }
