@@ -53,6 +53,7 @@ public class Target extends Thread implements Prefix {
     private long interval;
 
     private Collector collector;
+    private Staff staff;
 
     private final String address;
     private final int clubId;
@@ -61,6 +62,8 @@ public class Target extends Thread implements Prefix {
     public Target(JSONObject properties){
         this.prefix = properties.getString("prefix");
         this.logger = new PrefixedLogger(this.getTakoyaki().getLogger(), this);
+        this.staff = new Staff(this.logger, properties.getJSONObject("naverAccount"), properties.getInt("timeout"));
+
         this.interval = properties.getLong("interval");
         this.collector = new Collector(Takoyaki.<String>buildStream(properties.getJSONArray("filters")).map(filterName -> {
             switch(filterName){
@@ -82,7 +85,7 @@ public class Target extends Thread implements Prefix {
         this.contentUrl = String.format(STRING_CONTENT, this.getAddress());
 
         try{
-            Document contentDocument = this.getTakoyaki().getStaff().parse(this.contentUrl);
+            Document contentDocument = this.getStaff().parse(this.contentUrl);
             this.setName(contentDocument.select("h1.d-none").text());
 
             Matcher clubIdMatcher = Target.PATTERN_CLUB_ID.matcher(contentDocument.head().select("script:not([type]):not([src])").first().html());
@@ -110,6 +113,10 @@ public class Target extends Thread implements Prefix {
 
     public PrefixedLogger getLogger(){
         return this.logger;
+    }
+
+    public Staff getStaff(){
+        return this.staff;
     }
 
     public long getInterval(){
@@ -149,8 +156,8 @@ public class Target extends Thread implements Prefix {
             try{
                 Thread.sleep(this.getInterval());
 
-                Document contentDocument = this.getTakoyaki().getStaff().parse(this.contentUrl);
-                Document articleDocument = this.getTakoyaki().getStaff().parse(this.articleUrl);
+                Document contentDocument = this.getStaff().parse(this.contentUrl);
+                Document articleDocument = this.getStaff().parse(this.articleUrl);
 
                 this.collector.collect(contentDocument, articleDocument);
             }catch(InterruptedException e){
@@ -162,7 +169,13 @@ public class Target extends Thread implements Prefix {
     }
 
     @Override
+    public void interrupt(){
+        super.interrupt();
+        this.getStaff().close();
+    }
+
+    @Override
     public String toString(){
-        return this.getName() + " (ID: " + this.getClubId() + ")";
+        return this.getClubId() + " (" + this.getName() + ")";
     }
 }

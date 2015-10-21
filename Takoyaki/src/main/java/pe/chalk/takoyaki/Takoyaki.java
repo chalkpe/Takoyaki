@@ -45,31 +45,28 @@ import java.util.stream.Stream;
  * @since 2015-04-07
  */
 public class Takoyaki implements Prefix {
-    public static final String VERSION = "2.2";
+    public static final String VERSION = "2.2.1-SNAPSHOT";
 
     private static Takoyaki instance = null;
     private static List<String> DEFAULT_CONFIG = Arrays.asList(
             "{",
-            "  \"naverAccount\": {",
-            "    \"username\": \"\",",
-            "    \"password\": \"\"",
-            "  },",
-            "  \"options\": {",
-            "    \"timeout\": 5000,",
-            "    \"excludedPlugins\": [\"debug.js\"]",
-            "  },",
+            "  \"options\": {\"excludedPlugins\": [\"debug.js\"]},",
             "  \"targets\": [",
             "    {",
             "      \"address\": \"minecraftpe\",",
             "      \"prefix\": \"M.K\",",
             "      \"interval\": 2500,",
-            "      \"filters\": [\"article\", \"commentary\", \"visitation\"]",
+            "      \"timeout\": 5000,",
+            "      \"filters\": [\"article\", \"commentary\", \"visitation\"],",
+            "      \"naverAccount\": {\"username\": \"\", \"password\": \"\"}",
             "    },",
             "    {",
             "      \"address\": \"ourmcspace\",",
             "      \"prefix\": \"PMC\",",
             "      \"interval\": 5000,",
-            "      \"filters\": [\"article\", \"commentary\", \"visitation\"]",
+            "      \"timeout\": 5000,",
+            "      \"filters\": [\"article\", \"commentary\", \"visitation\"],",
+            "      \"naverAccount\": {\"username\": \"\", \"password\": \"\"}",
             "    }",
             "  ]",
             "}");
@@ -79,7 +76,6 @@ public class Takoyaki implements Prefix {
     private List<Target> targets;
     private List<Plugin> plugins;
     private Logger logger;
-    private Staff staff;
 
     private boolean isAlive = false;
 
@@ -114,8 +110,6 @@ public class Takoyaki implements Prefix {
 
             final JSONObject properties = new JSONObject(Files.lines(propertiesPath, StandardCharsets.UTF_8).collect(Collectors.joining()));
             //Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
-
-            this.staff = new Staff(properties.getJSONObject("naverAccount"), properties.getJSONObject("options").getInt("timeout"));
 
             this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
             this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::new).collect(Collectors.toList());
@@ -205,10 +199,6 @@ public class Takoyaki implements Prefix {
 
     public Logger getLogger(){
         return this.logger;
-    }
-
-    public Staff getStaff(){
-        return this.staff;
     }
 
     public boolean isAlive(){
