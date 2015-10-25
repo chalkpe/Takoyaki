@@ -1,3 +1,12 @@
+# Takoyaki 2.2.1
+## 2015-10-25
+
+### Bug fixes
+- Fixed memory leaks
+- Fixed thread safety issues
+
+
+
 # Takoyaki 2.2
 ## 2015-10-20
 
