@@ -34,9 +34,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,10 +45,10 @@ import java.util.stream.Stream;
  * @since 2015-04-07
  */
 public class Takoyaki implements Prefix {
-    public static final String VERSION = "2.2.1";
+    public static final String VERSION = "2.2.2-SNAPSHOT";
 
     private static Takoyaki instance = null;
-    private static List<String> DEFAULT_CONFIG = Arrays.asList(
+    private static final List<String> DEFAULT_CONFIG = Arrays.asList(
             "{",
             "  \"options\": {\"excludedPlugins\": [\"debug.js\"]},",
             "  \"targets\": [",
@@ -141,18 +141,19 @@ public class Takoyaki implements Prefix {
             Files.createDirectories(pluginsPath);
         }
 
-        this.plugins = new ArrayList<>();
-        Files.list(pluginsPath).filter(path -> path.getFileName().toString().endsWith(".js") && !this.excludedPlugins.contains(path.getFileName().toString())).map(Path::toFile).forEach(pluginFile -> {
+        this.plugins = Files.list(pluginsPath).filter(path -> path.getFileName().toString().endsWith(".js") && !this.excludedPlugins.contains(path.getFileName().toString())).map(Path::toFile).map(pluginFile -> {
             try{
                 JavaScriptPlugin plugin = new JavaScriptPlugin(pluginFile);
+
+                this.logger.info("플러그인을 불러옵니다: " + plugin.getName() + (plugin.getVersion() != null ? " v" + plugin.getVersion() : ""));
                 plugin.onLoad();
 
-                this.plugins.add(plugin);
-                this.logger.info("플러그인을 불러옵니다: " + plugin.getName() + (plugin.getVersion() != null ? " v" + plugin.getVersion() : ""));
+                return plugin;
             }catch(IOException | RhinoException e){
                 this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
+                return null;
             }
-        });
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public void start(){
