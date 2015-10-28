@@ -19,9 +19,9 @@ package pe.chalk.takoyaki.utils;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
  * @since 2015-04-15
  */
 public enum TextFormat {
+    ESCAPE ("§", Integer.MIN_VALUE, ""),
+
     RESET         ("r",  0, ""),
     OBFUSCATED    ("k", -1, ""),
     BOLD          ("l",  1, "font-weight: bold;"),
@@ -79,7 +81,7 @@ public enum TextFormat {
     public static final String FORMAT_HTML_OPEN  = "<span style=\"%s\">";
     public static final String FORMAT_HTML_CLOSE = "</span>";
 
-    public static final Pattern PATTERN_MINECRAFT = Pattern.compile("(§_?[0-9a-f]|§[k-or])");
+    public static final Pattern PATTERN_MINECRAFT = Pattern.compile("(?<!§)(§_?[0-9a-f]|§[k-or])");
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA);
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.KOREA);
@@ -106,7 +108,7 @@ public enum TextFormat {
     }
 
     public String getAnsiCode(){
-        return this.ansiCode == -1 ? "" : String.format(FORMAT_ANSI, ansiCode);
+        return this.ansiCode < 0 ? "" : String.format(FORMAT_ANSI, ansiCode);
     }
 
     public String getHtmlTag(){
@@ -117,43 +119,53 @@ public enum TextFormat {
         NONE, MINECRAFT, ANSI, HTML
     }
 
-    public static String replaceTo(Type type, String minecraftString){
+    public static String encode(String string){
+        return string.replaceAll("§", TextFormat.ESCAPE.toString());
+    }
+
+    public static String decode(String minecraftString, Type type){
         if(minecraftString == null || minecraftString.equals("")){
             return "";
         }
 
         switch(type){
-            case NONE:
-                return PATTERN_MINECRAFT.matcher(minecraftString).replaceAll("");
-
             default:
             case MINECRAFT:
                 return minecraftString;
 
+            case NONE:
+                return replaceFormats(minecraftString, format -> "");
+
             case ANSI:
-                for(TextFormat color : TextFormat.values()){
-                    minecraftString = minecraftString.replaceAll(color.toString(), color.getAnsiCode());
-                }
-                return minecraftString;
+                return replaceFormats(minecraftString, TextFormat::getAnsiCode);
 
             case HTML:
-                int indentLevel = 0;
-                StringBuffer buffer = new StringBuffer(minecraftString.length());
+                final Function<TextFormat, String> htmlReplacer = new Function<TextFormat, String>(){
+                    private int indentLevel = 0;
 
-                Matcher matcher = PATTERN_MINECRAFT.matcher(minecraftString);
-                while(matcher.find()){
-                    TextFormat textFormat = MAP_BY_STRING.get(matcher.group(1));
-                    if(textFormat == TextFormat.RESET){
-                        matcher.appendReplacement(buffer, TextFormat.getCloseTags(indentLevel));
-                        indentLevel = 0;
-                    }else{
-                        matcher.appendReplacement(buffer, textFormat.getHtmlTag());
-                        indentLevel++;
+                    @Override
+                    public String apply(TextFormat textFormat){
+                        if(textFormat == TextFormat.RESET){
+                            String tag = TextFormat.getCloseTags(indentLevel); indentLevel = 0;
+                            return tag;
+                        }else{
+                            indentLevel++;
+                            return textFormat.getHtmlTag();
+                        }
                     }
-                }
-                matcher.appendTail(buffer);
-                return "<span style=\"vertical-align: middle\">" + buffer.toString().replaceAll("\n", "<br>").concat(getCloseTags(indentLevel)) + "</span>";
+                }.andThen(str -> str.replaceAll("\n", "<br>"));
+                return String.format("<span style=\"vertical-align: middle\">%s%s</span>", replaceFormats(minecraftString, htmlReplacer), htmlReplacer.apply(TextFormat.RESET));
         }
+    }
+
+    private static String replaceFormats(String minecraftString, Function<TextFormat, String> replacer){
+        StringBuffer buffer = new StringBuffer(minecraftString.length());
+        Matcher matcher = TextFormat.PATTERN_MINECRAFT.matcher(minecraftString);
+
+        while(matcher.find()) matcher.appendReplacement(buffer, replacer.apply(TextFormat.MAP_BY_STRING.get(matcher.group(1))));
+        matcher.appendTail(buffer);
+
+        return buffer.toString().replaceAll(TextFormat.ESCAPE.toString(), "§");
     }
 
     private static String getCloseTags(int indentLevel){

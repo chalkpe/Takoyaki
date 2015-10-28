@@ -203,7 +203,7 @@ public class Mailer {
 
             message.setSubject(subject);
             message.setHeader("Content-Type", "text/html; charset=UTF-8");
-            message.setContent(TextFormat.replaceTo(TextFormat.Type.HTML, body), "text/html; charset=UTF-8");
+            message.setContent(TextFormat.decode(body, TextFormat.Type.HTML), "text/html; charset=UTF-8");
             message.setFrom(new InternetAddress(Mailer.USERNAME));
 
             for(Object recipient : recipients){
@@ -255,7 +255,7 @@ public class Mailer {
             String str = data.toString();
 
             if(Mailer.HOOK_URL != null && data instanceof Article){
-                str = TextFormat.replaceTo(TextFormat.Type.HTML, str)
+                str = TextFormat.decode(str, TextFormat.Type.HTML)
                         + "  <a href=\"http://cafe.naver.com/" + violation.getTarget().getAddress() + "/" + ((Article) data).getId()
                         + "\"><img src=\"" + Mailer.HOOK_URL + "/ArticleDoctor.php?clubid=" + violation.getTargetId() + "&articleid=" + ((Article) data).getId()
                         + "\" style=\"vertical-align: middle\" width=\"15px\" height=\"15px\"></a>";
