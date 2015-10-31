@@ -26,7 +26,7 @@ public class TakoyakiBot implements IReceiverService {
         Receiver.subscribe(this);
 
         Takoyaki takoyaki = new Takoyaki();
-        takoyaki.getLogger().addTransmitter((level, message) -> recipients.forEach(id -> Sender.send(new TextMessage(id, TextFormat.replaceTo(TextFormat.Type.NONE, message)))));
+        takoyaki.getLogger().addTransmitter((level, message) -> recipients.forEach(id -> Sender.send(new TextMessage(id, TextFormat.decode(message, TextFormat.Type.NONE)))));
         takoyaki.start();
     }
 
