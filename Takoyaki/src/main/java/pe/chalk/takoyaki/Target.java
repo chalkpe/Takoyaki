@@ -111,6 +111,7 @@ public class Target extends Thread implements Prefix {
         return this.menus;
     }*/
 
+    @SuppressWarnings("unused")
     public Menu getMenu(int menuId){
         /*for(Menu menu : this.getMenus()){
             if(menu.getId() == menuId){
@@ -127,7 +128,7 @@ public class Target extends Thread implements Prefix {
 
     @Override
     public void run(){
-        this.getTakoyaki().getLogger().info("모니터링을 시작합니다: " + this);
+        this.getTakoyaki().getLogger().info("모니터링을 시작합니다: " + this.getInterval());
         while(this.getTakoyaki().isAlive() && !this.isInterrupted()){
             try{
                 Thread.sleep(this.getInterval());

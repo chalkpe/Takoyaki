@@ -74,6 +74,6 @@ public class Document extends Data {
 
     @Override
     public String toString(){
-        return (this.getStatus().equals("delete") ? TextFormat.DARK_GRAY : "") + this.getTitle();
+        return "[" + this.getPrefix() + "] " + (this.getStatus().equals("delete") ? TextFormat.DARK_GRAY : "") + this.getTitle();
     }
 }
