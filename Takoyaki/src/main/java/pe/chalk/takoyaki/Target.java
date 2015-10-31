@@ -16,72 +16,48 @@
 
 package pe.chalk.takoyaki;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
-import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.filter.ArticleFilter;
-import pe.chalk.takoyaki.filter.CommentaryFilter;
-import pe.chalk.takoyaki.filter.VisitationFilter;
+import pe.chalk.takoyaki.filter.namu.StatusFilter;
+import pe.chalk.takoyaki.logger.PrefixedLogger;
 import pe.chalk.takoyaki.model.Menu;
 import pe.chalk.takoyaki.utils.Prefix;
-import pe.chalk.takoyaki.logger.PrefixedLogger;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
 public class Target extends Thread implements Prefix {
-    private static final String STRING_CONTENT = "http://cafe.naver.com/%s.cafe";
+    /*private static final String STRING_CONTENT = "http://cafe.naver.com/%s.cafe";
     private static final String STRING_ARTICLE = "http://cafe.naver.com/ArticleList.nhn?search.clubid=%d&search.boardtype=L";
     private static final Pattern PATTERN_CLUB_ID = Pattern.compile("var g_sClubId = \"(\\d+)\";");
 
     private String contentUrl;
     private String articleUrl;
 
-    private String prefix;
+    private String prefix;*/
     private PrefixedLogger logger;
 
     private long interval;
 
-    private Collector collector;
+    private Collector<JSONArray> collector;
     private Staff staff;
 
-    private final String address;
+    /*private final String address;
     private final int clubId;
-    private List<Menu> menus;
+    private List<Menu> menus;*/
 
     public Target(JSONObject properties){
-        this.prefix = properties.getString("prefix");
+        //this.prefix = properties.getString("prefix");
         this.logger = new PrefixedLogger(this.getTakoyaki().getLogger(), this);
-        this.staff = new Staff(this.logger, properties.getJSONObject("naverAccount"), properties.getInt("timeout"));
+        this.staff = new Staff(this.logger, null, /*properties.getJSONObject("naverAccount"),*/ properties.getInt("timeout"));
 
         this.interval = properties.getLong("interval");
-        this.collector = new Collector(Takoyaki.<String>buildStream(properties.getJSONArray("filters")).map(filterName -> {
-            switch(filterName){
-                case ArticleFilter.NAME:
-                    return new ArticleFilter(this);
+        this.collector = new Collector<>(Collections.singletonList(new StatusFilter()));
 
-                case CommentaryFilter.NAME:
-                    return new CommentaryFilter(this);
-
-                case VisitationFilter.NAME:
-                    return new VisitationFilter(this);
-
-                default:
-                    return null;
-            }
-        }).filter(filter -> filter != null).collect(Collectors.toList()));
-
-        this.address = properties.getString("address");
+        /*this.address = properties.getString("address");
         this.contentUrl = String.format(STRING_CONTENT, this.getAddress());
 
         try{
@@ -104,7 +80,7 @@ public class Target extends Thread implements Prefix {
 
             this.getLogger().error(errorMessage);
             throw new IllegalStateException(errorMessage);
-        }
+        }*/
     }
 
     public Takoyaki getTakoyaki(){
@@ -124,29 +100,29 @@ public class Target extends Thread implements Prefix {
     }
 
     public String getAddress(){
-        return this.address;
+        return ""; //this.address;
     }
 
     public int getClubId(){
-        return this.clubId;
+        return 0; //this.clubId;
     }
 
-    public List<Menu> getMenus(){
+    /*public List<Menu> getMenus(){
         return this.menus;
-    }
+    }*/
 
     public Menu getMenu(int menuId){
-        for(Menu menu : this.getMenus()){
+        /*for(Menu menu : this.getMenus()){
             if(menu.getId() == menuId){
                 return menu;
             }
-        }
+        }*/
         return null;
     }
 
     @Override
     public String getPrefix(){
-        return this.prefix;
+        return "Target"; //this.prefix;
     }
 
     @Override
@@ -155,15 +131,11 @@ public class Target extends Thread implements Prefix {
         while(this.getTakoyaki().isAlive() && !this.isInterrupted()){
             try{
                 Thread.sleep(this.getInterval());
-
-                Document contentDocument = this.getStaff().parse(this.contentUrl);
-                Document articleDocument = this.getStaff().parse(this.articleUrl);
-
-                this.collector.collect(contentDocument, articleDocument);
+                this.collector.collect(new JSONArray(this.getStaff().parse("https://namu.wiki/sidebar.json")));
             }catch(InterruptedException e){
                 return;
             }catch(Exception e){
-                this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
+                this.getTakoyaki().getLogger().error(e.getClass().getName() + ": " + e.getMessage());
             }
         }
     }
@@ -171,11 +143,11 @@ public class Target extends Thread implements Prefix {
     @Override
     public void interrupt(){
         super.interrupt();
-        this.getStaff().close();
+        //this.getStaff().close();
     }
 
-    @Override
+    /*@Override
     public String toString(){
         return this.getClubId() + " (" + this.getName() + ")";
-    }
+    }*/
 }

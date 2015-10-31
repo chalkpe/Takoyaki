@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * @since 2015-04-07
  */
 public class Takoyaki implements Prefix {
-    public static final String VERSION = "2.2.2-SNAPSHOT";
+    public static final String VERSION = "2.2.2-NAMU-0.1";
 
     private static Takoyaki instance = null;
     private static final List<String> DEFAULT_CONFIG = Arrays.asList(
@@ -73,7 +73,7 @@ public class Takoyaki implements Prefix {
 
     private List<String> excludedPlugins;
 
-    private List<Target> targets;
+    private Target target;
     private List<Plugin> plugins;
     private Logger logger;
 
@@ -95,7 +95,7 @@ public class Takoyaki implements Prefix {
 
         this.logger = new Logger();
         this.logger.addStream(new LoggerStream(TextFormat.Type.ANSI, System.out));
-        this.logger.addStream(new LoggerStream(TextFormat.Type.NONE, new PrintStream(new FileOutputStream("Takoyaki.log", true), true, "UTF-8")));
+        this.logger.addStream(new LoggerStream(TextFormat.Type.NONE, new PrintStream(new FileOutputStream("TakoyakiNamu.log", true), true, "UTF-8")));
 
         this.getLogger().info("타코야키를 시작합니다: " + Takoyaki.VERSION);
 
@@ -112,13 +112,16 @@ public class Takoyaki implements Prefix {
             //Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
 
             this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
-            this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::new).collect(Collectors.toList());
+            //this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::new).collect(Collectors.toList());
 
+            this.target = new Target(properties.getJSONArray("targets").getJSONObject(0));
             this.loadPlugins();
         }catch(Exception e){
             this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
             throw e;
         }
+
+        this.isAlive = true;
     }
 
     @SuppressWarnings("unchecked")
@@ -157,9 +160,8 @@ public class Takoyaki implements Prefix {
     }
 
     public void start(){
-        this.isAlive = true;
-
-        this.getTargets().forEach(Target::start);
+        //this.getTargets().forEach(Target::start);
+        this.target.start();
         this.getPlugins().forEach(Plugin::onStart);
     }
 
@@ -177,21 +179,23 @@ public class Takoyaki implements Prefix {
 
         if(this.getLogger() != null) this.getLogger().info("타코야키를 종료합니다: 사유: " + reason);
 
-        if(this.getTargets() != null) this.getTargets().forEach(Thread::interrupt);
+        //if(this.getTargets() != null) this.getTargets().forEach(Thread::interrupt);
+        this.target.interrupt();
         if(this.getPlugins() != null) this.getPlugins().forEach(Plugin::onDestroy);
     }
 
-    public List<Target> getTargets(){
-        return this.targets;
-    }
+    /*public List<Target> getTargets(){
+        return this.target;
+    }*/
 
+    @SuppressWarnings("unused")
     public Target getTarget(int clubId){
-        for(Target target : this.getTargets()){
+        /*for(Target target : this.getTargets()){
             if(target.getClubId() == clubId){
                 return target;
             }
-        }
-        return null;
+        }*/
+        return this.target; //null;
     }
 
     public List<Plugin> getPlugins(){

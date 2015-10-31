@@ -16,9 +16,7 @@
 
 package pe.chalk.takoyaki;
 
-import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.model.Data;
-import pe.chalk.takoyaki.filter.ContentFilter;
 import pe.chalk.takoyaki.filter.Filter;
 import pe.chalk.takoyaki.utils.TextFormat;
 
@@ -28,21 +26,21 @@ import java.util.List;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-12
  */
-public class Collector {
-    private List<Filter<? extends Data>> filters;
+public class Collector<D> {
+    private List<Filter<D, ? extends Data>> filters;
 
-    public Collector(List<Filter<? extends Data>> filters){
+    public Collector(List<Filter<D, ? extends Data>> filters){
         this.filters = filters;
     }
 
-    public List<Filter<? extends Data>> getFilters(){
+    public List<Filter<D, ? extends Data>> getFilters(){
         return this.filters;
     }
 
-    public void collect(Document contentDocument, Document articleDocument){
+    public void collect(D document){
         try{
             this.getFilters().forEach(filter -> {
-                List<? extends Data> list = filter.getFreshData(filter instanceof ContentFilter ? contentDocument : articleDocument);
+                List<? extends Data> list = filter.getFreshData(document);
                 if(list.isEmpty()) return;
 
                 list.forEach(data -> filter.getLogger().info(TextFormat.encode(data.toString())));

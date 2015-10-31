@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
-public class ArticleFilter extends Filter<Article> {
+public class ArticleFilter extends Filter<Document, Article> {
     public static final String NAME = "article";
 
     private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9-_]+)',");

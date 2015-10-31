@@ -16,12 +16,10 @@
 
 package pe.chalk.takoyaki.filter;
 
-import org.jsoup.nodes.Document;
+import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.Target;
 import pe.chalk.takoyaki.model.Article;
 import pe.chalk.takoyaki.model.Data;
-import pe.chalk.takoyaki.model.Member;
-import pe.chalk.takoyaki.model.SimpleArticle;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 
@@ -33,15 +31,19 @@ import java.util.List;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
-public abstract class Filter<T extends Data> implements Prefix {
+public abstract class Filter<D, T extends Data> implements Prefix {
     private Target target;
     private PrefixedLogger logger;
 
     private List<T> lastData;
 
+    public Filter(){
+        this(null);
+    }
+
     public Filter(Target target){
         this.target = target;
-        this.logger = new PrefixedLogger(target.getLogger(), this);
+        this.logger = new PrefixedLogger(Takoyaki.getInstance().getLogger(), this);
     }
 
     public Target getTarget(){
@@ -52,9 +54,9 @@ public abstract class Filter<T extends Data> implements Prefix {
         return this.logger;
     }
 
-    protected abstract List<T> filter(Document document);
+    protected abstract List<T> filter(D document);
 
-    public List<T> getFreshData(Document document){
+    public List<T> getFreshData(D document){
         List<T> rawData = this.filter(document);
         List<T> freshData = new ArrayList<>();
 
@@ -83,11 +85,7 @@ public abstract class Filter<T extends Data> implements Prefix {
                 if(article.getId() <= lastArticle.getId()){
                     return i;
                 }
-            }else if(item instanceof SimpleArticle || item instanceof Member){
-                if(item.equals(lastItem)){
-                    return i;
-                }
-            }
+            }else if(item.equals(lastItem)) return i;
         }
         return 0;
     }

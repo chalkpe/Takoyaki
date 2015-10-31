@@ -128,7 +128,7 @@ public class JavaScriptPlugin extends Plugin {
     }
 
     @Override
-    public void onDataAdded(List<? extends Data> freshData, Filter<? extends Data> filter){
+    public void onDataAdded(List<? extends Data> freshData, Filter<?, ? extends Data> filter){
         this.callScriptableFunction("onDataAdded", new Object[]{ freshData.toArray(), filter });
     }
 }
