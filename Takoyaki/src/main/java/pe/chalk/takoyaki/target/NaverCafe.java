@@ -18,6 +18,7 @@ package pe.chalk.takoyaki.target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.Staff;
 import pe.chalk.takoyaki.Takoyaki;
@@ -78,7 +79,7 @@ public class NaverCafe extends Target<Document[]> {
         this.contentUrl = String.format(STRING_CONTENT, this.getAddress());
 
         try{
-            Document contentDocument = this.getStaff().parse(this.contentUrl);
+            Document contentDocument = Jsoup.parse(this.getStaff().parse(this.contentUrl));
             this.setName(contentDocument.select("h1.d-none").text());
 
             Matcher clubIdMatcher = NaverCafe.PATTERN_CLUB_ID.matcher(contentDocument.head().select("script:not([type]):not([src])").first().html());
@@ -101,8 +102,8 @@ public class NaverCafe extends Target<Document[]> {
     }
 
     @Override
-    public Document[] getDocument() throws Exception{
-        return new Document[]{ this.getStaff().parse(this.contentUrl), this.getStaff().parse(this.articleUrl) };
+    public Document[] getDocument() throws Exception {
+        return new Document[]{ Jsoup.parse(this.getStaff().parse(this.contentUrl)), Jsoup.parse(this.getStaff().parse(this.articleUrl)) };
     }
 
     public Staff getStaff(){

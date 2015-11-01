@@ -36,6 +36,8 @@ public class Staff extends WebClient {
         Logger.getLogger("org.apache").setLevel(Level.OFF);
         Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
 
+        if(accountProperties == null) return;
+
         this.logger.info("네이버에 로그인합니다: " + accountProperties.getString("username"));
         this.login(accountProperties);
     }
@@ -71,14 +73,14 @@ public class Staff extends WebClient {
         this.close();
     }
 
-    public Document parse(String url) throws IOException {
+    public String parse(String url) throws IOException {
         return this.parse(new URL(url));
     }
 
-    public Document parse(URL url) throws IOException {
-        final String html = this.getPage(url).getWebResponse().getContentAsString();
-
+    public String parse(URL url) throws IOException {
+        final String html = this.getPage(url).getWebResponse().getContentAsString("UTF-8");
         this.close();
-        return Jsoup.parse(html);
+
+        return html;
     }
 }

@@ -16,11 +16,10 @@
 
 package pe.chalk.takoyaki.filter;
 
+import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 import pe.chalk.takoyaki.model.Article;
 import pe.chalk.takoyaki.model.Data;
-import pe.chalk.takoyaki.model.Member;
-import pe.chalk.takoyaki.model.SimpleArticle;
 import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Prefix;
 
@@ -40,7 +39,7 @@ public abstract class Filter<D, T extends Data> implements Prefix {
 
     public Filter(Target<D> target){
         this.target = target;
-        this.logger = new PrefixedLogger(target.getLogger(), this);
+        this.logger = new PrefixedLogger(Takoyaki.getInstance().getLogger(), this);
     }
 
     public Target<D> getTarget(){
@@ -84,11 +83,7 @@ public abstract class Filter<D, T extends Data> implements Prefix {
                 if(article.getId() <= lastArticle.getId()){
                     return i;
                 }
-            }else if(item instanceof SimpleArticle || item instanceof Member){
-                if(item.equals(lastItem)){
-                    return i;
-                }
-            }
+            }else if(item.equals(lastItem)) return i;
         }
         return 0;
     }
