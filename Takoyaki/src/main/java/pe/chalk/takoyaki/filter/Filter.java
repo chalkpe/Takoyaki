@@ -39,7 +39,7 @@ public abstract class Filter<D, T extends Data> implements Prefix {
 
     public Filter(Target<D> target){
         this.target = target;
-        this.logger = new PrefixedLogger(Takoyaki.getInstance().getLogger(), this);
+        this.logger = new PrefixedLogger(this.getTarget().getLogger(), this);
     }
 
     public Target<D> getTarget(){

@@ -114,8 +114,8 @@ public class Takoyaki implements Prefix {
             final JSONObject properties = new JSONObject(Files.lines(propertiesPath, StandardCharsets.UTF_8).collect(Collectors.joining()));
             //Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
 
-            this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
-            this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList());
+            this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).parallel().collect(Collectors.toList());
+            this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).parallel().map(Target::create).collect(Collectors.toList());
 
             this.loadPlugins();
         }catch(Exception e){

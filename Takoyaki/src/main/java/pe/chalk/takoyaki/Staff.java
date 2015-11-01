@@ -9,7 +9,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 
@@ -24,25 +23,34 @@ import java.util.logging.Logger;
  */
 public class Staff extends WebClient {
     private PrefixedLogger logger;
+    private String encoding;
 
-    public Staff(PrefixedLogger logger, JSONObject accountProperties, int timeout){
+    public Staff(PrefixedLogger logger, int timeout){
+        this(logger, timeout, "UTF-8");
+    }
+
+    public Staff(PrefixedLogger logger, int timeout, String encoding){
+        this(logger, timeout, encoding, null);
+    }
+
+    public Staff(PrefixedLogger logger, int timeout, String encoding, JSONObject accountProperties){
         super(BrowserVersion.CHROME);
         this.getOptions().setTimeout(timeout);
         this.getOptions().setJavaScriptEnabled(false);
         this.getOptions().setCssEnabled(false);
 
+        this.encoding = encoding;
         this.logger = logger;
 
         Logger.getLogger("org.apache").setLevel(Level.OFF);
         Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
 
-        if(accountProperties == null) return;
-
-        this.logger.info("네이버에 로그인합니다: " + accountProperties.getString("username"));
-        this.login(accountProperties);
+        if(accountProperties != null) this.login(accountProperties);
     }
 
-    private void login(JSONObject accountProperties){
+    public void login(JSONObject accountProperties){
+        this.logger.info("네이버에 로그인합니다: " + accountProperties.getString("username"));
+
         try{
             final HtmlPage loginPage = this.getPage("https://nid.naver.com/nidlogin.login?url=");
             final HtmlForm loginForm = loginPage.getFormByName("frmNIDLogin");
@@ -78,7 +86,7 @@ public class Staff extends WebClient {
     }
 
     public String parse(URL url) throws IOException {
-        final String html = this.getPage(url).getWebResponse().getContentAsString("UTF-8");
+        final String html = this.getPage(url).getWebResponse().getContentAsString(this.encoding);
         this.close();
 
         return html;

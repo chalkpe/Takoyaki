@@ -1,13 +1,14 @@
 package pe.chalk.takoyaki.target;
 
 import org.json.JSONObject;
+import pe.chalk.takoyaki.Staff;
 import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.filter.Filter;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 import pe.chalk.takoyaki.model.Data;
 import pe.chalk.takoyaki.utils.Prefix;
-import pe.chalk.takoyaki.utils.TextFormat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,19 +21,32 @@ public abstract class Target<D> extends Thread implements Prefix {
 
     private long interval;
     private List<Filter<D, ?>> filters;
+    protected Staff staff;
+
+    public Target(String prefix, long interval){
+        this(prefix, interval, new ArrayList<>(), null);
+    }
 
     public Target(String prefix, long interval, List<Filter<D, ?>> filters){
+        this(prefix, interval, filters, null);
+    }
+
+    public Target(String prefix, long interval, List<Filter<D, ?>> filters, Staff staff){
         this.prefix = prefix;
         this.logger = new PrefixedLogger(Takoyaki.getInstance().getLogger(), this);
 
         this.interval = interval;
         this.filters = filters;
+        this.staff = staff;
     }
 
     public static Target create(JSONObject properties){
         switch(properties.getString("type").toLowerCase()){
             case "naver.cafe":
                 return new NaverCafe(properties);
+
+            case "namu.wiki":
+                return new NamuWiki(properties);
 
             default:
                 throw new IllegalArgumentException("Unknown type");
@@ -54,6 +68,16 @@ public abstract class Target<D> extends Thread implements Prefix {
 
     public List<Filter<D, ?>> getFilters(){
         return this.filters;
+    }
+
+    public Staff getStaff(){
+        return this.staff;
+    }
+
+    @Override
+    public void interrupt(){
+        super.interrupt();
+        if(this.getStaff() != null) this.getStaff().close();
     }
 
     @Override
@@ -85,5 +109,10 @@ public abstract class Target<D> extends Thread implements Prefix {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String toString(){
+        return this.getName();
     }
 }

@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,15 +48,13 @@ public class NaverCafe extends Target<Document[]> {
     private String contentUrl;
     private String articleUrl;
 
-    private Staff staff;
-
     private final String address;
     private final int clubId;
     private List<Menu> menus;
 
     public NaverCafe(JSONObject properties){
-        super(properties.getString("prefix"), properties.getLong("interval"), new ArrayList<>());
-        this.getFilters().addAll(Takoyaki.<String>buildStream(properties.getJSONArray("filters")).map(filterName -> {
+        super(properties.getString("prefix"), properties.getLong("interval"));
+        this.getFilters().addAll(Takoyaki.<String>buildStream(properties.getJSONArray("filters")).parallel().map(filterName -> {
             switch(filterName){
                 case ArticleFilter.NAME:
                     return new ArticleFilter(this);
@@ -73,8 +70,7 @@ public class NaverCafe extends Target<Document[]> {
             }
         }).filter(filter -> filter != null).collect(Collectors.toList()));
 
-        this.staff = new Staff(this.getLogger(), properties.getJSONObject("naverAccount"), properties.getInt("timeout"));
-
+        this.staff = new Staff(this.getLogger(), properties.getInt("timeout"), "EUC-KR", properties.getJSONObject("naverAccount"));
         this.address = properties.getString("address");
         this.contentUrl = String.format(STRING_CONTENT, this.getAddress());
 
@@ -106,10 +102,6 @@ public class NaverCafe extends Target<Document[]> {
         return new Document[]{ Jsoup.parse(this.getStaff().parse(this.contentUrl)), Jsoup.parse(this.getStaff().parse(this.articleUrl)) };
     }
 
-    public Staff getStaff(){
-        return this.staff;
-    }
-
     public String getAddress(){
         return this.address;
     }
@@ -132,13 +124,7 @@ public class NaverCafe extends Target<Document[]> {
     }
 
     @Override
-    public void interrupt(){
-        super.interrupt();
-        this.getStaff().close();
-    }
-
-    @Override
     public String toString(){
-        return this.getClubId() + " (" + this.getName() + ")";
+        return this.getClubId() + " (" + super.toString() + ")";
     }
 }

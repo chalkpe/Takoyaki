@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.model.namu;
+package pe.chalk.takoyaki.model.namu.wiki;
 
 import org.json.JSONObject;
 import pe.chalk.takoyaki.model.Data;
+import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.text.SimpleDateFormat;
@@ -34,16 +35,16 @@ public class Document extends Data {
     private String status;
     private long date;
 
-    public Document(String title, String status, long date){
-        super(0);
+    public Document(Target target, String title, String status, long date){
+        super(target);
 
         this.title = title;
         this.status = status;
         this.date = date;
     }
 
-    public static Document create(JSONObject json){
-        return new Document(json.getString("document"), json.getString("status"), json.getLong("date"));
+    public static Document create(Target target, JSONObject json){
+        return new Document(target, json.getString("document"), json.getString("status"), json.getLong("date"));
     }
 
     public String getTitle(){
