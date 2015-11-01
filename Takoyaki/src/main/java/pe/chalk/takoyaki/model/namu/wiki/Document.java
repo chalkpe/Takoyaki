@@ -47,6 +47,16 @@ public class Document extends Data {
         return new Document(target, json.getString("document"), json.getString("status"), json.getLong("date"));
     }
 
+    public boolean hasParent(){
+        return this.getTitle().contains("/");
+    }
+
+    @SuppressWarnings("unused")
+    public Document getParent(){
+        if(!this.hasParent()) return null;
+        return new Document(this.getTarget(), this.getTitle().substring(0, this.getTitle().lastIndexOf("/")), "normal", this.getDate());
+    }
+
     public String getTitle(){
         return this.title;
     }

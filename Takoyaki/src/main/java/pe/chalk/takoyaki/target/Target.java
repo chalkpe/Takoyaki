@@ -20,18 +20,18 @@ public abstract class Target<D> extends Thread implements Prefix {
     private PrefixedLogger logger;
 
     private long interval;
-    private List<Filter<D, ?>> filters;
+    private List<Filter<D, ? extends Data>> filters;
     protected Staff staff;
 
     public Target(String prefix, long interval){
         this(prefix, interval, new ArrayList<>(), null);
     }
 
-    public Target(String prefix, long interval, List<Filter<D, ?>> filters){
+    public Target(String prefix, long interval, List<Filter<D, ? extends Data>> filters){
         this(prefix, interval, filters, null);
     }
 
-    public Target(String prefix, long interval, List<Filter<D, ?>> filters, Staff staff){
+    public Target(String prefix, long interval, List<Filter<D, ? extends Data>> filters, Staff staff){
         this.prefix = prefix;
         this.logger = new PrefixedLogger(Takoyaki.getInstance().getLogger(), this);
 

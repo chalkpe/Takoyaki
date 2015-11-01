@@ -37,7 +37,7 @@ import java.util.List;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-19
  */
-public class JavaScriptPlugin extends Plugin {
+public class JavaScriptPlugin extends PluginBase {
     private File file;
     private Scriptable scriptable;
 
