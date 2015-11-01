@@ -70,6 +70,12 @@ public class Takoyaki implements Prefix {
             "      \"timeout\": 5000,",
             "      \"filters\": [\"article\", \"commentary\", \"visitation\"],",
             "      \"naverAccount\": {\"username\": \"\", \"password\": \"\"}",
+            "    },",
+            "    {",
+            "      \"type\": \"namu.wiki\",",
+            "      \"prefix\": \"N.W\",",
+            "      \"interval\": 2500,",
+            "      \"timeout\": 5000",
             "    }",
             "  ]",
             "}");
