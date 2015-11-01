@@ -17,6 +17,7 @@
 package pe.chalk.takoyaki.model;
 
 import org.json.JSONObject;
+import pe.chalk.takoyaki.target.Target;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
@@ -60,8 +61,8 @@ public class Violation extends Data {
     private Member violator;
     private Data[] violations;
 
-    public Violation(int targetId, String name, Level level, Member violator, Data[] violations){
-        super(targetId);
+    public Violation(Target target, String name, Level level, Member violator, Data[] violations){
+        super(target);
 
         this.name = name;
         this.level = level;

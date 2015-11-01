@@ -17,6 +17,7 @@
 package pe.chalk.takoyaki.model;
 
 import org.json.JSONObject;
+import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
@@ -28,8 +29,8 @@ public class SimpleArticle extends Data {
     private String title;
     private int commentCount;
 
-    public SimpleArticle(int targetId, int id, String title, int commentCount){
-        super(targetId);
+    public SimpleArticle(Target target, int id, String title, int commentCount){
+        super(target);
 
         this.id = id;
         this.title = title;

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.filter;
+package pe.chalk.takoyaki.filter.naver.cafe;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import pe.chalk.takoyaki.Target;
+import pe.chalk.takoyaki.target.NaverCafe;
 import pe.chalk.takoyaki.model.Article;
 import pe.chalk.takoyaki.model.Member;
 
@@ -32,13 +32,13 @@ import java.util.stream.Collectors;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
-public class ArticleFilter extends Filter<Article> {
+public class ArticleFilter extends NaverCafeFilter<Article> {
     public static final String NAME = "article";
 
     private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9-_]+)',");
     private static final Pattern MENU_ID_PATTERN = Pattern.compile("'(\\d+)'\\);");
 
-    public ArticleFilter(Target target){
+    public ArticleFilter(NaverCafe target){
         super(target);
     }
     
@@ -48,12 +48,12 @@ public class ArticleFilter extends Filter<Article> {
     }
 
     @Override
-    public List<Article> filter(Document document){
-        return this.filter(document, "form[name=ArticleList] tr[align=center]");
+    public List<Article> filter(Document[] documents){
+        return this.filter(documents, "form[name=ArticleList] tr[align=center]");
     }
 
-    public List<Article> filter(Document document, String cssQuery){
-        return document.select(cssQuery).stream()
+    public List<Article> filter(Document[] documents, String cssQuery){
+        return documents[1].select(cssQuery).stream()
                 .map(element -> {
                     int articleId = Integer.parseInt(element.select(".m-tcol-c.list-count").first().text());
 
@@ -95,8 +95,8 @@ public class ArticleFilter extends Filter<Article> {
                         menuId = Integer.parseInt(menuIdMatcher.group(1));
                     }
 
-                    Member writer = new Member(this.getTarget().getClubId(), memberName, memberId);
-                    return new Article(this.getTarget().getClubId(), articleId, title, writer, head, uploadDate, menuId, viewCount, commentCount, recommendedCount, isQuestion);
+                    Member writer = new Member(this.getTarget(), memberName, memberId);
+                    return new Article(this.getTarget(), articleId, title, writer, head, uploadDate, menuId, viewCount, commentCount, recommendedCount, isQuestion);
                 }).collect(Collectors.toList());
     }
 }

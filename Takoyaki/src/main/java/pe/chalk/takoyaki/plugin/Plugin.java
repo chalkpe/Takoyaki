@@ -47,5 +47,5 @@ public abstract class Plugin implements Prefix {
     public abstract void onDestroy();
 
     public abstract void onStart();
-    public abstract void onDataAdded(List<? extends Data> freshData, Filter<? extends Data> filter);
+    public abstract void onDataAdded(List<? extends Data> freshData, Filter<?, ? extends Data> filter);
 }

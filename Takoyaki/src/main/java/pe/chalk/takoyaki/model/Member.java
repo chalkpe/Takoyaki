@@ -17,6 +17,7 @@
 package pe.chalk.takoyaki.model;
 
 import org.json.JSONObject;
+import pe.chalk.takoyaki.target.Target;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -31,8 +32,8 @@ public class Member extends Data {
     private String id;
     private String name;
 
-    public Member(int targetId, String name, String id){
-        super(targetId);
+    public Member(Target target, String name, String id){
+        super(target);
 
         this.id = id == null ? "" : id;
         this.name = name;

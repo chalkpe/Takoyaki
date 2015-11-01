@@ -16,14 +16,13 @@
 
 package pe.chalk.takoyaki.filter;
 
-import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.Target;
+import pe.chalk.takoyaki.logger.PrefixedLogger;
 import pe.chalk.takoyaki.model.Article;
 import pe.chalk.takoyaki.model.Data;
 import pe.chalk.takoyaki.model.Member;
 import pe.chalk.takoyaki.model.SimpleArticle;
+import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Prefix;
-import pe.chalk.takoyaki.logger.PrefixedLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,18 +32,18 @@ import java.util.List;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
-public abstract class Filter<T extends Data> implements Prefix {
-    private Target target;
+public abstract class Filter<D, T extends Data> implements Prefix {
+    private Target<D> target;
     private PrefixedLogger logger;
 
     private List<T> lastData;
 
-    public Filter(Target target){
+    public Filter(Target<D> target){
         this.target = target;
         this.logger = new PrefixedLogger(target.getLogger(), this);
     }
 
-    public Target getTarget(){
+    public Target<D> getTarget(){
         return this.target;
     }
 
@@ -52,9 +51,9 @@ public abstract class Filter<T extends Data> implements Prefix {
         return this.logger;
     }
 
-    protected abstract List<T> filter(Document document);
+    protected abstract List<T> filter(D document);
 
-    public List<T> getFreshData(Document document){
+    public List<T> getFreshData(D document){
         List<T> rawData = this.filter(document);
         List<T> freshData = new ArrayList<>();
 
@@ -76,6 +75,8 @@ public abstract class Filter<T extends Data> implements Prefix {
 
         for(int i = 0; i < data.size(); i++){
             T item = data.get(i);
+
+            //TODO: Replace it by Comparable<T>
             if(item instanceof Article){
                 Article lastArticle = (Article) lastItem;
                 Article article = (Article) item;

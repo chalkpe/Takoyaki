@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.filter;
+package pe.chalk.takoyaki.filter.naver.cafe;
 
 import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.Target;
+import pe.chalk.takoyaki.target.NaverCafe;
 import pe.chalk.takoyaki.model.SimpleArticle;
 
 import java.util.List;
@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
-public class CommentaryFilter extends ContentFilter<SimpleArticle> {
+public class CommentaryFilter extends NaverCafeFilter<SimpleArticle> {
     public static final String NAME = "commentary";
 
-    public CommentaryFilter(Target target){
+    public CommentaryFilter(NaverCafe target){
         super(target);
     }
     
@@ -40,8 +40,8 @@ public class CommentaryFilter extends ContentFilter<SimpleArticle> {
     }
 
     @Override
-    public List<SimpleArticle> filter(Document document){
-        return document.select("#recent-reply .ellipsis.tcol-c").stream()
+    public List<SimpleArticle> filter(Document[] documents){
+        return documents[0].select("#recent-reply .ellipsis.tcol-c").stream()
                 .map(element -> {
                     String commentCountAttr = element.parent().attr("title");
                     String articleIdAttr = element.parent().attr("href");
@@ -50,7 +50,7 @@ public class CommentaryFilter extends ContentFilter<SimpleArticle> {
                     int id = Integer.parseInt(articleIdAttr.substring(articleIdAttr.lastIndexOf('=') + 1));
                     String title = element.text();
 
-                    return new SimpleArticle(this.getTarget().getClubId(), id, title, commentCount);
+                    return new SimpleArticle(this.getTarget(), id, title, commentCount);
                 })
                 .collect(Collectors.toList());
     }

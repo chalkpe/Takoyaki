@@ -17,6 +17,10 @@
 package pe.chalk.takoyaki.model;
 
 import org.json.JSONObject;
+import pe.chalk.takoyaki.target.NaverCafe;
+import pe.chalk.takoyaki.target.Target;
+import pe.chalk.takoyaki.utils.Mailer;
+import pe.chalk.takoyaki.utils.Taggable;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.util.Date;
@@ -25,7 +29,7 @@ import java.util.Date;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
-public class Article extends SimpleArticle {
+public class Article extends SimpleArticle implements Taggable {
     private final Member writer;
 
     private String head;
@@ -37,8 +41,8 @@ public class Article extends SimpleArticle {
 
     private final boolean isQuestion;
 
-    public Article(int targetId, int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
-        super(targetId, id, title, commentCount);
+    public Article(Target target, int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
+        super(target, id, title, commentCount);
 
         this.writer = writer;
 
@@ -86,13 +90,23 @@ public class Article extends SimpleArticle {
 
     @Override
     public String toString(){
+        //TODO: Independence from Naver Cafe
+
         return TextFormat.GREEN + "[" + this.getId() + "] " + TextFormat.RESET
-                + TextFormat.LIGHT_PURPLE + "[" + this.getTarget().getMenu(this.getMenuId()).getName() + "] " + TextFormat.RESET
+                + TextFormat.LIGHT_PURPLE + "[" + ((NaverCafe) this.getTarget()).getMenu(this.getMenuId()).getName() + "] " + TextFormat.RESET
                 + (this.isQuestion() ? TextFormat.LIGHT_PURPLE + "Q. " + TextFormat.RESET : "")
                 + (this.hasHead() ? TextFormat.LIGHT_PURPLE + "[" + this.getHead() + "] " + TextFormat.RESET : "")
-                + this.getTitle()
+                + TextFormat.encode(this.getTitle())
                 + TextFormat.DARK_AQUA + " by " + this.getWriter().toString() + TextFormat.RESET
                 + TextFormat.GOLD + " at " + TextFormat.SIMPLE_DATE_FORMAT.format(new Date(this.getCreationTime())) + " (" + this.getUploadDate() + ")" + TextFormat.RESET;
+    }
+
+    @Override
+    public String toTag(Target target){
+        return TextFormat.decode(this.toString(), TextFormat.Type.HTML)
+                + "  <a href=\"http://cafe.naver.com/" + ((NaverCafe) target).getAddress() + "/" + this.getId()
+                + "\"><img src=\"" + Mailer.HOOK_URL + "/ArticleDoctor.php?clubid=" + ((NaverCafe) target).getClubId() + "&articleid=" + this.getId()
+                + "\" style=\"vertical-align: middle\" width=\"15px\" height=\"15px\"></a>";
     }
 
     @Override

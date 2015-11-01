@@ -17,7 +17,6 @@
 package pe.chalk.takoyaki.utils;
 
 import pe.chalk.takoyaki.Takoyaki;
-import pe.chalk.takoyaki.model.Article;
 import pe.chalk.takoyaki.model.Data;
 import pe.chalk.takoyaki.model.Member;
 import pe.chalk.takoyaki.model.Violation;
@@ -251,18 +250,7 @@ public class Mailer {
     }
 
     public static void sendViolation(Violation violation, Object[] recipients, boolean async){
-        String body = String.format("[%s] %s\n\n%s\n\n작성자: %s", violation.getLevel(), violation.getName(), Stream.of(violation.getViolations()).map(data -> {
-            String str = data.toString();
-
-            if(Mailer.HOOK_URL != null && data instanceof Article){
-                str = TextFormat.decode(str, TextFormat.Type.HTML)
-                        + "  <a href=\"http://cafe.naver.com/" + violation.getTarget().getAddress() + "/" + ((Article) data).getId()
-                        + "\"><img src=\"" + Mailer.HOOK_URL + "/ArticleDoctor.php?clubid=" + violation.getTargetId() + "&articleid=" + ((Article) data).getId()
-                        + "\" style=\"vertical-align: middle\" width=\"15px\" height=\"15px\"></a>";
-            }
-
-            return str;
-        }).collect(Collectors.joining("\n")), violation.getViolator());
+        String body = String.format("[%s] %s\n\n%s\n\n작성자: %s", violation.getLevel(), violation.getName(), Stream.of(violation.getViolations()).map(data -> (Mailer.HOOK_URL != null && data instanceof Taggable) ? ((Taggable) data).toTag(violation.getTarget()) : data.toString()).collect(Collectors.joining("\n")), violation.getViolator());
 
         violation.getTarget().getLogger().warning(String.format("[%s] %s - 작성자: %s\n%s", violation.getLevel(), violation.getName(), violation.getViolator(), Stream.of(violation.getViolations()).map(Data::toString).collect(Collectors.joining("\n"))));
         sendMail(violation.getPrefix(), violation.getName(), body, recipients, async);

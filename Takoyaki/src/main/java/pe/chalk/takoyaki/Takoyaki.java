@@ -24,6 +24,7 @@ import pe.chalk.takoyaki.logger.Logger;
 import pe.chalk.takoyaki.logger.LoggerStream;
 import pe.chalk.takoyaki.plugin.JavaScriptPlugin;
 import pe.chalk.takoyaki.plugin.Plugin;
+import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.utils.TextFormat;
 
@@ -53,6 +54,7 @@ public class Takoyaki implements Prefix {
             "  \"options\": {\"excludedPlugins\": [\"debug.js\"]},",
             "  \"targets\": [",
             "    {",
+            "      \"type\": \"naver.cafe\",",
             "      \"address\": \"minecraftpe\",",
             "      \"prefix\": \"M.K\",",
             "      \"interval\": 2500,",
@@ -61,6 +63,7 @@ public class Takoyaki implements Prefix {
             "      \"naverAccount\": {\"username\": \"\", \"password\": \"\"}",
             "    },",
             "    {",
+            "      \"type\": \"naver.cafe\",",
             "      \"address\": \"ourmcspace\",",
             "      \"prefix\": \"PMC\",",
             "      \"interval\": 5000,",
@@ -112,7 +115,7 @@ public class Takoyaki implements Prefix {
             //Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
 
             this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
-            this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::new).collect(Collectors.toList());
+            this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList());
 
             this.loadPlugins();
         }catch(Exception e){
@@ -183,15 +186,6 @@ public class Takoyaki implements Prefix {
 
     public List<Target> getTargets(){
         return this.targets;
-    }
-
-    public Target getTarget(int clubId){
-        for(Target target : this.getTargets()){
-            if(target.getClubId() == clubId){
-                return target;
-            }
-        }
-        return null;
     }
 
     public List<Plugin> getPlugins(){

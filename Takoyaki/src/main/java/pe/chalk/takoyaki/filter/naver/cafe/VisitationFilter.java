@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.filter;
+package pe.chalk.takoyaki.filter.naver.cafe;
 
 import org.jsoup.nodes.Document;
-import pe.chalk.takoyaki.Target;
+import pe.chalk.takoyaki.target.NaverCafe;
 import pe.chalk.takoyaki.model.Member;
 
 import java.util.List;
@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
-public class VisitationFilter extends ContentFilter<Member> {
+public class VisitationFilter extends NaverCafeFilter<Member> {
     public static final String NAME = "visitation";
 
     private static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z-_]+)'");
 
-    public VisitationFilter(Target target){
+    public VisitationFilter(NaverCafe target){
         super(target);
     }
     
@@ -44,8 +44,8 @@ public class VisitationFilter extends ContentFilter<Member> {
     }
 
     @Override
-    public List<Member> filter(Document document){
-        return document.select("div#member-news ul.group-list li span.id a.tcol-c").stream()
+    public List<Member> filter(Document[] documents){
+        return documents[0].select("div#member-news ul.group-list li span.id a.tcol-c").stream()
                 .map(element -> {
                     String id = null;
                     String name = element.text();
@@ -55,7 +55,7 @@ public class VisitationFilter extends ContentFilter<Member> {
                         id = idMatcher.group(1);
                     }
 
-                    return new Member(this.getTarget().getClubId(), name, id);
+                    return new Member(this.getTarget(), name, id);
                 }).collect(Collectors.toList());
     }
 }

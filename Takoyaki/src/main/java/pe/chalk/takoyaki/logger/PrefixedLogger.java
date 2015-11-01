@@ -35,6 +35,10 @@ public class PrefixedLogger implements Loggable {
         this.prefix = "[" + prefix + "]";
     }
 
+    public Loggable getParent(){
+        return this.parent;
+    }
+
     @Override
     public void log(Level level, String message){
         this.parent.log(level, message);

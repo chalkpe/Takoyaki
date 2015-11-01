@@ -17,8 +17,7 @@
 package pe.chalk.takoyaki.model;
 
 import org.json.JSONObject;
-import pe.chalk.takoyaki.Takoyaki;
-import pe.chalk.takoyaki.Target;
+import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Prefix;
 
 /**
@@ -26,20 +25,16 @@ import pe.chalk.takoyaki.utils.Prefix;
  * @since 2015-04-07
  */
 public abstract class Data implements Prefix {
-    private final int targetId;
+    private final Target target;
     private final long creationTime;
 
-    public Data(int targetId){
-        this.targetId = targetId;
+    public Data(Target target){
+        this.target = target;
         this.creationTime = System.currentTimeMillis();
     }
 
-    public int getTargetId(){
-        return this.targetId;
-    }
-
     public Target getTarget(){
-        return Takoyaki.getInstance().getTarget(this.getTargetId());
+        return this.target;
     }
 
     public long getCreationTime(){

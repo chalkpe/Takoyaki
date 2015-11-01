@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.filter;
+package pe.chalk.takoyaki.filter.naver.cafe;
 
-import pe.chalk.takoyaki.Target;
+import org.jsoup.nodes.Document;
+import pe.chalk.takoyaki.filter.Filter;
+import pe.chalk.takoyaki.target.NaverCafe;
 import pe.chalk.takoyaki.model.Data;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-16
  */
-public abstract class ContentFilter<T extends Data> extends Filter<T> {
-    public ContentFilter(Target target){
+public abstract class NaverCafeFilter<T extends Data> extends Filter<Document[], T> {
+    public NaverCafeFilter(NaverCafe target){
         super(target);
     }
 }

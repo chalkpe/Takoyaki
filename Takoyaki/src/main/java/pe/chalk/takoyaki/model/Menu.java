@@ -17,6 +17,7 @@
 package pe.chalk.takoyaki.model;
 
 import org.json.JSONObject;
+import pe.chalk.takoyaki.target.Target;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
@@ -26,8 +27,8 @@ public class Menu extends Data {
     private final int id;
     private final String name;
 
-    public Menu(int targetId, int id, String name){
-        super(targetId);
+    public Menu(Target target, int id, String name){
+        super(target);
 
         this.id = id;
         this.name = name;
