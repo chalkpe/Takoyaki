@@ -15,7 +15,7 @@ public class NamuWiki extends Target<JSONArray> {
         this.getFilters().add(new StatusFilter(this));
 
         this.setName(this.getName() + " (나무위키)");
-        this.staff = new Staff(this.getLogger(), properties.getInt("timeout"));
+        this.staff = new Staff(this.getLogger(), properties.getInt("timeout"), "UTF-8");
     }
 
     @Override

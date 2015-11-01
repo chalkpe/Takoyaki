@@ -70,7 +70,7 @@ public class NaverCafe extends Target<Document[]> {
             }
         }).filter(filter -> filter != null).collect(Collectors.toList()));
 
-        this.staff = new Staff(this.getLogger(), properties.getInt("timeout"), "EUC-KR", properties.getJSONObject("naverAccount"));
+        this.staff = new Staff(this.getLogger(), properties.getInt("timeout"), properties.getJSONObject("naverAccount"));
         this.address = properties.getString("address");
         this.contentUrl = String.format(STRING_CONTENT, this.getAddress());
 

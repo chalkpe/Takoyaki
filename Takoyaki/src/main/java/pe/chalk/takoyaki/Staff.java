@@ -2,6 +2,7 @@ package pe.chalk.takoyaki;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -25,12 +26,17 @@ public class Staff extends WebClient {
     private PrefixedLogger logger;
     private String encoding;
 
+    @SuppressWarnings("unused")
     public Staff(PrefixedLogger logger, int timeout){
-        this(logger, timeout, "UTF-8");
+        this(logger, timeout, null, null);
     }
 
     public Staff(PrefixedLogger logger, int timeout, String encoding){
         this(logger, timeout, encoding, null);
+    }
+
+    public Staff(PrefixedLogger logger, int timeout, JSONObject accountProperties){
+        this(logger, timeout, null, accountProperties);
     }
 
     public Staff(PrefixedLogger logger, int timeout, String encoding, JSONObject accountProperties){
@@ -86,9 +92,9 @@ public class Staff extends WebClient {
     }
 
     public String parse(URL url) throws IOException {
-        final String html = this.getPage(url).getWebResponse().getContentAsString(this.encoding);
+        WebResponse response = this.getPage(url).getWebResponse();
         this.close();
 
-        return html;
+        return (this.encoding == null) ? response.getContentAsString() : response.getContentAsString(this.encoding);
     }
 }
