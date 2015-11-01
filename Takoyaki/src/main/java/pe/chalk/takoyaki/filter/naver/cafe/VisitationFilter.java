@@ -17,6 +17,7 @@
 package pe.chalk.takoyaki.filter.naver.cafe;
 
 import org.jsoup.nodes.Document;
+import pe.chalk.takoyaki.model.naver.NaverMember;
 import pe.chalk.takoyaki.target.NaverCafe;
 import pe.chalk.takoyaki.model.Member;
 
@@ -55,7 +56,7 @@ public class VisitationFilter extends NaverCafeFilter<Member> {
                         id = idMatcher.group(1);
                     }
 
-                    return new Member(this.getTarget(), name, id);
+                    return new NaverMember(this.getTarget(), id, name);
                 }).collect(Collectors.toList());
     }
 }

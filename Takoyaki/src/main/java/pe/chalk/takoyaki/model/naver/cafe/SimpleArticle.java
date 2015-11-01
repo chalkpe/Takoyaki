@@ -14,47 +14,55 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.model;
+package pe.chalk.takoyaki.model.naver.cafe;
 
 import org.json.JSONObject;
+import pe.chalk.takoyaki.model.Data;
 import pe.chalk.takoyaki.target.Target;
+import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
- * @since 2015-04-16
+ * @since 2015-04-12
  */
-public class Menu extends Data {
+public class SimpleArticle extends Data {
     private final int id;
-    private final String name;
+    private String title;
+    private int commentCount;
 
-    public Menu(Target target, int id, String name){
+    public SimpleArticle(Target target, int id, String title, int commentCount){
         super(target);
 
         this.id = id;
-        this.name = name;
+        this.title = title;
+        this.commentCount = commentCount;
     }
 
     public int getId(){
         return this.id;
     }
 
-    public String getName(){
-        return this.name;
+    public String getTitle(){
+        return this.title;
     }
 
-    @Override
-    public String toString(){
-        return "[" + this.getId() + "#" + this.getName() + "]";
+    public int getCommentCount(){
+        return this.commentCount;
     }
 
     @Override
     public boolean equals(Object another){
-        return another instanceof Menu && this.getId() == ((Menu) another).getId();
+        return another instanceof SimpleArticle && this.getId() == ((SimpleArticle) another).getId();
+    }
+
+    @Override
+    public String toString(){
+        return TextFormat.GREEN + "[" + this.getId() + "] " + TextFormat.RESET + this.getTitle() + TextFormat.GOLD + " [" + this.getCommentCount() + "]" + TextFormat.RESET;
     }
 
     @Override
     public String getPrefix(){
-        return this.getName();
+        return String.valueOf(this.getId());
     }
 
     @Override
@@ -62,7 +70,8 @@ public class Menu extends Data {
         JSONObject jsonObject = super.toJSON();
 
         jsonObject.put("id", this.getId());
-        jsonObject.put("name", this.getName());
+        jsonObject.put("title", this.getTitle());
+        jsonObject.put("commentCount", this.getCommentCount());
 
         return jsonObject;
     }

@@ -18,7 +18,7 @@ package pe.chalk.takoyaki.filter.naver.cafe;
 
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.target.NaverCafe;
-import pe.chalk.takoyaki.model.SimpleArticle;
+import pe.chalk.takoyaki.model.naver.cafe.SimpleArticle;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -17,6 +17,8 @@
 package pe.chalk.takoyaki.model;
 
 import org.json.JSONObject;
+import pe.chalk.takoyaki.model.Data;
+import pe.chalk.takoyaki.model.Member;
 import pe.chalk.takoyaki.target.Target;
 
 /**

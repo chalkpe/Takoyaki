@@ -26,57 +26,71 @@ import javax.mail.internet.InternetAddress;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-07
  */
-public class Member extends Data {
-    private static final String DEFAULT_DISPLAY_ID = "********";
+public abstract class Member extends Data {
+    private String username;
+    private String nickname;
 
-    private String id;
-    private String name;
+    public Member(Target target, String username){
+        this(target, username, null);
+    }
 
-    public Member(Target target, String name, String id){
+    public Member(Target target, String username, String nickname){
         super(target);
 
-        this.id = id == null ? "" : id;
-        this.name = name;
+        this.username = username;
+        this.nickname = nickname;
     }
 
-    public String getId(){
-        return this.id;
+    public String getUsername(){
+        return this.username;
     }
 
-    public String getName(){
-        return this.name;
+    public String getNickname(){
+        return this.nickname;
     }
 
     public InternetAddress getInternetAddress(){
         try{
-            return new InternetAddress(this.getId() + "@naver.com");
+            return new InternetAddress(this.getUsername() + "@" + this.getHost());
         }catch(AddressException e){
             e.printStackTrace();
             return null;
         }
     }
 
+    public abstract String getHost();
+
     @Override
     public String toString(){
-        return this.getName() + " (" + (this.getId().length() > 0 ? this.getId() : DEFAULT_DISPLAY_ID) + ")";
+        if(this.getNickname() == null) return this.getUsername();
+        return this.getNickname() + " (" + this.getUsername() + ")";
     }
 
     @Override
-    public boolean equals(Object obj){
-        return obj instanceof Member && this.getId().equalsIgnoreCase(((Member) obj).getId());
+    public boolean equals(Object that){
+        if(this == that) return true;
+        if(that == null || this.getClass() != that.getClass()) return false;
+
+        Member member = (Member) that;
+        return this.getUsername() != null && this.getUsername().equals(member.getUsername());
+    }
+
+    @Override
+    public int hashCode(){
+        return username != null ? username.hashCode() : 0;
     }
 
     @Override
     public String getPrefix(){
-        return this.getId();
+        return this.getUsername();
     }
 
     @Override
     public JSONObject toJSON(){
         JSONObject jsonObject = super.toJSON();
 
-        jsonObject.put("id", this.getId());
-        jsonObject.put("name", this.getName());
+        jsonObject.put("username", this.getUsername());
+        jsonObject.put("nickname", this.getNickname());
 
         return jsonObject;
     }

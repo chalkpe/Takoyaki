@@ -19,9 +19,10 @@ package pe.chalk.takoyaki.filter.naver.cafe;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import pe.chalk.takoyaki.target.NaverCafe;
-import pe.chalk.takoyaki.model.Article;
+import pe.chalk.takoyaki.model.naver.NaverMember;
+import pe.chalk.takoyaki.model.naver.cafe.Article;
 import pe.chalk.takoyaki.model.Member;
+import pe.chalk.takoyaki.target.NaverCafe;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -95,7 +96,7 @@ public class ArticleFilter extends NaverCafeFilter<Article> {
                         menuId = Integer.parseInt(menuIdMatcher.group(1));
                     }
 
-                    Member writer = new Member(this.getTarget(), memberName, memberId);
+                    Member writer = new NaverMember(this.getTarget(), memberId, memberName);
                     return new Article(this.getTarget(), articleId, title, writer, head, uploadDate, menuId, viewCount, commentCount, recommendedCount, isQuestion);
                 }).collect(Collectors.toList());
     }

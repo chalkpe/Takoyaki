@@ -16,9 +16,8 @@
 
 package pe.chalk.takoyaki.filter;
 
-import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
-import pe.chalk.takoyaki.model.Article;
+import pe.chalk.takoyaki.model.naver.cafe.Article;
 import pe.chalk.takoyaki.model.Data;
 import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Prefix;

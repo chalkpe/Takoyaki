@@ -25,7 +25,7 @@ import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.filter.naver.cafe.ArticleFilter;
 import pe.chalk.takoyaki.filter.naver.cafe.CommentaryFilter;
 import pe.chalk.takoyaki.filter.naver.cafe.VisitationFilter;
-import pe.chalk.takoyaki.model.Menu;
+import pe.chalk.takoyaki.model.naver.cafe.Menu;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

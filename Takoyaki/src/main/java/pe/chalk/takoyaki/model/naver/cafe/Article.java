@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.model;
+package pe.chalk.takoyaki.model.naver.cafe;
 
 import org.json.JSONObject;
+import pe.chalk.takoyaki.model.Member;
 import pe.chalk.takoyaki.target.NaverCafe;
 import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Mailer;
