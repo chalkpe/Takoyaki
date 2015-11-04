@@ -68,7 +68,7 @@ public class BukkitTakoyaki extends JavaPlugin {
                 Files.write(defaultPluginPath, DEFAULT_PLUGIN, Charset.forName("UTF-8"), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
             }
 
-            Takoyaki takoyaki = new Takoyaki();
+            Takoyaki takoyaki = Takoyaki.getInstance();
             takoyaki.getLogger().removeStream(System.out);
             takoyaki.getLogger().addTransmitter((level, message) -> BukkitTakoyaki.this.getServer().broadcastMessage(level.getFormats() + "[" + level.getPrefix() + "] " + message));
 

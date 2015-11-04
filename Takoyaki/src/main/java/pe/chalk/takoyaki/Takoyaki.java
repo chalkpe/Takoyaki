@@ -89,17 +89,18 @@ public class Takoyaki implements Prefix {
     private boolean isAlive = false;
 
     public static Takoyaki getInstance(){
-        return instance;
+        if(Takoyaki.instance == null){
+            try{
+                Takoyaki.instance = new Takoyaki();
+            }catch(IOException | JSONException e){
+                throw new RuntimeException(e);
+            }
+        }
+
+        return Takoyaki.instance;
     }
 
-    public Takoyaki() throws IOException {
-        if(Takoyaki.instance != null) Takoyaki.instance.stop("새로운 인스턴스가 생성되었습니다");
-        Takoyaki.instance = this;
-
-        this.init();
-    }
-
-    private void init() throws IOException {
+    private Takoyaki() throws IOException, JSONException {
         Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::shutdown));
 
         this.logger = new Logger();
@@ -120,8 +121,8 @@ public class Takoyaki implements Prefix {
             final JSONObject properties = new JSONObject(Files.lines(propertiesPath, StandardCharsets.UTF_8).collect(Collectors.joining()));
             //Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
 
-            this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).parallel().collect(Collectors.toList());
-            this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).parallel().map(Target::create).collect(Collectors.toList());
+            this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
+            this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList());
 
             this.loadPlugins();
         }catch(Exception e){
@@ -130,8 +131,12 @@ public class Takoyaki implements Prefix {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> Stream<T> buildStream(JSONArray array){
+        return Takoyaki.buildStream(array, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Stream<T> buildStream(JSONArray array, boolean parallel){
         Stream.Builder<T> builder = Stream.builder();
 
         if(array != null){
@@ -139,7 +144,9 @@ public class Takoyaki implements Prefix {
                 builder.add((T) array.get(i));
             }
         }
-        return builder.build();
+
+        Stream<T> stream = builder.build();
+        return parallel ? stream.parallel() : stream;
     }
 
     private void loadPlugins() throws IOException {
@@ -150,7 +157,7 @@ public class Takoyaki implements Prefix {
             Files.createDirectories(pluginsPath);
         }
 
-        this.plugins = Files.list(pluginsPath).filter(path -> path.getFileName().toString().endsWith(".js") && !this.excludedPlugins.contains(path.getFileName().toString())).map(Path::toFile).map(pluginFile -> {
+        this.plugins = Files.list(pluginsPath).parallel().filter(path -> path.getFileName().toString().endsWith(".js") && !this.excludedPlugins.contains(path.getFileName().toString())).map(Path::toFile).map(pluginFile -> {
             try{
                 JavaScriptPlugin plugin = new JavaScriptPlugin(pluginFile);
 
@@ -166,10 +173,10 @@ public class Takoyaki implements Prefix {
     }
 
     public void start(){
-        this.isAlive = true;
+        if(this.isAlive) return; this.isAlive = true;
 
-        this.getTargets().forEach(Target::start);
-        this.getPlugins().forEach(Plugin::onStart);
+        this.getTargets().parallelStream().forEach(Target::start);
+        this.getPlugins().parallelStream().forEach(Plugin::onStart);
     }
 
     public void shutdown(){
@@ -182,12 +189,11 @@ public class Takoyaki implements Prefix {
     }
 
     public void stop(String reason){
-        this.isAlive = false;
+        if(!this.isAlive) return; this.isAlive = false;
 
-        if(this.getLogger() != null) this.getLogger().info("타코야키를 종료합니다: 사유: " + reason);
-
-        if(this.getTargets() != null) this.getTargets().forEach(Thread::interrupt);
-        if(this.getPlugins() != null) this.getPlugins().forEach(Plugin::onDestroy);
+        if(this.getLogger() != null)  this.getLogger().info("타코야키를 종료합니다: 사유: " + reason);
+        if(this.getTargets() != null) this.getTargets().parallelStream().forEach(Thread::interrupt);
+        if(this.getPlugins() != null) this.getPlugins().parallelStream().forEach(Plugin::onDestroy);
     }
 
     public List<Target> getTargets(){
@@ -213,8 +219,8 @@ public class Takoyaki implements Prefix {
 
     public static void main(String[] args){
         try{
-            new Takoyaki().start();
-        }catch(JSONException | IOException e){
+            Takoyaki.getInstance().start();
+        }catch(Exception e){
             e.printStackTrace();
             System.exit(1);
         }
