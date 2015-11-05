@@ -24,6 +24,8 @@ import pe.chalk.takoyaki.logger.Logger;
 import pe.chalk.takoyaki.logger.LoggerStream;
 import pe.chalk.takoyaki.plugin.JavaScriptPlugin;
 import pe.chalk.takoyaki.plugin.Plugin;
+import pe.chalk.takoyaki.plugin.PluginBase;
+import pe.chalk.takoyaki.plugin.PluginLoader;
 import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.utils.TextFormat;
@@ -38,6 +40,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -91,7 +94,7 @@ public class Takoyaki implements Prefix {
     public static Takoyaki getInstance(){
         if(Takoyaki.instance == null){
             try{
-                Takoyaki.instance = new Takoyaki();
+                new Takoyaki();
             }catch(IOException | JSONException e){
                 throw new RuntimeException(e);
             }
@@ -101,6 +104,12 @@ public class Takoyaki implements Prefix {
     }
 
     private Takoyaki() throws IOException, JSONException {
+        Takoyaki.instance = this;
+
+        this.init();
+    }
+
+    private void init() throws IOException, JSONException {
         Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::shutdown));
 
         this.logger = new Logger();
@@ -157,23 +166,18 @@ public class Takoyaki implements Prefix {
             Files.createDirectories(pluginsPath);
         }
 
-        this.plugins = Files.list(pluginsPath).parallel().filter(path -> path.getFileName().toString().endsWith(".js") && !this.excludedPlugins.contains(path.getFileName().toString())).map(Path::toFile).map(pluginFile -> {
-            try{
-                JavaScriptPlugin plugin = new JavaScriptPlugin(pluginFile);
+        Predicate<Path> filter = path -> !this.excludedPlugins.contains(path.getFileName().toString());
+        filter = filter.and(path -> {
+            String filename = path.getFileName().toString();
+            return filename.endsWith(".js") || filename.endsWith(".jar");
+        });
 
-                this.logger.info("플러그인을 불러옵니다: " + plugin.getName() + (plugin.getVersion() != null ? " v" + plugin.getVersion() : ""));
-                plugin.onLoad();
-
-                return plugin;
-            }catch(IOException | RhinoException e){
-                this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
-                return null;
-            }
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        this.plugins = Files.list(pluginsPath).parallel().filter(filter).map(new PluginLoader()::load).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public void start(){
-        if(this.isAlive) return; this.isAlive = true;
+        if(this.isAlive) return;
+        this.isAlive = true;
 
         this.getTargets().parallelStream().forEach(Target::start);
         this.getPlugins().parallelStream().forEach(Plugin::onStart);

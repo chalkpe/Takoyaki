@@ -73,6 +73,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
+                            <addClasspath>true</addClasspath>
                             <mainClass>pe.chalk.takoyaki.Takoyaki</mainClass>
                         </manifest>
                     </archive>

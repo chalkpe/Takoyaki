@@ -7,11 +7,17 @@ import de.vivistra.telegrambot.receiver.IReceiverService;
 import de.vivistra.telegrambot.receiver.Receiver;
 import de.vivistra.telegrambot.sender.Sender;
 import de.vivistra.telegrambot.settings.BotSettings;
+import org.json.JSONObject;
 import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.logger.Loggable;
+import pe.chalk.takoyaki.logger.LoggerTransmitter;
+import pe.chalk.takoyaki.plugin.PluginBase;
 import pe.chalk.takoyaki.utils.TextFormat;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,24 +25,25 @@ import java.util.Set;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-10-02
  */
-public class TakoyakiBot implements IReceiverService {
+public class TakoyakiBot extends PluginBase implements IReceiverService {
     private final Set<Integer> recipients = new HashSet<>();
+    private final LoggerTransmitter transmitter = (level, message) -> this.recipients.forEach(id -> Sender.send(new TextMessage(id, TextFormat.decode(message, TextFormat.Type.NONE))));
 
-    public TakoyakiBot(final String token) throws IOException {
-        BotSettings.setApiToken(token);
-        Receiver.subscribe(this);
+    public TakoyakiBot(){
+        super("TakoyakiBot");
 
-        Takoyaki takoyaki = Takoyaki.getInstance();
-        takoyaki.getLogger().addTransmitter((level, message) -> this.recipients.forEach(id -> Sender.send(new TextMessage(id, TextFormat.decode(message, TextFormat.Type.NONE)))));
-        takoyaki.start();
+        try{
+            this.init(new JSONObject(new String(Files.readAllBytes(Paths.get("TakoyakiBot.json")), StandardCharsets.UTF_8)));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
-    public static void main(String[] args) throws IOException {
-        if(args.length < 1){
-            throw new IllegalArgumentException();
-        }
+    public void init(final JSONObject properties) throws IOException {
+        BotSettings.setApiToken(properties.getString("token"));
 
-        new TakoyakiBot(args[0]);
+        Receiver.subscribe(this);
+        Takoyaki.getInstance().getLogger().addTransmitter(this.transmitter);
     }
 
     public void received(final Message message){
@@ -64,5 +71,11 @@ public class TakoyakiBot implements IReceiverService {
         }
 
         System.out.println(Loggable.Level.DEBUG.getFormats() + this.recipients.toString() + TextFormat.RESET.getAnsiCode());
+    }
+
+    @Override
+    public void onDestroy(){
+        Receiver.unsubscribe(this);
+        Takoyaki.getInstance().getLogger().removeTransmitter(this.transmitter);
     }
 }

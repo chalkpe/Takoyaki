@@ -55,6 +55,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
+                            <addClasspath>true</addClasspath>
                             <mainClass>pe.chalk.takoyaki.bot.TakoyakiBot</mainClass>
                         </manifest>
                     </archive>
