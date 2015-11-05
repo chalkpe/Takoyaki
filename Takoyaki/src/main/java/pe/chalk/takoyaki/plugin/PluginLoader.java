@@ -5,11 +5,14 @@ import pe.chalk.takoyaki.Takoyaki;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
@@ -41,35 +44,32 @@ public class PluginLoader {
     //TODO: Load jar's classpath
     public PluginBase loadJar(File file) throws IOException, ReflectiveOperationException {
         JarFile jarFile = new JarFile(file);
-        String mainClassName = jarFile.getManifest().getMainAttributes().getValue("Main-Class");
+        String mainClassName = jarFile.getManifest().getMainAttributes().getValue(Attributes.Name.MAIN_CLASS);
 
-        URLClassLoader loader = new URLClassLoader(new URL[]{file.toURI().toURL()}, this.getClass().getClassLoader());
-        //addURL(file.toURI().toURL());
-
-        //Class<?> mainClass = loader.loadClass(mainClassName);
-        //Class<?> mainClass = Class.forName(mainClassName, true, ClassLoader.getSystemClassLoader());
+        ClassLoader loader = this.getClassLoaderFromJarFile(file, jarFile);
         Class<?> mainClass = Class.forName(mainClassName, true, loader);
 
-        System.out.println(mainClass);
-        if(!mainClass.isAssignableFrom(PluginBase.class)){
-            throw new ClassCastException("Main class must be assignable to pe.chalk.takoyaki.plugin.PluginBase");
-        }
-
-        return (PluginBase) mainClass.newInstance();
+        Class pluginClass = mainClass.asSubclass(PluginBase.class);
+        return (PluginBase) pluginClass.newInstance();
     }
 
-    public static void addURL(URL url) throws IOException {
-        URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        for(URL u : classLoader.getURLs()){
-            if(u.toString().equalsIgnoreCase(url.toString())) return;
+    public ClassLoader getClassLoaderFromJarFile(File file, JarFile jarFile) throws IOException {
+        List<URL> urls = new ArrayList<>();
+        urls.add(file.toURI().toURL());
+
+        Manifest manifest = jarFile.getManifest();
+        if(manifest != null){
+            String classpath = manifest.getMainAttributes().getValue(Attributes.Name.CLASS_PATH);
+
+            if(classpath != null){
+                for(String path : classpath.split("\\s+")) urls.add(new File(file.getParentFile(), path).toURI().toURL());
+            }
         }
 
-        try{
-            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-            method.setAccessible(true);
-            method.invoke(classLoader, url);
-        }catch(Throwable t){
-            t.printStackTrace();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if(urls.size() > 0){
+            loader = new URLClassLoader(urls.toArray(new URL[urls.size()]), Thread.currentThread().getContextClassLoader());
         }
+        return loader;
     }
 }
