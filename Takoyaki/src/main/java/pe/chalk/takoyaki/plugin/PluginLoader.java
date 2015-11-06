@@ -9,10 +9,13 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
@@ -44,16 +47,22 @@ public class PluginLoader {
     //TODO: Load jar's classpath
     public PluginBase loadJar(File file) throws IOException, ReflectiveOperationException {
         JarFile jarFile = new JarFile(file);
+
         String mainClassName = jarFile.getManifest().getMainAttributes().getValue(Attributes.Name.MAIN_CLASS);
+        List<URL> urls = this.getURLsFromJarFile(file, jarFile);
 
-        ClassLoader loader = this.getClassLoaderFromJarFile(file, jarFile);
-        Class<?> mainClass = Class.forName(mainClassName, true, loader);
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if(!urls.isEmpty()) loader = new URLClassLoader(urls.toArray(new URL[urls.size()]), Thread.currentThread().getContextClassLoader());
 
-        Class pluginClass = mainClass.asSubclass(PluginBase.class);
-        return (PluginBase) pluginClass.newInstance();
+        Class<?> mainClass = Class.forName(mainClassName, true, loader).asSubclass(PluginBase.class);
+        return (PluginBase) mainClass.newInstance();
     }
 
-    public ClassLoader getClassLoaderFromJarFile(File file, JarFile jarFile) throws IOException {
+    public List<URL> getURLsFromJarFile(File file) throws IOException {
+        return this.getURLsFromJarFile(file, new JarFile(file));
+    }
+
+    public List<URL> getURLsFromJarFile(File file, JarFile jarFile) throws IOException {
         List<URL> urls = new ArrayList<>();
         urls.add(file.toURI().toURL());
 
@@ -62,14 +71,18 @@ public class PluginLoader {
             String classpath = manifest.getMainAttributes().getValue(Attributes.Name.CLASS_PATH);
 
             if(classpath != null){
-                for(String path : classpath.split("\\s+")) urls.add(new File(file.getParentFile(), path).toURI().toURL());
+                urls.addAll(Arrays.stream(classpath.split("\\s+")).parallel().flatMap(path -> {
+                    try{
+                        return this.getURLsFromJarFile(new File(file.getParentFile(), path)).stream();
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }
+
+                    return Stream.empty();
+                }).collect(Collectors.toList()));
             }
         }
 
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        if(urls.size() > 0){
-            loader = new URLClassLoader(urls.toArray(new URL[urls.size()]), Thread.currentThread().getContextClassLoader());
-        }
-        return loader;
+        return urls;
     }
 }
