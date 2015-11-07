@@ -196,6 +196,16 @@ public class Takoyaki implements Prefix {
     	return this.targetClasses;
     }
     
+    public void addTarget(Target target) {
+    	target.start();
+    	this.targets.add(target);
+    }
+    
+    public void removeTarget(Target target) {
+    	target.interrupt();
+       	this.targets.remove(target);
+    }
+    
     public void start(){
         if(this.isAlive) return;
         this.isAlive = true;
