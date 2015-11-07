@@ -20,11 +20,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pe.chalk.takoyaki.Takoyaki;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,19 +55,17 @@ public class BukkitTakoyaki extends JavaPlugin {
             " */",
             "const VERSION = \"1.0\";",
             "",
-            "function onDataAdded(filter, data){",
-            "    Packages.org.bukkit.Bukkit.getServer().getPluginManager().callEvent(new Packages.pe.chalk.takoyaki_bukkit.TakoyakiEvent(data));",
+            "function onDataAdded(data, filter){",
+            "    Packages.org.bukkit.Bukkit.getServer().getPluginManager().callEvent(new Packages.pe.chalk.takoyaki.bukkit.TakoyakiEvent(data));",
             "}");
 
     @Override
     public void onEnable(){
         try{
             Path defaultPluginPath = Paths.get("plugins/BukkitTakoyaki.js");
-            if(!Files.exists(defaultPluginPath)){
-                Files.write(defaultPluginPath, DEFAULT_PLUGIN, Charset.forName("UTF-8"), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
-            }
+            if(!Files.exists(defaultPluginPath)) Files.write(defaultPluginPath, DEFAULT_PLUGIN, StandardCharsets.UTF_8);
 
-            Takoyaki takoyaki = new Takoyaki();
+            Takoyaki takoyaki = Takoyaki.getInstance();
             takoyaki.getLogger().removeStream(System.out);
             takoyaki.getLogger().addTransmitter((level, message) -> BukkitTakoyaki.this.getServer().broadcastMessage(level.getFormats() + "[" + level.getPrefix() + "] " + message));
 
