@@ -69,6 +69,8 @@ public abstract class Target<D> extends Thread implements Prefix {
         }
     }
 
+    public abstract String getType();
+
     @Override
     public final String getPrefix(){
         return this.prefix;

@@ -35,6 +35,11 @@ public class NamuWiki extends Target<JSONArray> {
     }
 
     @Override
+    public String getType(){
+        return "namu.wiki";
+    }
+
+    @Override
     public JSONArray getDocument() throws Exception{
         return new JSONArray(this.getStaff().parse("https://namu.wiki/sidebar.json"));
     }

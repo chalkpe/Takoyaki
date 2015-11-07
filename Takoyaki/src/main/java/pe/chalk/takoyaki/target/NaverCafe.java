@@ -98,6 +98,11 @@ public class NaverCafe extends Target<Document[]> {
     }
 
     @Override
+    public String getType(){
+        return "naver.cafe";
+    }
+
+    @Override
     public Document[] getDocument() throws Exception {
         return new Document[]{ Jsoup.parse(this.getStaff().parse(this.contentUrl)), Jsoup.parse(this.getStaff().parse(this.articleUrl)) };
     }
