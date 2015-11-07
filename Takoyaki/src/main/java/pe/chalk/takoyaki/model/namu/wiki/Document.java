@@ -51,7 +51,6 @@ public class Document extends Data {
         return this.getTitle().contains("/");
     }
 
-    @SuppressWarnings("unused")
     public Document getParent(){
         if(!this.hasParent()) return null;
         return new Document(this.getTarget(), this.getTitle().substring(0, this.getTitle().lastIndexOf("/")), "normal", this.getDate());

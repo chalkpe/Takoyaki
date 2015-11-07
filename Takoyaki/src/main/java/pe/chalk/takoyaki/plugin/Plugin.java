@@ -37,7 +37,6 @@ public interface Plugin extends Prefix {
     PrefixedLogger getLogger();
     String getVersion();
 
-    @SuppressWarnings("unused")
     void reload();
 
     void onLoad();

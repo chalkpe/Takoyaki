@@ -50,7 +50,6 @@ public class Logger implements Loggable {
         return false;
     }
 
-    @SuppressWarnings("unused")
     public boolean removeStream(LoggerStream stream){
         return this.streams.remove(stream);
     }
@@ -59,7 +58,6 @@ public class Logger implements Loggable {
         return this.transmitters.add(transmitter);
     }
 
-    @SuppressWarnings("unused")
     public boolean removeTransmitter(LoggerTransmitter transmitter){
         return this.transmitters.remove(transmitter);
     }

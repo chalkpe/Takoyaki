@@ -42,7 +42,6 @@ public class Staff extends WebClient {
     private PrefixedLogger logger;
     private String encoding;
 
-    @SuppressWarnings("unused")
     public Staff(PrefixedLogger logger, int timeout){
         this(logger, timeout, null, null);
     }
