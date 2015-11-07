@@ -60,7 +60,6 @@ public class PluginLoader {
         return null;
     }
 
-    //TODO: Load jar's classpath
     public PluginBase loadJar(File file) throws IOException, ReflectiveOperationException {
         JarFile jarFile = new JarFile(file);
 
