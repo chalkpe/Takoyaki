@@ -126,8 +126,8 @@ public class Takoyaki implements Prefix {
         	this.addTargetClass(NaverCafe.class);
         	this.addTargetClass(NamuWiki.class);
 
-            this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
-            this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList());
+            this.excludedPlugins = Takoyaki.buildStream(String.class, properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
+            this.targets = Takoyaki.buildStream(JSONObject.class, properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList());
             
             this.loadPlugins();
         }catch(Exception e){
@@ -138,18 +138,16 @@ public class Takoyaki implements Prefix {
         return this;
     }
 
-    public static <T> Stream<T> buildStream(JSONArray array){
-        return Takoyaki.buildStream(array, true);
+    public static <T> Stream<T> buildStream(Class<T> type, JSONArray array){
+        return Takoyaki.buildStream(type, array, true);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> Stream<T> buildStream(JSONArray array, boolean parallel){
+    public static <T> Stream<T> buildStream(Class<T> type, JSONArray array, boolean parallel){
         Stream.Builder<T> builder = Stream.builder();
 
-        if(array != null){
-            for(int i = 0; i < array.length(); i++){
-                builder.add((T) array.get(i));
-            }
+        if(array != null) for(int i = 0; i < array.length(); i++){
+            Object element = array.get(i);
+            if(type.isInstance(element)) builder.add(type.cast(element));
         }
 
         Stream<T> stream = builder.build();

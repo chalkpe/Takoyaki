@@ -54,7 +54,7 @@ public class NaverCafe extends Target<Document[]> {
 
     public NaverCafe(JSONObject properties){
         super(properties.getString("prefix"), properties.getLong("interval"));
-        this.getFilters().addAll(Takoyaki.<String>buildStream(properties.getJSONArray("filters")).map(filterName -> {
+        this.getFilters().addAll(Takoyaki.buildStream(String.class, properties.getJSONArray("filters")).map(filterName -> {
             switch(filterName){
                 case ArticleFilter.NAME:
                     return new ArticleFilter(this);
