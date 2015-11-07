@@ -81,13 +81,12 @@ public class Takoyaki implements Prefix {
             "}");
 
     private List<String> excludedPlugins;
-
     private List<Target> targets;
     private List<Plugin> plugins;
     private Logger logger;
 
     private boolean isAlive = false;
-
+    
     public static Takoyaki getInstance(){
         if(Takoyaki.instance == null){
             try{

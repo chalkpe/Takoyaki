@@ -24,7 +24,6 @@ import pe.chalk.takoyaki.target.Target;
  * @since 2015-04-20
  */
 public class Violation extends Data {
-    @SuppressWarnings("unused")
     public enum Level {
         CAUTION("주의"),
         WARN("경고"),
