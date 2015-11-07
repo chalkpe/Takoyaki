@@ -62,9 +62,6 @@ public abstract class Target<D> extends Thread implements Prefix {
     }
 
     public static Target<?> create(JSONObject properties){
-    	String type = properties.getString("type").toLowerCase();
-    	HashMap<String, Class<? extends Target>> map = Takoyaki.getInstance().getTargetClasses();
-    	Class<? extends Target> targetClassa = map.get(type);
     	Class<? extends Target> targetClass = Takoyaki.getInstance().getTargetClasses().get(properties.getString("type").toLowerCase());
     	if (targetClass == null) {
     		throw new IllegalArgumentException("Unknown type");
