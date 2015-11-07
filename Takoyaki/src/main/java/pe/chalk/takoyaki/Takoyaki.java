@@ -39,6 +39,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -90,25 +91,18 @@ public class Takoyaki implements Prefix {
 
     private boolean isAlive = false;
     
-    private HashMap<String, Class<? extends Target>> targetClasses;
+    private Map<String, Class<? extends Target>> targetClasses = new HashMap<>();
     
     public static Takoyaki getInstance(){
-        if(Takoyaki.instance == null){
-            try{
-                new Takoyaki();
-            }catch(IOException | JSONException e){
-                throw new RuntimeException(e);
-            }
-        }
-
+        if(Takoyaki.instance == null) new Takoyaki();
         return Takoyaki.instance;
     }
 
-    private Takoyaki() throws IOException, JSONException {
+    private Takoyaki(){
         Takoyaki.instance = this;
     }
 
-    public void init() throws IOException, JSONException {
+    public Takoyaki init() throws IOException, JSONException, ReflectiveOperationException {
         Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::shutdown));
 
         this.logger = new Logger();
@@ -129,8 +123,9 @@ public class Takoyaki implements Prefix {
             final JSONObject properties = new JSONObject(Files.lines(propertiesPath, StandardCharsets.UTF_8).collect(Collectors.joining()));
             //Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
 
-        	instance.addTargetClass("naver.cafe", NaverCafe.class);
-        	instance.addTargetClass("namu.wiki", NamuWiki.class);
+        	this.addTargetClass(NaverCafe.class);
+        	this.addTargetClass(NamuWiki.class);
+
             this.excludedPlugins = Takoyaki.<String>buildStream(properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
             this.targets         = Takoyaki.<JSONObject>buildStream(properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList());
             
@@ -139,12 +134,15 @@ public class Takoyaki implements Prefix {
             this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
             throw e;
         }
+
+        return this;
     }
 
     public static <T> Stream<T> buildStream(JSONArray array){
         return Takoyaki.buildStream(array, true);
     }
-    
+
+    @SuppressWarnings("unchecked")
     public static <T> Stream<T> buildStream(JSONArray array, boolean parallel){
         Stream.Builder<T> builder = Stream.builder();
 
@@ -175,35 +173,30 @@ public class Takoyaki implements Prefix {
         this.plugins = Files.list(pluginsPath).parallel().filter(filter).map(new PluginLoader()::load).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    public void addTargetClass(String key, Class<? extends Target<?>> value) {
-    	if (this.targetClasses == null) {
-    		this.targetClasses = new HashMap<String, Class<? extends Target>>();
-    	}
-    	this.targetClasses.put(key, value);
+    public void addTargetClass(Class<? extends Target<?>> targetClass) throws ReflectiveOperationException {
+    	this.getTargetClasses().put(targetClass.getMethod("getType").invoke(null).toString(), targetClass);
     }
     
-    public void removeTargetClass(String key) {
-    	if (this.targetClasses == null) {
-    		this.targetClasses = new HashMap<String, Class<? extends Target>>();
-    	}
-    	this.targetClasses.remove(key);
+    public void removeTargetClass(Class<? extends Target<?>> targetClass) throws ReflectiveOperationException {
+    	this.getTargetClasses().remove(targetClass.getMethod("getType").invoke(null).toString());
+    }
+
+    public void remoteTargetClass(String type){
+        this.getTargetClasses().remove(type);
     }
     
-    public HashMap<String, Class<? extends Target>> getTargetClasses() {
-    	if (this.targetClasses == null) {
-    		this.targetClasses = new HashMap<String, Class<? extends Target>>();
-    	}
+    public Map<String, Class<? extends Target>> getTargetClasses(){
     	return this.targetClasses;
     }
     
-    public void addTarget(Target target) {
+    public void addTarget(Target target){
     	target.start();
-    	this.targets.add(target);
+    	this.getTargets().add(target);
     }
     
     public void removeTarget(Target target) {
     	target.interrupt();
-       	this.targets.remove(target);
+       	this.getTargets().remove(target);
     }
     
     public void start(){
@@ -253,9 +246,7 @@ public class Takoyaki implements Prefix {
 
     public static void main(String[] args){
         try{
-        	Takoyaki instance = Takoyaki.getInstance();
-        	instance.init();
-            instance.start();
+        	Takoyaki.getInstance().init().start();
         }catch(Exception e){
             e.printStackTrace();
             System.exit(1);

@@ -97,8 +97,7 @@ public class NaverCafe extends Target<Document[]> {
         }
     }
 
-    @Override
-    public String getType(){
+    public static String getType(){
         return "naver.cafe";
     }
 

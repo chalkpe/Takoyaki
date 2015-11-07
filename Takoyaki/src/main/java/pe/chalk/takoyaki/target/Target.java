@@ -24,7 +24,6 @@ import pe.chalk.takoyaki.logger.PrefixedLogger;
 import pe.chalk.takoyaki.model.Data;
 import pe.chalk.takoyaki.utils.Prefix;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,20 +58,15 @@ public abstract class Target<D> extends Thread implements Prefix {
 
     public static Target<?> create(JSONObject properties){
     	Class<? extends Target> targetClass = Takoyaki.getInstance().getTargetClasses().get(properties.getString("type").toLowerCase());
-    	if (targetClass == null) {
-    		throw new IllegalArgumentException("Unknown type");
-    	} else {
-    		try {
-    			return (Target<?>) targetClass.getConstructor(JSONObject.class).newInstance(properties);
-    		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-    				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-    			e.printStackTrace();
-    			return null;
-    		}
-    	}
-    }
+    	if(targetClass == null) throw new IllegalArgumentException("Unknown type");
 
-    public abstract String getType();
+        try {
+            return (Target<?>) targetClass.getConstructor(JSONObject.class).newInstance(properties);
+        }catch(ReflectiveOperationException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public final String getPrefix(){

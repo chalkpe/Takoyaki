@@ -34,8 +34,7 @@ public class NamuWiki extends Target<JSONArray> {
         this.staff = new Staff(this.getLogger(), properties.getInt("timeout"), "UTF-8");
     }
 
-    @Override
-    public String getType(){
+    public static String getType(){
         return "namu.wiki";
     }
 
