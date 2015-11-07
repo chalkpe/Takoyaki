@@ -40,7 +40,6 @@ public class LoggerStream extends PrintStream {
         return this.type;
     }
 
-    @SuppressWarnings("unused")
     public void setType(TextFormat.Type type){
         this.type = type;
     }

@@ -140,8 +140,7 @@ public class Takoyaki implements Prefix {
     public static <T> Stream<T> buildStream(JSONArray array){
         return Takoyaki.buildStream(array, true);
     }
-
-    @SuppressWarnings("unchecked")
+    
     public static <T> Stream<T> buildStream(JSONArray array, boolean parallel){
         Stream.Builder<T> builder = Stream.builder();
 
@@ -183,8 +182,7 @@ public class Takoyaki implements Prefix {
     public void shutdown(){
         this.stop("VM에 의한 종료");
     }
-
-    @SuppressWarnings("unused")
+    
     public void stop(){
         this.stop("알 수 없음");
     }
