@@ -103,12 +103,13 @@ public class Takoyaki implements Prefix {
     }
 
     public Takoyaki init() throws IOException, JSONException, ReflectiveOperationException {
+        if(this.getLogger() != null) return this;
+
         Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::shutdown));
 
         this.logger = new Logger();
-        this.logger.addStream(new LoggerStream(TextFormat.Type.ANSI, System.out));
-        this.logger.addStream(new LoggerStream(TextFormat.Type.NONE, new PrintStream(new FileOutputStream("Takoyaki.log", true), true, "UTF-8")));
-
+        this.getLogger().addStream(new LoggerStream(TextFormat.Type.ANSI, System.out));
+        this.getLogger().addStream(new LoggerStream(TextFormat.Type.NONE, new PrintStream(new FileOutputStream("Takoyaki.log", true), true, "UTF-8")));
         this.getLogger().info("타코야키를 시작합니다: " + Takoyaki.VERSION);
 
         try{
@@ -246,6 +247,8 @@ public class Takoyaki implements Prefix {
         try{
         	Takoyaki.getInstance().init().start();
         }catch(Exception e){
+            Takoyaki.getInstance().stop();
+
             e.printStackTrace();
             System.exit(1);
         }
