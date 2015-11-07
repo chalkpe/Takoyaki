@@ -16,6 +16,7 @@
 
 package pe.chalk.takoyaki.target;
 
+import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.Staff;
 import pe.chalk.takoyaki.Takoyaki;
@@ -24,8 +25,12 @@ import pe.chalk.takoyaki.logger.PrefixedLogger;
 import pe.chalk.takoyaki.model.Data;
 import pe.chalk.takoyaki.utils.Prefix;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
@@ -56,17 +61,22 @@ public abstract class Target<D> extends Thread implements Prefix {
         this.staff = staff;
     }
 
-    public static Target create(JSONObject properties){
-        switch(properties.getString("type").toLowerCase()){
-            case "naver.cafe":
-                return new NaverCafe(properties);
-
-            case "namu.wiki":
-                return new NamuWiki(properties);
-
-            default:
-                throw new IllegalArgumentException("Unknown type");
-        }
+    public static Target<?> create(JSONObject properties){
+    	String type = properties.getString("type").toLowerCase();
+    	HashMap<String, Class<? extends Target>> map = Takoyaki.getInstance().getTargetClasses();
+    	Class<? extends Target> targetClassa = map.get(type);
+    	Class<? extends Target> targetClass = Takoyaki.getInstance().getTargetClasses().get(properties.getString("type").toLowerCase());
+    	if (targetClass == null) {
+    		throw new IllegalArgumentException("Unknown type");
+    	} else {
+    		try {
+    			return (Target<?>) targetClass.getConstructor(JSONObject.class).newInstance(properties);
+    		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+    				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+    			e.printStackTrace();
+    			return null;
+    		}
+    	}
     }
 
     @Override
