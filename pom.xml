@@ -13,7 +13,6 @@
     <modules>
         <module>Takoyaki</module>
         <module>TakoyakiBukkit</module>
-        <module>TakoyakiBot</module>
     </modules>
 
     <name>Takoyaki</name>
