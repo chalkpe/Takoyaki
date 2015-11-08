@@ -106,12 +106,12 @@ public class Takoyaki implements Prefix {
     }
     
     public void addTarget(Target<?> target){
-    	target.start();
+    	if (this.isAlive())	target.start();
     	this.getTargets().add(target);
     }
     
     public void removeTarget(Target<?> target) {
-    	target.interrupt();
+    	if (this.isAlive()) target.interrupt();
        	this.getTargets().remove(target);
     }
     
