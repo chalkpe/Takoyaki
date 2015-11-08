@@ -145,6 +145,7 @@ public class Takoyaki implements Prefix {
     }
 
     public List<Plugin> getPlugins(){
+    	if (this.plugins == null) this.plugins = new ArrayList<Plugin>();
         return this.plugins;
     }
     
