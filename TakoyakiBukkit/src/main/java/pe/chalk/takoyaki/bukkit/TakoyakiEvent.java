@@ -20,8 +20,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import pe.chalk.takoyaki.model.Data;
 
-@SuppressWarnings("unused")
-
 /**
  * @author ChalkPE <chalkpe@gmail.com>
  * @author 파차리로디드 <fcreloaded@outlook.kr>

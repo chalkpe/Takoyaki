@@ -42,7 +42,7 @@ public class Article extends SimpleArticle implements Taggable {
 
     private final boolean isQuestion;
 
-    public Article(Target target, int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
+    public Article(Target<?> target, int id, String title, Member writer, String head, String uploadDate, int menuId, int viewCount, int commentCount, int recommendedCount, boolean isQuestion){
         super(target, id, title, commentCount);
 
         this.writer = writer;
@@ -103,7 +103,7 @@ public class Article extends SimpleArticle implements Taggable {
     }
 
     @Override
-    public String toTag(Target target){
+    public String toTag(Target<?> target){
         return TextFormat.decode(this.toString(), TextFormat.Type.HTML)
                 + "  <a href=\"http://cafe.naver.com/" + ((NaverCafe) target).getAddress() + "/" + this.getId()
                 + "\"><img src=\"" + Mailer.HOOK_URL + "/ArticleDoctor.php?clubid=" + ((NaverCafe) target).getClubId() + "&articleid=" + this.getId()

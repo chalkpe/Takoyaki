@@ -39,7 +39,8 @@ import java.util.logging.Logger;
  * @since 2015-09-27
  */
 public class Staff extends WebClient {
-    private PrefixedLogger logger;
+	private static final long serialVersionUID = 6234992042018043200L;
+	private PrefixedLogger logger;
     private String encoding;
 
     public Staff(PrefixedLogger logger, int timeout){

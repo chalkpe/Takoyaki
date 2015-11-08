@@ -60,7 +60,7 @@ public class Violation extends Data {
     private Member violator;
     private Data[] violations;
 
-    public Violation(Target target, String name, Level level, Member violator, Data[] violations){
+    public Violation(Target<?> target, String name, Level level, Member violator, Data[] violations){
         super(target);
 
         this.name = name;
