@@ -229,13 +229,10 @@ public class Takoyaki implements Prefix {
     public synchronized void stop(String reason){
         if(!this.isAlive()) return; this.isAlive = false;
 
-        if(this.getLogger() != null){
-            this.getLogger().info("타코야키를 종료합니다: 사유: " + reason);
-            Utils.unsafe(Logger::close).accept(this.getLogger());
-        }
-
+        if(this.getLogger() != null) this.getLogger().info("타코야키를 종료합니다: 사유: " + reason);
         if(this.getTargets() != null) this.getTargets().parallelStream().forEach(Target::interrupt);
         if(this.getPlugins() != null) this.getPlugins().parallelStream().forEach(Plugin::onStop);
+        if(this.getLogger() != null) Utils.unsafe(Logger::close).accept(this.getLogger());
     }
 
     @Override
