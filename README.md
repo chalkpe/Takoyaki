@@ -11,7 +11,7 @@ $ mvn install
 
 ## How to run
 ```
-$ java -Dfile.encoding=UTF-8 -jar Takoyaki/target/Takoyaki-<VERSION>.jar
+$ java -jar target/Takoyaki-<VERSION>.jar
 ```
 
 ## License
