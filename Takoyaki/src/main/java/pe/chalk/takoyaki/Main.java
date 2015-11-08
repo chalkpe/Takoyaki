@@ -125,7 +125,13 @@ public class Main implements Prefix {
 
             List<String> excludedPlugins = Takoyaki.buildStream(String.class, properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
 
-            instance.init(this.loadPlugins(excludedPlugins), Takoyaki.buildStream(JSONObject.class, properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList()));
+            for (Plugin plugin : this.loadPlugins(excludedPlugins)) {
+            	instance.loadPlugin(plugin);
+            }
+            
+            for (Target<?> target : this.loadTargets(properties)) {
+            	instance.addTarget(target);
+            }
         }catch(Exception e){
         	this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
             throw e;
@@ -134,7 +140,7 @@ public class Main implements Prefix {
         return true;
 	}
 
-    List<Plugin> loadPlugins(List<String> excludedPlugins) throws IOException {
+    private List<Plugin> loadPlugins(List<String> excludedPlugins) throws IOException {
         Path pluginsPath = Paths.get("plugins");
         if(!Files.exists(pluginsPath)){
             this.getLogger().info("플러그인을 불러옵니다: plugins 디렉토리 생성 중...");
@@ -150,6 +156,11 @@ public class Main implements Prefix {
 
         return Files.list(pluginsPath).parallel().filter(filter).map(new PluginLoader()::load).filter(Objects::nonNull).collect(Collectors.toList());
     }
+    
+    private List<Target<?>> loadTargets(JSONObject properties) {
+    	return Takoyaki.buildStream(JSONObject.class, properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList());
+    }
+    
     
 	private Main() {
 		this.logger = new Logger();

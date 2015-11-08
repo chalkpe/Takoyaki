@@ -37,7 +37,7 @@ public class Takoyaki implements Prefix {
     private static Takoyaki instance = null;
 
     private List<Target<?>> targets;
-    List<Plugin> plugins;
+    private List<Plugin> plugins;
     Logger logger;
 
     private boolean isAlive = false;
@@ -145,13 +145,6 @@ public class Takoyaki implements Prefix {
 
     public List<Plugin> getPlugins(){
         return this.plugins;
-    }
-
-    public boolean init(List<Plugin> plugins, List<Target<?>> targets) {
-    	if (this.isAlive()) return false;
-    	this.plugins = plugins;
-    	this.targets = targets;
-    	return true;
     }
     
     public Logger getLogger(){
