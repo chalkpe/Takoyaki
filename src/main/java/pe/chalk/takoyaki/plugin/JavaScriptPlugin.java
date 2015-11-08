@@ -116,15 +116,23 @@ public class JavaScriptPlugin extends PluginBase {
     }
 
     @Override
-    public void onDestroy(){
-        this.callScriptableFunction("onDestroy");
+    public void onEnable(){
+        this.callScriptableFunction("onEnable");
+    }
 
+    @Override
+    public void onDisable(){
+        this.callScriptableFunction("onDisable");
     }
 
     @Override
     public void onStart(){
         this.callScriptableFunction("onStart");
+    }
 
+    @Override
+    public void onStop(){
+        this.callScriptableFunction("onStop");
     }
 
     @Override

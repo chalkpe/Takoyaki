@@ -16,9 +16,11 @@
 
 package pe.chalk.takoyaki.logger;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
@@ -37,12 +39,21 @@ public class Logger implements Loggable {
         this.transmitters = transmitters;
     }
 
+    @Override
+    public void close() throws IOException {
+        this.streams.forEach(LoggerStream::close);
+    }
+
     public boolean addStream(LoggerStream stream){
+        Objects.requireNonNull(stream);
+
         return this.streams.add(stream);
     }
 
     public boolean removeStream(PrintStream stream){
-        for(LoggerStream loggerStream : this.streams){
+        Objects.requireNonNull(stream);
+
+        for(LoggerStream loggerStream: this.streams){
             if(stream.equals(loggerStream.getStream())){
                 return this.streams.remove(loggerStream);
             }
@@ -51,14 +62,20 @@ public class Logger implements Loggable {
     }
 
     public boolean removeStream(LoggerStream stream){
+        Objects.requireNonNull(stream);
+
         return this.streams.remove(stream);
     }
 
     public boolean addTransmitter(LoggerTransmitter transmitter){
+        Objects.requireNonNull(transmitter);
+
         return this.transmitters.add(transmitter);
     }
 
     public boolean removeTransmitter(LoggerTransmitter transmitter){
+        Objects.requireNonNull(transmitter);
+
         return this.transmitters.remove(transmitter);
     }
 

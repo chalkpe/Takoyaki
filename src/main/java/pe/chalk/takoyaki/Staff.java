@@ -92,9 +92,7 @@ public class Staff extends WebClient {
             pwInput.setValueAttribute(pw);
 
             Elements errors = Jsoup.parse(((HtmlPage) loginButton.click()).asXml().replaceFirst("<\\?xml version=\"1.0\" encoding=\"(.+)\"\\?>", "<!DOCTYPE html>")).select("div.error");
-            if(!errors.isEmpty()){
-                this.logger.warning("네이버 로그인 실패: " + errors.text());
-            }
+            if(!errors.isEmpty()) this.logger.warning("네이버 로그인 실패: " + errors.text());
         }catch(Exception e){
             this.logger.warning("네이버 로그인 실패: " + e.getClass().getName() + ": " + e.getMessage());
         }

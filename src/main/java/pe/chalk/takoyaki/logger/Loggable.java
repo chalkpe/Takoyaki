@@ -19,6 +19,7 @@ package pe.chalk.takoyaki.logger;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.utils.TextFormat;
 
+import java.io.Closeable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +27,7 @@ import java.util.stream.Stream;
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-17
  */
-public interface Loggable {
+public interface Loggable extends Closeable {
     enum Level implements Prefix {
         DEBUG    ("DEBUG",    new TextFormat[]{TextFormat.DARK_GRAY, TextFormat.ITALIC}),
         INFO     ("INFO",     new TextFormat[]{TextFormat.WHITE}),

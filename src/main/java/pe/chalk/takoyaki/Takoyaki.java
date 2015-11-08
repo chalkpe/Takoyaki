@@ -16,7 +16,6 @@
 
 package pe.chalk.takoyaki;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.logger.Logger;
@@ -28,6 +27,7 @@ import pe.chalk.takoyaki.target.NaverCafe;
 import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Prefix;
 import pe.chalk.takoyaki.utils.TextFormat;
+import pe.chalk.takoyaki.utils.Utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,12 +36,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -84,15 +84,14 @@ public class Takoyaki implements Prefix {
             "  ]",
             "}");
 
-    private List<String> excludedPlugins;
-    private List<Target> targets;
-    private List<Plugin> plugins;
     private Logger logger;
 
-    private boolean isAlive = false;
-    
+    private List<Target> targets = new ArrayList<>();
     private Map<String, Class<? extends Target>> targetClasses = new HashMap<>();
-    
+    private List<Plugin> plugins = new ArrayList<>();
+
+    private boolean isAlive = false;
+
     public static Takoyaki getInstance(){
         if(Takoyaki.instance == null) new Takoyaki();
         return Takoyaki.instance;
@@ -102,10 +101,11 @@ public class Takoyaki implements Prefix {
         Takoyaki.instance = this;
     }
 
-    public Takoyaki init() throws IOException, JSONException, ReflectiveOperationException {
+    public synchronized Takoyaki init() throws IOException, JSONException, ReflectiveOperationException {
         if(this.getLogger() != null) return this;
 
-        Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::shutdown));
+        this.addTargetClasses(NaverCafe.class, NamuWiki.class);
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 
         this.logger = new Logger();
         this.getLogger().addStream(new LoggerStream(TextFormat.Type.ANSI, System.out));
@@ -120,17 +120,15 @@ public class Takoyaki implements Prefix {
             }
 
             this.getLogger().info("프로퍼티를 불러옵니다: " + propertiesPath);
-
             final JSONObject properties = new JSONObject(Files.lines(propertiesPath, StandardCharsets.UTF_8).collect(Collectors.joining()));
-            //Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
 
-        	this.addTargetClass(NaverCafe.class);
-        	this.addTargetClass(NamuWiki.class);
+            Utils.buildStream(JSONObject.class, properties.getJSONArray("targets")).map(Target::create).forEach(this::addTarget);
 
-            this.excludedPlugins = Takoyaki.buildStream(String.class, properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
-            this.targets = Takoyaki.buildStream(JSONObject.class, properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList());
-            
-            this.loadPlugins();
+            final Path pluginsPath = Paths.get("TakoyakiPlugins");
+            if(!Files.exists(pluginsPath)) Files.createDirectories(pluginsPath);
+
+            List<String> excludedPlugins = Utils.buildStream(String.class, properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
+            new PluginLoader().load(Files.list(pluginsPath).filter(PluginLoader.PLUGIN_FILTER.apply(excludedPlugins)).collect(Collectors.toList())).forEach(this::addPlugin);
         }catch(Exception e){
             this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
             throw e;
@@ -139,103 +137,105 @@ public class Takoyaki implements Prefix {
         return this;
     }
 
-    public static <T> Stream<T> buildStream(Class<T> type, JSONArray array){
-        return Takoyaki.buildStream(type, array, true);
-    }
-
-    public static <T> Stream<T> buildStream(Class<T> type, JSONArray array, boolean parallel){
-        Stream.Builder<T> builder = Stream.builder();
-
-        if(array != null) for(int i = 0; i < array.length(); i++){
-            Object element = array.get(i);
-            if(type.isInstance(element)) builder.add(type.cast(element));
-        }
-
-        Stream<T> stream = builder.build();
-        return parallel ? stream.parallel() : stream;
-    }
-
-    private void loadPlugins() throws IOException {
-        Path pluginsPath = Paths.get("plugins");
-        if(!Files.exists(pluginsPath)){
-            this.getLogger().info("플러그인을 불러옵니다: plugins 디렉토리 생성 중...");
-
-            Files.createDirectories(pluginsPath);
-        }
-
-        Predicate<Path> filter = path -> !this.excludedPlugins.contains(path.getFileName().toString());
-        filter = filter.and(path -> {
-            String filename = path.getFileName().toString();
-            return filename.endsWith(".js") || filename.endsWith(".jar");
-        });
-
-        this.plugins = Files.list(pluginsPath).parallel().filter(filter).map(new PluginLoader()::load).filter(Objects::nonNull).collect(Collectors.toList());
-    }
-
-    public void addTargetClass(Class<? extends Target<?>> targetClass) throws ReflectiveOperationException {
-    	this.getTargetClasses().put(targetClass.getMethod("getType").invoke(null).toString(), targetClass);
-    }
-    
-    public void removeTargetClass(Class<? extends Target<?>> targetClass) throws ReflectiveOperationException {
-    	this.getTargetClasses().remove(targetClass.getMethod("getType").invoke(null).toString());
-    }
-
-    public void remoteTargetClass(String type){
-        this.getTargetClasses().remove(type);
-    }
-    
-    public Map<String, Class<? extends Target>> getTargetClasses(){
-    	return this.targetClasses;
-    }
-    
-    public void addTarget(Target target){
-    	target.start();
-    	this.getTargets().add(target);
-    }
-    
-    public void removeTarget(Target target) {
-    	target.interrupt();
-       	this.getTargets().remove(target);
-    }
-    
-    public void start(){
-        if(this.isAlive) return;
-        this.isAlive = true;
-        
-        this.getTargets().parallelStream().forEach(Target::start);
-        this.getPlugins().parallelStream().forEach(Plugin::onStart);
-    }
-
-    public void shutdown(){
-        this.stop("VM에 의한 종료");
-    }
-    
-    public void stop(){
-        this.stop("알 수 없음");
-    }
-
-    public void stop(String reason){
-        if(!this.isAlive) return; this.isAlive = false;
-
-        if(this.getLogger() != null)  this.getLogger().info("타코야키를 종료합니다: 사유: " + reason);
-        if(this.getTargets() != null) this.getTargets().parallelStream().forEach(Thread::interrupt);
-        if(this.getPlugins() != null) this.getPlugins().parallelStream().forEach(Plugin::onDestroy);
+    public Logger getLogger(){
+        return this.logger;
     }
 
     public List<Target> getTargets(){
         return this.targets;
     }
 
+    public void addTarget(Target target){
+        Objects.requireNonNull(target);
+
+        if(this.isAlive()) target.start();
+        this.getTargets().add(target);
+    }
+
+    public void removeTarget(Target target){
+        Objects.requireNonNull(target);
+
+        if(this.isAlive()) target.interrupt();
+        this.getTargets().remove(target);
+    }
+
+    public Map<String, Class<? extends Target>> getTargetClasses(){
+        return this.targetClasses;
+    }
+
+    @SafeVarargs
+    public final void addTargetClasses(Class<? extends Target<?>>... targetClasses) throws ReflectiveOperationException {
+        Objects.requireNonNull(targetClasses);
+
+        Stream.of(targetClasses).forEach(Utils.unsafe(this::addTargetClass));
+    }
+
+    public void addTargetClass(Class<? extends Target<?>> targetClass) throws ReflectiveOperationException {
+        Objects.requireNonNull(targetClass);
+
+    	this.getTargetClasses().put(targetClass.getMethod("getType").invoke(null).toString(), targetClass);
+    }
+
+    public void removeTargetClass(Class<? extends Target<?>> targetClass) throws ReflectiveOperationException {
+        Objects.requireNonNull(targetClass);
+
+    	this.remoteTargetClass(targetClass.getMethod("getType").invoke(null).toString());
+    }
+
+    public void remoteTargetClass(String type){
+        Objects.requireNonNull(type);
+
+        this.getTargetClasses().remove(type);
+    }
+
     public List<Plugin> getPlugins(){
         return this.plugins;
     }
 
-    public Logger getLogger(){
-        return this.logger;
+    public void addPlugin(Plugin plugin){
+        Objects.requireNonNull(plugin);
+
+        this.getPlugins().add(plugin);
+        plugin.onEnable();
+    }
+
+    public void removePlugin(Plugin plugin){
+        Objects.requireNonNull(plugin);
+
+        plugin.onDisable();
+        this.getPlugins().remove(plugin);
     }
 
     public boolean isAlive(){
         return this.isAlive;
+    }
+
+    public synchronized void start(){
+        if(this.isAlive()) return;
+        this.isAlive = true;
+
+        this.getTargets().parallelStream().forEach(Target::start);
+        this.getPlugins().parallelStream().forEach(Plugin::onStart);
+    }
+
+    public synchronized void shutdown(){
+        this.stop("VM에 의한 종료");
+    }
+
+    public synchronized void stop(){
+        this.stop("알 수 없음");
+    }
+
+    public synchronized void stop(String reason){
+        if(!this.isAlive()) return; this.isAlive = false;
+
+        if(this.getLogger() != null){
+            this.getLogger().info("타코야키를 종료합니다: 사유: " + reason);
+            Utils.unsafe(Logger::close).accept(this.getLogger());
+        }
+
+        if(this.getTargets() != null) this.getTargets().parallelStream().forEach(Target::interrupt);
+        if(this.getPlugins() != null) this.getPlugins().parallelStream().forEach(Plugin::onStop);
     }
 
     @Override

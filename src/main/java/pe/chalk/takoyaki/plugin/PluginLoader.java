@@ -27,6 +27,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -38,6 +41,15 @@ import java.util.stream.Stream;
  * @since 2015-11-05
  */
 public class PluginLoader {
+    public static final Function<List<String>, Predicate<Path>> PLUGIN_FILTER = excludedPlugins -> path -> {
+        String filename = path.getFileName().toString().toLowerCase();
+        return !excludedPlugins.contains(filename) && (filename.endsWith(".js") || filename.endsWith(".jar"));
+    };
+
+    public List<PluginBase> load(List<Path> paths){
+        return paths.parallelStream().map(this::load).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
     public PluginBase load(Path path){
         return this.load(path.toFile());
     }
@@ -46,7 +58,7 @@ public class PluginLoader {
         try{
             PluginBase plugin;
 
-            if(file.getName().endsWith(".jar"))     plugin = this.loadJar(file);
+            if(file.getName().endsWith(".jar")) plugin = this.loadJar(file);
             else if(file.getName().endsWith(".js")) plugin = new JavaScriptPlugin(file);
             else return null;
 

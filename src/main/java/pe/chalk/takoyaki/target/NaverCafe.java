@@ -21,11 +21,11 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import pe.chalk.takoyaki.Staff;
-import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.filter.naver.cafe.ArticleFilter;
 import pe.chalk.takoyaki.filter.naver.cafe.CommentaryFilter;
 import pe.chalk.takoyaki.filter.naver.cafe.VisitationFilter;
 import pe.chalk.takoyaki.model.naver.cafe.Menu;
+import pe.chalk.takoyaki.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -54,7 +54,7 @@ public class NaverCafe extends Target<Document[]> {
 
     public NaverCafe(JSONObject properties){
         super(properties.getString("prefix"), properties.getLong("interval"));
-        this.getFilters().addAll(Takoyaki.buildStream(String.class, properties.getJSONArray("filters")).map(filterName -> {
+        this.getFilters().addAll(Utils.buildStream(String.class, properties.getJSONArray("filters")).map(filterName -> {
             switch(filterName){
                 case ArticleFilter.NAME:
                     return new ArticleFilter(this);
@@ -118,13 +118,8 @@ public class NaverCafe extends Target<Document[]> {
         return this.menus;
     }
 
-    public Menu getMenu(int menuId){
-        for(Menu menu : this.getMenus()){
-            if(menu.getId() == menuId){
-                return menu;
-            }
-        }
-        return null;
+    public Menu getMenu(final int menuId){
+        return this.getMenus().stream().filter(menu -> menu.getId() == menuId).findFirst().orElse(null);
     }
 
     @Override

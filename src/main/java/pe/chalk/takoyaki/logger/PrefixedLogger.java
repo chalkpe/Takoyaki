@@ -18,6 +18,8 @@ package pe.chalk.takoyaki.logger;
 
 import pe.chalk.takoyaki.utils.Prefix;
 
+import java.io.IOException;
+
 /**
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-17
@@ -33,6 +35,11 @@ public class PrefixedLogger implements Loggable {
     public PrefixedLogger(Loggable parent, String prefix){
         this.parent = parent;
         this.prefix = "[" + prefix + "]";
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.getParent().close();
     }
 
     public Loggable getParent(){

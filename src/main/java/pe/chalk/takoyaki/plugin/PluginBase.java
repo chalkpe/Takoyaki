@@ -62,12 +62,22 @@ public class PluginBase implements Plugin {
     }
 
     @Override
-    public void onDestroy(){
+    public void onEnable(){
+
+    }
+
+    @Override
+    public void onDisable(){
 
     }
 
     @Override
     public void onStart(){
+
+    }
+
+    @Override
+    public void onStop(){
 
     }
 

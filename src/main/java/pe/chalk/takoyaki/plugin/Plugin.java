@@ -40,8 +40,11 @@ public interface Plugin extends Prefix {
     void reload();
 
     void onLoad();
-    void onDestroy();
+    void onEnable();
+    void onDisable();
 
     void onStart();
+    void onStop();
+
     void onDataAdded(List<? extends Data> freshData, Filter<?, ? extends Data> filter);
 }

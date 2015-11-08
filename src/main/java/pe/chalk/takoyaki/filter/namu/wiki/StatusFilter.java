@@ -18,10 +18,10 @@ package pe.chalk.takoyaki.filter.namu.wiki;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import pe.chalk.takoyaki.Takoyaki;
 import pe.chalk.takoyaki.filter.Filter;
 import pe.chalk.takoyaki.model.namu.wiki.Document;
 import pe.chalk.takoyaki.target.Target;
+import pe.chalk.takoyaki.utils.Utils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +37,7 @@ public class StatusFilter extends Filter<JSONArray, Document> {
 
     @Override
     public List<Document> filter(JSONArray array){
-        return Takoyaki.buildStream(JSONObject.class, array).map(doc -> Document.create(this.getTarget(), doc)).collect(Collectors.toList());
+        return Utils.buildStream(JSONObject.class, array).map(doc -> Document.create(this.getTarget(), doc)).collect(Collectors.toList());
     }
 
     @Override

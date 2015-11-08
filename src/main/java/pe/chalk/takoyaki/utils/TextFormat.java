@@ -86,7 +86,7 @@ public enum TextFormat {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA);
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.KOREA);
 
-    public static final Map<String, TextFormat> MAP_BY_STRING = Arrays.stream(TextFormat.values()).collect(Collectors.toMap(TextFormat::toString, format -> format));
+    public static final Map<String, TextFormat> MAP_BY_STRING = Arrays.stream(TextFormat.values()).collect(Collectors.toMap(TextFormat::toString, Function.identity()));
 
     private final String minecraftCode;
     private final int ansiCode;
@@ -108,7 +108,7 @@ public enum TextFormat {
     }
 
     public String getAnsiCode(){
-        return this.ansiCode < 0 ? "" : String.format(FORMAT_ANSI, ansiCode);
+        return (this.ansiCode < 0) ? "" : String.format(FORMAT_ANSI, ansiCode);
     }
 
     public String getHtmlTag(){
@@ -124,9 +124,7 @@ public enum TextFormat {
     }
 
     public static String decode(String minecraftString, Type type){
-        if(minecraftString == null || minecraftString.equals("")){
-            return "";
-        }
+        if(minecraftString == null || minecraftString.equals("")) return "";
 
         switch(type){
             default:
@@ -169,10 +167,6 @@ public enum TextFormat {
     }
 
     private static String getCloseTags(int indentLevel){
-        if(indentLevel <= 0){
-            return "";
-        }
-
-        return String.join("", Collections.nCopies(indentLevel, FORMAT_HTML_CLOSE));
+        return (indentLevel <= 0) ? "" : String.join("", Collections.nCopies(indentLevel, FORMAT_HTML_CLOSE));
     }
 }
