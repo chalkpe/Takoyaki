@@ -34,6 +34,10 @@ public class NamuWiki extends Target<JSONArray> {
         this.staff = new Staff(this.getLogger(), properties.getInt("timeout"), "UTF-8");
     }
 
+    public static String getType(){
+        return "namu.wiki";
+    }
+
     @Override
     public JSONArray getDocument() throws Exception{
         return new JSONArray(this.getStaff().parse("https://namu.wiki/sidebar.json"));

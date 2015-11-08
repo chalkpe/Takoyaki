@@ -37,7 +37,7 @@ public class StatusFilter extends Filter<JSONArray, Document> {
 
     @Override
     public List<Document> filter(JSONArray array){
-        return Takoyaki.<JSONObject>buildStream(array).map(doc -> Document.create(this.getTarget(), doc)).collect(Collectors.toList());
+        return Takoyaki.buildStream(JSONObject.class, array).map(doc -> Document.create(this.getTarget(), doc)).collect(Collectors.toList());
     }
 
     @Override
