@@ -74,7 +74,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>pe.chalk.takoyaki.Takoyaki</mainClass>
+                            <mainClass>pe.chalk.takoyaki.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

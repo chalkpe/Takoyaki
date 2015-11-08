@@ -17,32 +17,14 @@
 package pe.chalk.takoyaki;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import pe.chalk.takoyaki.logger.Logger;
-import pe.chalk.takoyaki.logger.LoggerStream;
 import pe.chalk.takoyaki.plugin.Plugin;
-import pe.chalk.takoyaki.plugin.PluginLoader;
-import pe.chalk.takoyaki.target.NamuWiki;
-import pe.chalk.takoyaki.target.NaverCafe;
 import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Prefix;
-import pe.chalk.takoyaki.utils.TextFormat;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -53,41 +35,10 @@ public class Takoyaki implements Prefix {
     public static final String VERSION = "2.2.2-SNAPSHOT";
 
     private static Takoyaki instance = null;
-    private static final List<String> DEFAULT_CONFIG = Arrays.asList(
-            "{",
-            "  \"options\": {\"excludedPlugins\": [\"debug.js\"]},",
-            "  \"targets\": [",
-            "    {",
-            "      \"type\": \"naver.cafe\",",
-            "      \"address\": \"minecraftpe\",",
-            "      \"prefix\": \"M.K\",",
-            "      \"interval\": 2500,",
-            "      \"timeout\": 5000,",
-            "      \"filters\": [\"article\", \"commentary\", \"visitation\"],",
-            "      \"naverAccount\": {\"username\": \"\", \"password\": \"\"}",
-            "    },",
-            "    {",
-            "      \"type\": \"naver.cafe\",",
-            "      \"address\": \"ourmcspace\",",
-            "      \"prefix\": \"PMC\",",
-            "      \"interval\": 5000,",
-            "      \"timeout\": 5000,",
-            "      \"filters\": [\"article\", \"commentary\", \"visitation\"],",
-            "      \"naverAccount\": {\"username\": \"\", \"password\": \"\"}",
-            "    },",
-            "    {",
-            "      \"type\": \"namu.wiki\",",
-            "      \"prefix\": \"N.W\",",
-            "      \"interval\": 2500,",
-            "      \"timeout\": 5000",
-            "    }",
-            "  ]",
-            "}");
 
-    private List<String> excludedPlugins;
     private List<Target<?>> targets;
-    private List<Plugin> plugins;
-    private Logger logger;
+    List<Plugin> plugins;
+    Logger logger;
 
     private boolean isAlive = false;
     
@@ -118,21 +69,24 @@ public class Takoyaki implements Prefix {
         return parallel ? stream.parallel() : stream;
     }
 
-    private void loadPlugins() throws IOException {
-        Path pluginsPath = Paths.get("plugins");
-        if(!Files.exists(pluginsPath)){
-            this.getLogger().info("플러그인을 불러옵니다: plugins 디렉토리 생성 중...");
 
-            Files.createDirectories(pluginsPath);
-        }
-
-        Predicate<Path> filter = path -> !this.excludedPlugins.contains(path.getFileName().toString());
-        filter = filter.and(path -> {
-            String filename = path.getFileName().toString();
-            return filename.endsWith(".js") || filename.endsWith(".jar");
-        });
-
-        this.plugins = Files.list(pluginsPath).parallel().filter(filter).map(new PluginLoader()::load).filter(Objects::nonNull).collect(Collectors.toList());
+    
+    public void loadPlugin(Plugin plugin) {
+    	if (this.plugins == null) {
+    		this.plugins = new ArrayList<Plugin>();
+    	}
+    	
+    	this.plugins.add(plugin);
+    	
+    }
+    
+    public boolean unloadPlugin(Plugin plugin) {
+    	if (this.plugins == null) {
+    		this.plugins = new ArrayList<Plugin>();
+    		return false;
+    	}
+    	
+    	return this.plugins.remove(plugin);
     }
 
     public void addTargetClass(Class<? extends Target<?>> targetClass) throws ReflectiveOperationException {
@@ -193,6 +147,13 @@ public class Takoyaki implements Prefix {
         return this.plugins;
     }
 
+    public boolean init(List<Plugin> plugins, List<Target<?>> targets) {
+    	if (this.isAlive()) return false;
+    	this.plugins = plugins;
+    	this.targets = targets;
+    	return true;
+    }
+    
     public Logger getLogger(){
         return this.logger;
     }
@@ -204,54 +165,6 @@ public class Takoyaki implements Prefix {
     @Override
     public String getPrefix(){
         return "타코야키";
-    }
-
-    public static void main(String[] args){
-        try{
-        	Takoyaki.getInstance().init().start();
-        }catch(Exception e){
-            Takoyaki.getInstance().stop();
-
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-    
-    public Takoyaki init() throws IOException, JSONException, ReflectiveOperationException {
-        if(this.getLogger() != null) return this;
-
-        Runtime.getRuntime().addShutdownHook(new Thread(Takoyaki.this::shutdown));
-
-        this.logger = new Logger();
-        this.getLogger().addStream(new LoggerStream(TextFormat.Type.ANSI, System.out));
-        this.getLogger().addStream(new LoggerStream(TextFormat.Type.NONE, new PrintStream(new FileOutputStream("Takoyaki.log", true), true, "UTF-8")));
-        this.getLogger().info("타코야키를 시작합니다: " + Takoyaki.VERSION);
-
-        try{
-            final Path propertiesPath = Paths.get("Takoyaki.json");
-            if(!Files.exists(propertiesPath)){
-                this.getLogger().info("프로퍼티를 생성합니다: " + propertiesPath.toString());
-                Files.write(propertiesPath, Takoyaki.DEFAULT_CONFIG, StandardCharsets.UTF_8);
-            }
-
-            this.getLogger().info("프로퍼티를 불러옵니다: " + propertiesPath);
-
-            final JSONObject properties = new JSONObject(Files.lines(propertiesPath, StandardCharsets.UTF_8).collect(Collectors.joining()));
-            //Files.write(propertiesPath, properties.toString(2).getBytes("UTF-8"));
-
-        	this.addTargetClass(NaverCafe.class);
-        	this.addTargetClass(NamuWiki.class);
-
-            this.excludedPlugins = Takoyaki.buildStream(String.class, properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
-            this.targets = Takoyaki.buildStream(JSONObject.class, properties.getJSONArray("targets")).map(Target::create).collect(Collectors.toList());
-            
-            this.loadPlugins();
-        }catch(Exception e){
-            this.getLogger().error(e.getClass().getName() + ": " + e.getMessage());
-            throw e;
-        }
-
-        return this;
     }
     
 }
