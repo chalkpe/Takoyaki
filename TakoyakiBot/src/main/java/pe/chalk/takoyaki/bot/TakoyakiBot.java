@@ -1,20 +1,5 @@
 package pe.chalk.takoyaki.bot;
 
-import de.vivistra.telegrambot.model.message.Message;
-import de.vivistra.telegrambot.model.message.MessageType;
-import de.vivistra.telegrambot.model.message.TextMessage;
-import de.vivistra.telegrambot.receiver.IReceiverService;
-import de.vivistra.telegrambot.receiver.Receiver;
-import de.vivistra.telegrambot.sender.Sender;
-import de.vivistra.telegrambot.settings.BotSettings;
-import org.json.JSONObject;
-import pe.chalk.takoyaki.Takoyaki;
-import pe.chalk.takoyaki.logger.Loggable;
-import pe.chalk.takoyaki.logger.LoggerTransmitter;
-import pe.chalk.takoyaki.plugin.PluginBase;
-import pe.chalk.takoyaki.utils.TextFormat;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,6 +8,21 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.json.JSONObject;
+
+import de.vivistra.telegrambot.model.message.Message;
+import de.vivistra.telegrambot.model.message.MessageType;
+import de.vivistra.telegrambot.model.message.TextMessage;
+import de.vivistra.telegrambot.receiver.IReceiverService;
+import de.vivistra.telegrambot.receiver.Receiver;
+import de.vivistra.telegrambot.sender.Sender;
+import de.vivistra.telegrambot.settings.BotSettings;
+import pe.chalk.takoyaki.Takoyaki;
+import pe.chalk.takoyaki.logger.Loggable;
+import pe.chalk.takoyaki.logger.LoggerTransmitter;
+import pe.chalk.takoyaki.plugin.PluginBase;
+import pe.chalk.takoyaki.utils.TextFormat;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>

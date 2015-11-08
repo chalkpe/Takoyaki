@@ -28,7 +28,7 @@ public class Menu extends Data {
     private final int id;
     private final String name;
 
-    public Menu(Target target, int id, String name){
+    public Menu(Target<?> target, int id, String name){
         super(target);
 
         this.id = id;
