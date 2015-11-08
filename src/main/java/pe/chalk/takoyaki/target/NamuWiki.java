@@ -19,7 +19,7 @@ package pe.chalk.takoyaki.target;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.Staff;
-import pe.chalk.takoyaki.filter.namu.wiki.StatusFilter;
+import pe.chalk.takoyaki.filter.wiki.namu.StatusFilter;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
@@ -35,7 +35,7 @@ public class NamuWiki extends Target<JSONArray> {
     }
 
     public static String getType(){
-        return "namu.wiki";
+        return "wiki.namu";
     }
 
     @Override

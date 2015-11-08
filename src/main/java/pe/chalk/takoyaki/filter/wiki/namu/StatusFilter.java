@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.filter.namu.wiki;
+package pe.chalk.takoyaki.filter.wiki.namu;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.filter.Filter;
-import pe.chalk.takoyaki.model.namu.wiki.Document;
+import pe.chalk.takoyaki.model.wiki.namu.Document;
 import pe.chalk.takoyaki.target.Target;
 import pe.chalk.takoyaki.utils.Utils;
 

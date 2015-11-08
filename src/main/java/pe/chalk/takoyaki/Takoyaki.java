@@ -76,7 +76,7 @@ public class Takoyaki implements Prefix {
             "      \"naverAccount\": {\"username\": \"\", \"password\": \"\"}",
             "    },",
             "    {",
-            "      \"type\": \"namu.wiki\",",
+            "      \"type\": \"wiki.namu\",",
             "      \"prefix\": \"N.W\",",
             "      \"interval\": 2500,",
             "      \"timeout\": 5000",
