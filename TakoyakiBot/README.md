@@ -5,7 +5,7 @@
 
 ## How to run
 ```
-$ java -Dfile.encoding=UTF-8 -jar TakoyakiBot/target/TakoyakiBot-<VERSION>.jar <YOUR BOT TOKEN>
+$ java -jar TakoyakiBot/target/TakoyakiBot-<VERSION>.jar
 ```
 
 ## Commands
