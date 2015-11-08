@@ -230,11 +230,8 @@ public class Mailer {
     }
 
     public static void send(String subject, String body, Object[] recipients, boolean async){
-        if(async){
-            new Thread(() -> __send(subject, body, recipients)).start();
-        }else{
-            __send(subject, body, recipients);
-        }
+        if(async) new Thread(() -> __send(subject, body, recipients)).start();
+        else __send(subject, body, recipients);
     }
 
     public static void sendMail(String prefix, String subject, String body, Object[] recipients){
