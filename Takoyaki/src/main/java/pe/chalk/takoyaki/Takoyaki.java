@@ -140,6 +140,7 @@ public class Takoyaki implements Prefix {
     }
 
     public List<Target<?>> getTargets(){
+    	if (this.targets == null) this.targets = new ArrayList<Target<?>>();
         return this.targets;
     }
 
