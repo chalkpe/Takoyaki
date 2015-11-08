@@ -12,7 +12,6 @@
 
     <modules>
         <module>Takoyaki</module>
-        <module>TakoyakiBukkit</module>
     </modules>
 
     <name>Takoyaki</name>
