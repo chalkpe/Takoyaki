@@ -14,10 +14,13 @@ import pe.chalk.takoyaki.logger.LoggerTransmitter;
 import pe.chalk.takoyaki.plugin.PluginBase;
 import pe.chalk.takoyaki.utils.TextFormat;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,14 +36,20 @@ public class TakoyakiBot extends PluginBase implements IReceiverService {
         super("TakoyakiBot");
 
         try{
-            this.init(new JSONObject(new String(Files.readAllBytes(Paths.get("TakoyakiBot.json")), StandardCharsets.UTF_8)));
+            Path propertiesPath = Paths.get("TakoyakiBot.json");
+            if(Files.notExists(propertiesPath)) Files.write(propertiesPath, Arrays.asList("{", "    \"token\": \"YOUR_BOT_TOKEN\"", "}"), StandardCharsets.UTF_8);
+
+            this.init(new JSONObject(new String(Files.readAllBytes(propertiesPath), StandardCharsets.UTF_8)));
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
     public void init(final JSONObject properties) throws IOException {
-        BotSettings.setApiToken(properties.getString("token"));
+        String token = properties.getString("token");
+        if(token.equals("YOUR_BOT_TOKEN")) throw new IllegalArgumentException("You must set your bot token at ./TakoyakiBot.json");
+
+        BotSettings.setApiToken(token);
 
         Receiver.subscribe(this);
         Takoyaki.getInstance().getLogger().addTransmitter(this.transmitter);
