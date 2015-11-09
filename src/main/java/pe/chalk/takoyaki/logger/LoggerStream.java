@@ -49,6 +49,6 @@ public class LoggerStream extends PrintStream {
     }
 
     public void println(Loggable.Level level, String message){
-        super.println(TextFormat.decode(String.format("%s%s %s%s[%s] %s%s", TextFormat.AQUA, TextFormat.DATE_FORMAT.format(new Date()), TextFormat.RESET, level.getFormats(), level.getPrefix(), message, TextFormat.RESET), this.getType()));
+        super.println(TextFormat.decode(String.format("%s%s %s%s[%s] %s%s", TextFormat.AQUA, TextFormat.DATE_FORMAT.format(new Date()), TextFormat.RESET, level.getFormats(), level.getPrefix(), message, TextFormat.RESET).replaceAll("§\\{LEVEL_FORMAT\\}", TextFormat.RESET.toString() + level.getFormats()), this.getType()));
     }
 }
