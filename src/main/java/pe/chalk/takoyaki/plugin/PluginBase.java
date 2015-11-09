@@ -82,11 +82,6 @@ public class PluginBase implements Plugin {
     }
 
     @Override
-    public void onDataAdded(List<? extends Data> freshData, Filter<?, ? extends Data> filter){
-
-    }
-
-    @Override
     public String toString(){
         return this.getName();
     }

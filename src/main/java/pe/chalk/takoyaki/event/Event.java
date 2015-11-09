@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
-package pe.chalk.takoyaki.plugin;
+package pe.chalk.takoyaki.event;
 
-import pe.chalk.takoyaki.logger.PrefixedLogger;
-import pe.chalk.takoyaki.utils.Prefix;
+import pe.chalk.takoyaki.filter.Filter;
+import pe.chalk.takoyaki.model.Data;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
- * @since 2015-10-05
+ * @since 2015-11-09
  */
-public interface Plugin extends Prefix {
-    String getName();
-    @Override
-    default String getPrefix(){
-        return this.getName();
+public class Event {
+    private final Filter<?, ? extends Data> filter;
+    private final List<? extends Data> dataList;
+
+    public Event(Filter<?, ? extends Data> filter, List<? extends Data> dataList){
+        this.filter = filter;
+        this.dataList = Collections.unmodifiableList(dataList);
     }
 
-    PrefixedLogger getLogger();
-    String getVersion();
+    public Filter<?, ? extends Data> getFilter(){
+        return this.filter;
+    }
 
-    void reload();
-
-    void onLoad();
-    void onEnable();
-    void onDisable();
-
-    void onStart();
-    void onStop();
+    public List<? extends Data> getDataList(){
+        return this.dataList;
+    }
 }

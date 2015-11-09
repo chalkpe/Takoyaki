@@ -22,22 +22,21 @@ import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import pe.chalk.takoyaki.filter.Filter;
-import pe.chalk.takoyaki.model.Data;
+import pe.chalk.takoyaki.Takoyaki;
+import pe.chalk.takoyaki.event.Event;
+import pe.chalk.takoyaki.event.EventHandler;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
  * @since 2015-04-19
  */
-public class JavaScriptPlugin extends PluginBase {
+public class JavaScriptPlugin extends PluginBase implements EventHandler {
     private File file;
     private Scriptable scriptable;
 
@@ -52,8 +51,10 @@ public class JavaScriptPlugin extends PluginBase {
         Context context = Context.enter();
         try{
             this.scriptable = new ImporterTopLevel(context);
-            context.evaluateReader(this.getScriptable(), new BufferedReader(new InputStreamReader(new FileInputStream(this.getFile()), "UTF-8")), this.getName(), 0, null);
+            context.evaluateReader(this.getScriptable(), Files.newBufferedReader(this.getFile().toPath(), StandardCharsets.UTF_8), this.getName(), 0, null);
+
             ScriptableObject.putProperty(this.getScriptable(), "logger", this.getLogger());
+            ScriptableObject.putProperty(this.getScriptable(), "takoyaki", Takoyaki.getInstance());
         }finally{
             Context.exit();
         }
@@ -79,17 +80,11 @@ public class JavaScriptPlugin extends PluginBase {
         }
     }
 
-    private Object callScriptableFunction(String functionName){
-        return this.callScriptableFunction(functionName, Context.emptyArgs);
-    }
-
-    private Object callScriptableFunction(String functionName, Object[] args){
+    private Object callScriptableFunction(String functionName, Object... args){
         Context context = Context.enter();
         try{
             Object object = this.getScriptableProperty(functionName);
-            if(object != null && object instanceof Function){
-                return ((Function) object).call(context, scriptable, scriptable, args);
-            }
+            if(object != null && object instanceof Function) return ((Function) object).call(context, scriptable, scriptable, args);
         }catch(RhinoException e){
             this.getLogger().error(e.getMessage());
         }finally{
@@ -102,7 +97,9 @@ public class JavaScriptPlugin extends PluginBase {
     @Override
     public String getVersion(){
         Object version = this.getScriptableProperty("VERSION");
-        return version == null ? null : version.toString();
+        if(version == null) throw new NoSuchFieldError("VERSION");
+
+        return version.toString();
     }
 
     @Override
@@ -136,7 +133,14 @@ public class JavaScriptPlugin extends PluginBase {
     }
 
     @Override
-    public void onDataAdded(List<? extends Data> freshData, Filter<?, ? extends Data> filter){
-        this.callScriptableFunction("onDataAdded", new Object[]{ freshData.toArray(), filter });
+    public boolean checkEvent(Event event){
+        Object result = this.callScriptableFunction("checkEvent");
+        if(result == null || !Boolean.class.isInstance(result)) return true;
+        else return Boolean.class.cast(result);
+    }
+
+    @Override
+    public void handleEvent(Event event){
+        this.callScriptableFunction("handleEvent", event);
     }
 }

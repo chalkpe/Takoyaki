@@ -19,6 +19,8 @@ package pe.chalk.takoyaki.target;
 import org.json.JSONObject;
 import pe.chalk.takoyaki.Staff;
 import pe.chalk.takoyaki.Takoyaki;
+import pe.chalk.takoyaki.event.Event;
+import pe.chalk.takoyaki.event.EventHandler;
 import pe.chalk.takoyaki.filter.Filter;
 import pe.chalk.takoyaki.logger.PrefixedLogger;
 import pe.chalk.takoyaki.model.Data;
@@ -26,6 +28,7 @@ import pe.chalk.takoyaki.utils.Prefix;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ChalkPE <chalkpe@gmail.com>
@@ -118,8 +121,12 @@ public abstract class Target<D> extends Thread implements Prefix {
                 List<? extends Data> list = filter.getFreshData(document);
                 if(list.isEmpty()) return;
 
+                final Event event = new Event(filter, list);
+
                 list.forEach(data -> filter.getLogger().info(data.toString()));
-                Takoyaki.getInstance().getPlugins().forEach(plugin -> plugin.onDataAdded(list, filter));
+
+                List<EventHandler> handlers = Takoyaki.getInstance().getPlugins().parallelStream().filter(EventHandler.class::isInstance).map(EventHandler.class::cast).collect(Collectors.toList());
+                if(handlers.parallelStream().allMatch(handler -> handler.checkEvent(event))) handlers.parallelStream().forEach(handler -> handler.handleEvent(event));
             });
         }catch(Exception e){
             e.printStackTrace();
