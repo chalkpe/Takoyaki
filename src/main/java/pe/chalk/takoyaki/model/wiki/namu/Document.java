@@ -35,7 +35,7 @@ public class Document extends Data {
     private String status;
     private long date;
 
-    public Document(Target target, String title, String status, long date){
+    public Document(Target<?> target, String title, String status, long date){
         super(target);
 
         this.title = title;
@@ -43,7 +43,7 @@ public class Document extends Data {
         this.date = date;
     }
 
-    public static Document create(Target target, JSONObject json){
+    public static Document create(Target<?> target, JSONObject json){
         return new Document(target, json.getString("document"), json.getString("status"), json.getLong("date"));
     }
 

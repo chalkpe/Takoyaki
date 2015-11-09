@@ -30,11 +30,11 @@ public abstract class Member extends Data {
     private String username;
     private String nickname;
 
-    public Member(Target target, String username){
+    public Member(Target<?> target, String username){
         this(target, username, null);
     }
 
-    public Member(Target target, String username, String nickname){
+    public Member(Target<?> target, String username, String nickname){
         super(target);
 
         this.username = username;

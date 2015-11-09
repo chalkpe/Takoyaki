@@ -30,7 +30,7 @@ public class SimpleArticle extends Data {
     private String title;
     private int commentCount;
 
-    public SimpleArticle(Target target, int id, String title, int commentCount){
+    public SimpleArticle(Target<?> target, int id, String title, int commentCount){
         super(target);
 
         this.id = id;

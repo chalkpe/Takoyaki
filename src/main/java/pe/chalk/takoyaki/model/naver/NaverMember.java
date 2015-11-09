@@ -24,7 +24,7 @@ import pe.chalk.takoyaki.target.Target;
  * @since 2015-11-01
  */
 public class NaverMember extends Member {
-    public NaverMember(Target target, String username, String nickname){
+    public NaverMember(Target<?> target, String username, String nickname){
         super(target, username, nickname);
     }
 

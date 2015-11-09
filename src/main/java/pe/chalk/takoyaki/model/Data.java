@@ -25,15 +25,15 @@ import pe.chalk.takoyaki.utils.Prefix;
  * @since 2015-04-07
  */
 public abstract class Data implements Prefix {
-    private final Target target;
+    private final Target<?> target;
     private final long creationTime;
 
-    public Data(Target target){
+    public Data(Target<?> target){
         this.target = target;
         this.creationTime = System.currentTimeMillis();
     }
 
-    public Target getTarget(){
+    public Target<?> getTarget(){
         return this.target;
     }
 

@@ -23,5 +23,5 @@ import pe.chalk.takoyaki.target.Target;
  * @since 2015-11-01
  */
 public interface Taggable {
-    String toTag(Target target);
+    String toTag(Target<?> target);
 }

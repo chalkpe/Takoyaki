@@ -86,8 +86,8 @@ public class Takoyaki implements Prefix {
 
     private Logger logger;
 
-    private List<Target> targets = new ArrayList<>();
-    private Map<String, Class<? extends Target>> targetClasses = new HashMap<>();
+    private List<Target<?>> targets = new ArrayList<>();
+    private Map<String, Class<? extends Target<?>>> targetClasses = new HashMap<>();
     private List<Plugin> plugins = new ArrayList<>();
 
     private boolean isAlive = false;
@@ -141,25 +141,25 @@ public class Takoyaki implements Prefix {
         return this.logger;
     }
 
-    public List<Target> getTargets(){
+    public List<Target<?>> getTargets(){
         return this.targets;
     }
 
-    public void addTarget(Target target){
+    public void addTarget(Target<?> target){
         Objects.requireNonNull(target);
 
         if(this.isAlive()) target.start();
         this.getTargets().add(target);
     }
 
-    public void removeTarget(Target target){
+    public void removeTarget(Target<?> target){
         Objects.requireNonNull(target);
 
         if(this.isAlive()) target.interrupt();
         this.getTargets().remove(target);
     }
 
-    public Map<String, Class<? extends Target>> getTargetClasses(){
+    public Map<String, Class<? extends Target<?>>> getTargetClasses(){
         return this.targetClasses;
     }
 
