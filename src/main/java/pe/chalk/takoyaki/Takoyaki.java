@@ -124,7 +124,7 @@ public class Takoyaki implements Prefix {
 
             Utils.buildStream(JSONObject.class, properties.getJSONArray("targets")).map(Target::create).forEach(this::addTarget);
 
-            final Path pluginsPath = Paths.get("TakoyakiPlugins");
+            final Path pluginsPath = Paths.get("plugins");
             if(!Files.exists(pluginsPath)) Files.createDirectories(pluginsPath);
 
             List<String> excludedPlugins = Utils.buildStream(String.class, properties.getJSONObject("options").getJSONArray("excludedPlugins")).collect(Collectors.toList());
