@@ -63,8 +63,8 @@ public abstract class Target<D> extends Thread implements Prefix {
         final String type = properties.getString("type").toLowerCase();
     	if(!Takoyaki.getInstance().getTargetClasses().containsKey(type)) throw new IllegalArgumentException("Unknown type: " + type);
 
-        try {
-            return (Target<?>) Takoyaki.getInstance().getTargetClasses().get(type).getConstructor(JSONObject.class).newInstance(properties);
+        try{
+            return Takoyaki.getInstance().getTargetClasses().get(type).getConstructor(JSONObject.class).newInstance(properties);
         }catch(ReflectiveOperationException e){
             e.printStackTrace();
             return null;
