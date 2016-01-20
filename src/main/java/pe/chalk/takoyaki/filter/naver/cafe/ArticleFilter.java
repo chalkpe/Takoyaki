@@ -34,13 +34,18 @@ import java.util.stream.Collectors;
  * @since 2015-04-07
  */
 public class ArticleFilter extends NaverCafeFilter<Article> {
-    public static final String NAME = "article";
+    public static final String NAME = "naver.cafe.article";
 
     private static final Pattern MEMBER_ID_PATTERN = Pattern.compile("ui\\(event, '([a-z0-9-_]+)',");
     private static final Pattern MENU_ID_PATTERN = Pattern.compile("'(\\d+)'\\);");
 
     public ArticleFilter(NaverCafe target){
         super(target);
+    }
+
+    @Override
+    public String getName(){
+        return NAME;
     }
     
     @Override

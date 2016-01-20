@@ -31,8 +31,15 @@ import java.util.stream.Collectors;
  * @since 2015-10-31
  */
 public class StatusFilter extends Filter<JSONArray, Document> {
+    public static final String NAME = "wiki.namu.status";
+
     public StatusFilter(Target<JSONArray> target){
         super(target);
+    }
+
+    @Override
+    public String getName(){
+        return NAME;
     }
 
     @Override

@@ -26,7 +26,14 @@ import pe.chalk.takoyaki.model.Data;
  * @since 2015-04-16
  */
 public abstract class NaverCafeFilter<T extends Data> extends Filter<Document[], T> {
+    public static final String NAME = "naver.cafe.abstract";
+
     public NaverCafeFilter(NaverCafe target){
         super(target);
+    }
+
+    @Override
+    public String getName(){
+        return NAME;
     }
 }

@@ -41,6 +41,8 @@ public abstract class Filter<D, T extends Data> implements Prefix {
         this.logger = new PrefixedLogger(this.getTarget().getLogger(), this);
     }
 
+    public abstract String getName();
+
     public Target<D> getTarget(){
         return this.target;
     }

@@ -31,14 +31,19 @@ import java.util.stream.Collectors;
  * @since 2015-04-07
  */
 public class VisitationFilter extends NaverCafeFilter<Member> {
-    public static final String NAME = "visitation";
+    public static final String NAME = "naver.cafe.visitation";
 
     private static final Pattern ID_PATTERN = Pattern.compile("'([0-9a-z-_]+)'");
 
     public VisitationFilter(NaverCafe target){
         super(target);
     }
-    
+
+    @Override
+    public String getName(){
+        return NAME;
+    }
+
     @Override
     public String getPrefix(){
         return "방문";

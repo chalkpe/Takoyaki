@@ -28,10 +28,15 @@ import java.util.stream.Collectors;
  * @since 2015-04-07
  */
 public class CommentaryFilter extends NaverCafeFilter<SimpleArticle> {
-    public static final String NAME = "commentary";
+    public static final String NAME = "naver.cafe.commentary";
 
     public CommentaryFilter(NaverCafe target){
         super(target);
+    }
+
+    @Override
+    public String getName(){
+        return NAME;
     }
     
     @Override
